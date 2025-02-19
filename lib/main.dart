@@ -7,6 +7,8 @@ void main() {
 
 class MyApp extends StatelessWidget {
   @override
+
+      
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
@@ -19,5 +21,5 @@ class MyApp extends StatelessWidget {
       ),
       home: FirstScreen(), // Start with the splash screen
     );
-  }
+  } //vdgebhec
 }
