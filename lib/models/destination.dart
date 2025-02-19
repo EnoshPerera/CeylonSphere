@@ -9,7 +9,7 @@ class Destination {
 
 final List<Destination> destinations = [
   Destination(
-    name: 'Pomegranate',
+    name: 'Galle',
     description: 'Sweet, bell-shaped fruits enjoyed since ancient times.',
     imagePath: 'assets/Kandy.jpg',
   ),
