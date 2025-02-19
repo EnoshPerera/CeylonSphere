@@ -1,4 +1,4 @@
-name: futter123
+name: flutter_test_22
 description: "A new Flutter project."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
@@ -51,12 +51,6 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
-  assets:
-    - assets/logo-12.png
-    - assets/logo-14.png
-    - assets/google-logo.png
-    - assets/facebook-logo.png
-    - assets/firstscreen.jpg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
@@ -64,8 +58,11 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
-  #   - images/a_dot_burr.jpeg
+  assets:
+  - assets/Kandy.jpg
+  - assets/Yala.jpg
+  - assets/vr_tourism.png
+  - assets/Logo-04.png
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -93,5 +90,4 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
-
 

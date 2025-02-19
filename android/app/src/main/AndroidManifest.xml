@@ -1,6 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
     <application
-        android:label="futter123"
+        android:label="flutter_test_22"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
