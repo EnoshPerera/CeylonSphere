@@ -18,5 +18,6 @@ class MyApp extends StatelessWidget {
         ),
       ),
       home: FirstScreen(), // Start with the splash screen
-    );  }
+    );
+  }
 }
