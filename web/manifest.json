@@ -1,6 +1,6 @@
 {
-    "name": "user_profile",
-    "short_name": "user_profile",
+    "name": "ceylon_sphere",
+    "short_name": "ceylon_sphere",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
