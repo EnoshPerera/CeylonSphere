@@ -2,7 +2,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '/profile_screen.dart';
 import '/destinations_screen.dart';
-import '/explore_activities_screen.dart'; // Import Explore Activities screen
+import '/explore_activities_screen.dart';
+import '/destination_profile.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -102,11 +103,14 @@ class HomeScreen extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.all(5.0),
                   children: const [
-                    DestinationImage(imagePath: 'assets/Kandy.jpg'),
-                    DestinationImage(imagePath: 'assets/Yala.jpg'),
-                    DestinationImage(imagePath: 'assets/Kandy.jpg'),
-                    DestinationImage(imagePath: 'assets/Yala.jpg'),
-                    DestinationImage(imagePath: 'assets/Kandy.jpg'),
+                    DestinationImage(
+                        imagePath: 'assets/Kandy.jpg', title: 'Kandy'),
+                    DestinationImage(
+                        imagePath: 'assets/Yala.jpg', title: 'Yala'),
+                    DestinationImage(
+                        imagePath: 'assets/Kandy.jpg', title: 'Sigiriya'),
+                    DestinationImage(
+                        imagePath: 'assets/Yala.jpg', title: 'Galle'),
                   ],
                 ),
               ),
@@ -114,12 +118,12 @@ class HomeScreen extends StatelessWidget {
                 title: 'Family Package',
                 subtitle: 'Family Fun up to 20%',
                 color: Color(0xFFAED581),
-                onTap: () {}, // Add navigation if needed
+                onTap: () {},
               ),
               PromoBanner(
                 title: 'Explore Activities',
                 subtitle: 'Discover top adventure & cultural tours',
-                color: Color(0xFF003734), // Dark Green
+                color: Color(0xFF003734),
                 onTap: () {
                   Navigator.push(
                     context,
@@ -144,7 +148,7 @@ class HomeScreen extends StatelessWidget {
                 title: 'Adventure Deal',
                 subtitle: '30% OFF',
                 color: Colors.orangeAccent,
-                onTap: () {}, // Add navigation if needed
+                onTap: () {},
               ),
               const SizedBox(height: 10),
             ],
@@ -157,19 +161,59 @@ class HomeScreen extends StatelessWidget {
 
 class DestinationImage extends StatelessWidget {
   final String imagePath;
-  const DestinationImage({required this.imagePath, super.key});
+  final String title;
+
+  const DestinationImage({
+    required this.imagePath,
+    required this.title,
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(10), // Rounded corners
-        child: Image.asset(
-          imagePath,
-          width: 180, // Increased width (Adjust as needed)
-          height: 140, // Increased height slightly
-          fit: BoxFit.cover,
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) =>
+                DestinationScreen(imagePath: imagePath, title: title),
+          ),
+        );
+      },
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 8.0),
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(10),
+          child: Stack(
+            children: [
+              Image.asset(
+                imagePath,
+                width: 180,
+                height: 140,
+                fit: BoxFit.cover,
+              ),
+              Positioned(
+                bottom: 8,
+                left: 8,
+                child: Container(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  decoration: BoxDecoration(
+                    color: Colors.black54,
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
@@ -180,20 +224,20 @@ class PromoBanner extends StatelessWidget {
   final String title;
   final String subtitle;
   final Color color;
-  final VoidCallback onTap; // Function for navigation
+  final VoidCallback onTap;
 
   const PromoBanner({
     required this.title,
     required this.subtitle,
     required this.color,
-    required this.onTap, // Pass function for navigation
+    required this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: onTap, // Correctly handling navigation
+      onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Container(

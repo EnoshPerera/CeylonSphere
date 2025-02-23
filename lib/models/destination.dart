@@ -14,27 +14,27 @@ final List<Destination> destinations = [
     imagePath: 'assets/Kandy.jpg',
   ),
   Destination(
-    name: 'Apple',
+    name: 'Ella',
     description: 'Apples are one of the most popular and healthy fruits.',
     imagePath: 'assets/Kandy.jpg',
   ),
   Destination(
-    name: 'Mango',
+    name: 'Ruwanweli Seya',
     description: 'Mangoes are juicy, tropical fruits enjoyed worldwide.',
     imagePath: 'assets/Kandy.jpg',
   ),
   Destination(
-    name: 'Gooseberry',
+    name: 'Negombo',
     description: 'Gooseberries are tart and perfect for desserts and jams.',
     imagePath: 'assets/Yala.jpg',
   ),
   Destination(
-    name: 'Watermelon',
+    name: 'Colombo',
     description: 'A refreshing summer fruit rich in water content.',
     imagePath: 'assets/Yala.jpg',
   ),
   Destination(
-    name: 'Cherry',
+    name: 'Galle',
     description: 'Cherries are sweet, small fruits loved worldwide.',
     imagePath: 'assets/Yala.jpg',
   ),
