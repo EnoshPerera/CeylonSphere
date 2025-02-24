@@ -440,7 +440,8 @@
 }
 
 .footer-section ul li a:hover {
-    color: var(--primary-color);
+    font-weight: bold;
+    transition: font-weight 0.1s;
 }
 
 .social-links {
