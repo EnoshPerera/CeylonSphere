@@ -90,6 +90,22 @@ class HomeScreen extends StatelessWidget {
                   ),
                 ),
               ),
+              SizedBox(
+                height: 100,
+                child: ListView(
+                  scrollDirection: Axis.horizontal,
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                  children: const [
+                    CategoryItem(icon: CupertinoIcons.map, label: 'Places'),
+                    CategoryItem(
+                        icon: CupertinoIcons.news, label: 'Restaurant'),
+                    CategoryItem(
+                        icon: CupertinoIcons.bag, label: 'Souvenir Shops'),
+                    CategoryItem(
+                        icon: CupertinoIcons.cart, label: 'Supermarket'),
+                  ],
+                ),
+              ),
               const Padding(
                 padding: EdgeInsets.symmetric(horizontal: 16.0),
                 child: Text(
@@ -266,6 +282,31 @@ class PromoBanner extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CategoryItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+
+  const CategoryItem({
+    required this.icon,
+    required this.label,
+    super.key,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Column(
+        children: [
+          Icon(icon, size: 40, color: Colors.green),
+          const SizedBox(height: 5),
+          Text(label, style: const TextStyle(color: Colors.grey)),
+        ],
       ),
     );
   }
