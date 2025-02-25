@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 void main() {
   runApp(TravelBookingApp());
@@ -89,21 +87,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
       });
   }
 
-  Future<void> _selectPickupLocation(BuildContext context) async {
-    final LatLng? selectedLocation = await Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => PickupLocationMap(),
-      ),
-    );
-    if (selectedLocation != null) {
-      setState(() {
-        _pickupLocationController.text =
-        'Lat: ${selectedLocation.latitude}, Lng: ${selectedLocation.longitude}';
-      });
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -140,20 +123,93 @@ class _BookingHomePageState extends State<BookingHomePage> {
       padding: EdgeInsets.symmetric(vertical: 20),
       color: Colors.white,
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-        children: List.generate(4, (index) {
-          return Column(
-            children: [
-              CircleAvatar(
-                backgroundColor: index == _currentStep ? Color(0xFF003734) : Colors.grey,
-                child: Text('${index + 1}', style: TextStyle(color: Colors.white)),
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          // First step circle
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _currentStep >= 0 ? Color(0xFF003734) : Colors.grey,
+            ),
+            child: Center(
+              child: Text(
+                '1',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
-              SizedBox(height: 4),
-              Text(['Enter Details', 'Choose Vehicle', 'Contact Info', 'Summary'][index],
-                  style: TextStyle(color: Color(0xFF003734))),
-            ],
-          );
-        }),
+            ),
+          ),
+          SizedBox(width: 10),
+          // Line between steps 1 and 2
+          Container(
+            width: 20,
+            height: 2,
+            color: _currentStep > 0 ? Color(0xFF003734) : Colors.grey,
+          ),
+          SizedBox(width: 10),
+          // Second step circle
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _currentStep >= 1 ? Color(0xFF003734) : Colors.grey,
+            ),
+            child: Center(
+              child: Text(
+                '2',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          SizedBox(width: 10),
+          // Line between steps 2 and 3
+          Container(
+            width: 20,
+            height: 2,
+            color: _currentStep > 1 ? Color(0xFF003734) : Colors.grey,
+          ),
+          SizedBox(width: 10),
+          // Third step circle
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _currentStep >= 2 ? Color(0xFF003734) : Colors.grey,
+            ),
+            child: Center(
+              child: Text(
+                '3',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          SizedBox(width: 10),
+          // Line between steps 3 and 4
+          Container(
+            width: 20,
+            height: 2,
+            color: _currentStep > 2 ? Color(0xFF003734) : Colors.grey,
+          ),
+          SizedBox(width: 10),
+          // Fourth step circle
+          Container(
+            width: 40,
+            height: 40,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              color: _currentStep >= 3 ? Color(0xFF003734) : Colors.grey,
+            ),
+            child: Center(
+              child: Text(
+                '4',
+                style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -164,7 +220,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
       children: [
         _buildDatePicker('Pickup Date', _pickupDateController),
         _buildTimePicker('Pickup Time', _pickupTimeController),
-        _buildPickupLocationField(),
+        _buildTextField('Pickup Location', _pickupLocationController),
         _buildTextField('Drop-Off Location', _dropOffLocationController),
         _buildDropdown('Transfer Type', ['One Way', 'Round Trip'], (value) {
           setState(() {
@@ -172,32 +228,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
           });
         }, _transferType),
       ],
-    );
-  }
-
-  Widget _buildPickupLocationField() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: GestureDetector(
-        onTap: () => _selectPickupLocation(context),
-        child: AbsorbPointer(
-          child: TextFormField(
-            controller: _pickupLocationController,
-            decoration: InputDecoration(
-              labelText: 'Pickup Location (Tap to select on map)',
-              border: OutlineInputBorder(),
-              labelStyle: TextStyle(color: Color(0xFF003734)),
-              suffixIcon: Icon(Icons.location_on, color: Color(0xFF003734)),
-            ),
-            validator: (value) {
-              if (value == null || value.isEmpty) {
-                return 'Please select Pickup Location';
-              }
-              return null;
-            },
-          ),
-        ),
-      ),
     );
   }
 
@@ -367,53 +397,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
           Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF003734))),
           Text(value, style: TextStyle(color: Colors.grey[700])),
         ],
-      ),
-    );
-  }
-}
-
-class PickupLocationMap extends StatefulWidget {
-  @override
-  _PickupLocationMapState createState() => _PickupLocationMapState();
-}
-
-class _PickupLocationMapState extends State<PickupLocationMap> {
-  GoogleMapController? _mapController;
-  LatLng _selectedLocation = LatLng(7.8731, 80.7718); // Center of Sri Lanka
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Select Pickup Location'),
-        backgroundColor: Color(0xFF003734),
-      ),
-      body: GoogleMap(
-        initialCameraPosition: CameraPosition(
-          target: _selectedLocation,
-          zoom: 7.5,
-        ),
-        onMapCreated: (controller) => _mapController = controller,
-        markers: {
-          Marker(
-            markerId: MarkerId('selectedLocation'),
-            position: _selectedLocation,
-            draggable: true,
-            onDragEnd: (newPosition) {
-              setState(() => _selectedLocation = newPosition);
-            },
-          ),
-        },
-        onTap: (position) {
-          setState(() => _selectedLocation = position);
-        },
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.pop(context, _selectedLocation);
-        },
-        child: Icon(Icons.check, color: Colors.white),
-        backgroundColor: Color(0xFF003734),
       ),
     );
   }
