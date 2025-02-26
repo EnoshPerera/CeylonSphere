@@ -28,10 +28,21 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+
+	<!-- 📌 Camera Permission (if needed) -->
 	<key>NSCameraUsageDescription</key>
-    <string>We need access to your camera for AR functionality.</string>
+	<string>We need access to your camera for AR functionality.</string>
+
+	<!-- 📌 Location Permissions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show the map</string>
+
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to provide better features</string>
+
+	<!-- Other Settings -->
 	<key>UIRequiresFullScreen</key>
-    <true/>
+	<true/>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>

@@ -4,6 +4,7 @@ import '/profile_screen.dart';
 import '/destinations_screen.dart';
 import '/explore_activities_screen.dart';
 import '/destination_profile.dart';
+import 'google_map_screen.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -95,13 +96,24 @@ class HomeScreen extends StatelessWidget {
                 child: ListView(
                   scrollDirection: Axis.horizontal,
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                  children: const [
-                    CategoryItem(icon: CupertinoIcons.map, label: 'Places'),
+                  children: [
                     CategoryItem(
+                      icon: CupertinoIcons.map,
+                      label: 'Places',
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => GoogleMapScreen(),
+                          ),
+                        );
+                      },
+                    ),
+                    const CategoryItem(
                         icon: CupertinoIcons.news, label: 'Restaurant'),
-                    CategoryItem(
+                    const CategoryItem(
                         icon: CupertinoIcons.bag, label: 'Souvenir Shops'),
-                    CategoryItem(
+                    const CategoryItem(
                         icon: CupertinoIcons.cart, label: 'Supermarket'),
                   ],
                 ),
@@ -290,10 +302,12 @@ class PromoBanner extends StatelessWidget {
 class CategoryItem extends StatelessWidget {
   final IconData icon;
   final String label;
+  final VoidCallback? onTap; // Accepts onTap function
 
   const CategoryItem({
     required this.icon,
     required this.label,
+    this.onTap, // Assign onTap here
     super.key,
   });
 
