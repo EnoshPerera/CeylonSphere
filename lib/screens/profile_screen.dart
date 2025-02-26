@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'edit_profile_screen.dart'; // Keep this import for navigation to the EditProfileScreen
-
+import 'privacy_policy_screen.dart'; //import the new privacy policy screen
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -109,7 +109,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
           }),
           buildProfileOption("Payment Methods", Icons.payment),
           buildProfileOption("Currency", Icons.attach_money),
-
+          buildProfileOption("Privacy Policy", Icons.privacy_tip, onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+            );
+          }),
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
