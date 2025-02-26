@@ -302,25 +302,29 @@ class PromoBanner extends StatelessWidget {
 class CategoryItem extends StatelessWidget {
   final IconData icon;
   final String label;
-  final VoidCallback? onTap; // Accepts onTap function
+  final VoidCallback? onTap;
 
   const CategoryItem({
     required this.icon,
     required this.label,
-    this.onTap, // Assign onTap here
+    this.onTap,
     super.key,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 12.0),
-      child: Column(
-        children: [
-          Icon(icon, size: 40, color: Colors.green),
-          const SizedBox(height: 5),
-          Text(label, style: const TextStyle(color: Colors.grey)),
-        ],
+    return GestureDetector(
+      // Wrap with GestureDetector to detect taps
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+        child: Column(
+          children: [
+            Icon(icon, size: 40, color: Colors.green),
+            const SizedBox(height: 5),
+            Text(label, style: const TextStyle(color: Colors.grey)),
+          ],
+        ),
       ),
     );
   }
