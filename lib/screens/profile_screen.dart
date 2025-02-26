@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'edit_profile_screen.dart'; // Keep this import for navigation to the EditProfileScreen
 import 'privacy_policy_screen.dart'; //import the new privacy policy screen
+import 'terms_and_conditions_screen.dart'; //import the new TermsAndConditionsScreen
+
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
@@ -113,6 +115,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Navigator.push(
               context,
               MaterialPageRoute(builder: (context) => const PrivacyPolicyScreen()),
+            );
+          }),
+          buildProfileOption("Terms and Conditions", Icons.description, onTap: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const TermsAndConditionsScreen()),
             );
           }),
           Padding(
