@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:google_maps_webservice/places.dart';
 
 void main() {
   runApp(TravelBookingApp());
@@ -40,6 +41,10 @@ class _BookingHomePageState extends State<BookingHomePage> {
 
   String _transferType = 'One Way';
   String _vehicleType = 'Sedan';
+
+  List<TextEditingController> _additionalStopsControllers = [];
+  List<String> _placePredictions = [];
+  final _places = GoogleMapsPlaces(apiKey: 'AIzaSyCwK3j_QlSn_wMDp4CAHN7A2Vhm-BbLei4');
 
   void _nextStep() {
     if (_formKey.currentState!.validate()) {
@@ -87,6 +92,36 @@ class _BookingHomePageState extends State<BookingHomePage> {
       });
   }
 
+  void _addStop() {
+    setState(() {
+      _additionalStopsControllers.add(TextEditingController());
+    });
+  }
+
+  void _removeStop(int index) {
+    setState(() {
+      _additionalStopsControllers.removeAt(index);
+    });
+  }
+
+  Future<void> _getPlacePredictions(String input) async {
+    if (input.isEmpty) {
+      setState(() {
+        _placePredictions = [];
+      });
+      return;
+    }
+
+    try {
+      final predictions = await _places.autocomplete(input, region: 'lk');
+      setState(() {
+        _placePredictions = predictions.predictions.map((p) => p.description ?? '').toList();
+      });
+    } catch (e) {
+      print('Error fetching place predictions: $e');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -125,7 +160,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
       child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          // First step circle
           Container(
             width: 40,
             height: 40,
@@ -141,14 +175,12 @@ class _BookingHomePageState extends State<BookingHomePage> {
             ),
           ),
           SizedBox(width: 10),
-          // Line between steps 1 and 2
           Container(
             width: 20,
             height: 2,
             color: _currentStep > 0 ? Color(0xFF003734) : Colors.grey,
           ),
           SizedBox(width: 10),
-          // Second step circle
           Container(
             width: 40,
             height: 40,
@@ -164,14 +196,12 @@ class _BookingHomePageState extends State<BookingHomePage> {
             ),
           ),
           SizedBox(width: 10),
-          // Line between steps 2 and 3
           Container(
             width: 20,
             height: 2,
             color: _currentStep > 1 ? Color(0xFF003734) : Colors.grey,
           ),
           SizedBox(width: 10),
-          // Third step circle
           Container(
             width: 40,
             height: 40,
@@ -187,14 +217,12 @@ class _BookingHomePageState extends State<BookingHomePage> {
             ),
           ),
           SizedBox(width: 10),
-          // Line between steps 3 and 4
           Container(
             width: 20,
             height: 2,
             color: _currentStep > 2 ? Color(0xFF003734) : Colors.grey,
           ),
           SizedBox(width: 10),
-          // Fourth step circle
           Container(
             width: 40,
             height: 40,
@@ -220,14 +248,103 @@ class _BookingHomePageState extends State<BookingHomePage> {
       children: [
         _buildDatePicker('Pickup Date', _pickupDateController),
         _buildTimePicker('Pickup Time', _pickupTimeController),
-        _buildTextField('Pickup Location', _pickupLocationController),
-        _buildTextField('Drop-Off Location', _dropOffLocationController),
+        _buildLocationField('Pickup Location', _pickupLocationController),
+
+        Center(
+          child: InkWell(
+            onTap: _addStop,
+            child: Text(
+              '+ Add Stop',
+              style: TextStyle(
+                fontSize: 16,
+                color: Color(0xFF003734),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ),
+
+        ..._additionalStopsControllers.asMap().entries.map((entry) {
+          int index = entry.key;
+          TextEditingController controller = entry.value;
+          return _buildStopInputField(controller, index);
+        }).toList(),
+
+        _buildLocationField('Drop-Off Location', _dropOffLocationController),
         _buildDropdown('Transfer Type', ['One Way', 'Round Trip'], (value) {
           setState(() {
             _transferType = value!;
           });
         }, _transferType),
       ],
+    );
+  }
+
+  Widget _buildLocationField(String label, TextEditingController controller) {
+    return Column(
+      children: [
+        _buildTextField(label, controller, onChanged: _getPlacePredictions),
+        ..._placePredictions.map((prediction) => ListTile(
+          title: Text(prediction),
+          onTap: () {
+            setState(() {
+              controller.text = prediction;
+              _placePredictions = [];
+            });
+          },
+        )).toList(),
+      ],
+    );
+  }
+
+  Widget _buildTextField(String label, TextEditingController controller, {Function(String)? onChanged}) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: TextFormField(
+        controller: controller,
+        decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(),
+          labelStyle: TextStyle(color: Color(0xFF003734)),
+        ),
+        onChanged: onChanged,
+        validator: (value) {
+          if (value == null || value.isEmpty) {
+            return 'Please enter $label';
+          }
+          return null;
+        },
+      ),
+    );
+  }
+
+  Widget _buildStopInputField(TextEditingController controller, int index) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      child: Row(
+        children: [
+          Expanded(
+            child: TextFormField(
+              controller: controller,
+              decoration: InputDecoration(
+                labelText: 'Stop Location',
+                border: OutlineInputBorder(),
+                labelStyle: TextStyle(color: Color(0xFF003734)),
+              ),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return 'Please enter a stop location';
+                }
+                return null;
+              },
+            ),
+          ),
+          IconButton(
+            icon: Icon(Icons.delete, color: Color(0xFF003734)),
+            onPressed: () => _removeStop(index),
+          ),
+        ],
+      ),
     );
   }
 
@@ -303,26 +420,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
     );
   }
 
-  Widget _buildTextField(String label, TextEditingController controller) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(),
-          labelStyle: TextStyle(color: Color(0xFF003734)),
-        ),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please enter $label';
-          }
-          return null;
-        },
-      ),
-    );
-  }
-
   Widget _buildDropdown(String label, List<String> items, Function(String?) onChanged, String value) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
@@ -335,12 +432,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
         ),
         items: items.map((item) => DropdownMenuItem(value: item, child: Text(item))).toList(),
         onChanged: onChanged,
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please select $label';
-          }
-          return null;
-        },
       ),
     );
   }
@@ -348,21 +439,24 @@ class _BookingHomePageState extends State<BookingHomePage> {
   Widget _buildDatePicker(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(),
-          labelStyle: TextStyle(color: Color(0xFF003734)),
-          suffixIcon: Icon(Icons.calendar_today, color: Color(0xFF003734)),
-        ),
+      child: InkWell(
         onTap: () => _selectDate(context),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please select $label';
-          }
-          return null;
-        },
+        child: IgnorePointer(
+          child: TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: Color(0xFF003734)),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select $label';
+              }
+              return null;
+            },
+          ),
+        ),
       ),
     );
   }
@@ -370,32 +464,36 @@ class _BookingHomePageState extends State<BookingHomePage> {
   Widget _buildTimePicker(String label, TextEditingController controller) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
-      child: TextFormField(
-        controller: controller,
-        decoration: InputDecoration(
-          labelText: label,
-          border: OutlineInputBorder(),
-          labelStyle: TextStyle(color: Color(0xFF003734)),
-          suffixIcon: Icon(Icons.access_time, color: Color(0xFF003734)),
-        ),
+      child: InkWell(
         onTap: () => _selectTime(context),
-        validator: (value) {
-          if (value == null || value.isEmpty) {
-            return 'Please select $label';
-          }
-          return null;
-        },
+        child: IgnorePointer(
+          child: TextFormField(
+            controller: controller,
+            decoration: InputDecoration(
+              labelText: label,
+              border: OutlineInputBorder(),
+              labelStyle: TextStyle(color: Color(0xFF003734)),
+            ),
+            validator: (value) {
+              if (value == null || value.isEmpty) {
+                return 'Please select $label';
+              }
+              return null;
+            },
+          ),
+        ),
       ),
     );
   }
 
   Widget _buildSummaryItem(String label, String value) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8.0),
+      padding: const EdgeInsets.symmetric(vertical: 5.0),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text('$label: ', style: TextStyle(fontWeight: FontWeight.bold, color: Color(0xFF003734))),
-          Text(value, style: TextStyle(color: Colors.grey[700])),
+          Text(label, style: TextStyle(fontWeight: FontWeight.bold)),
+          Text(value),
         ],
       ),
     );
