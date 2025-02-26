@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:location/location.dart';
@@ -12,9 +14,12 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   Location _locationController = new Location();
 
+  final Completer<GoogleMapController> _mapController = Completer<GoogleMapController>(); 
+
   static const LatLng _pGooglePlex = LatLng(6.9271, 79.8612);
   static const LatLng _pAnuradhapura = LatLng(8.3114, 80.4037);
   LatLng? _currentP = null;
+  
 
   @override
   void initState() {
@@ -25,7 +30,9 @@ class _MapPageState extends State<MapPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: GoogleMap(
+      body: _currentP == null ? const Center(child: Text("Loading..."),): 
+      GoogleMap(
+        onMapCreated: ((GoogleMapController controller) => _mapController.complete(controller)),
         initialCameraPosition: CameraPosition(
           target: _pGooglePlex, 
           zoom: 8, 
@@ -34,13 +41,28 @@ class _MapPageState extends State<MapPage> {
           Marker(
             markerId: MarkerId("_currentLocation"), 
             icon: BitmapDescriptor.defaultMarker, 
-            position: _pGooglePlex),
+            position: _currentP!),
           Marker(
             markerId: MarkerId("_sourceLocation"), 
+            icon: BitmapDescriptor.defaultMarker, 
+            position: _pGooglePlex),
+          Marker(
+            markerId: MarkerId("_destinationLocation"), 
             icon: BitmapDescriptor.defaultMarker, 
             position: _pAnuradhapura)
         },
       ),
+    );
+  }
+
+  Future<void> _cameraToPosition(LatLng pos) async {
+    final GoogleMapController controller = await _mapController.future;
+    CameraPosition _newCameraPosition = CameraPosition(
+      target: pos, 
+      zoom: 13
+    );
+    await controller.animateCamera(
+      CameraUpdate.newCameraPosition(_newCameraPosition),
     );
   }
 
