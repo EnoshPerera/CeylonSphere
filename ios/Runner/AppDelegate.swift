@@ -16,7 +16,7 @@ import GoogleMaps
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
-
+//  api key -   AIzaSyAvS00_oarJDXlu9m0HajBH7qxGZA6RLy8
   // Function to present AR Quick Look
   func presentARQuickLook(filePath: String, from viewController: UIViewController) {
     let url = URL(fileURLWithPath: filePath)

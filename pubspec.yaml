@@ -34,10 +34,12 @@ dependencies:
   google_maps_flutter: ^2.5.0  # Check latest version
   geolocator: ^10.1.0  # Check latest version
   geocoding: ^2.1.0  # Optional, for address lookup
+  url_launcher: 
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
+  http: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -68,6 +70,11 @@ flutter:
   - assets/Yala.jpg
   - assets/vr_tourism.png
   - assets/Logo-04.png
+  - assets/watersports.jpg
+  - assets/wildLife.jpg
+  - assets/Hiking.jpg
+  - assets/cultural.jpg
+  - assets/nightLife.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

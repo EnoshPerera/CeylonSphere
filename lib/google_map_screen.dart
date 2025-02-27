@@ -1,8 +1,9 @@
+import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
-import 'package:geocoding/geocoding.dart';
+import 'package:http/http.dart' as http;
 
 class GoogleMapScreen extends StatefulWidget {
   const GoogleMapScreen({super.key});
@@ -14,17 +15,14 @@ class GoogleMapScreen extends StatefulWidget {
 class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController mapController;
   final LatLng _initialPosition =
-      const LatLng(6.9271, 79.8612); // Default: Colombo
-  TextEditingController _searchController = TextEditingController();
-
-  @override
-  void initState() {
-    super.initState();
-    _getUserLocation();
-  }
+      const LatLng(6.9271, 79.8612); // Default to Colombo, Sri Lanka
+  Set<Marker> _markers = {};
+  String apiKey =
+      "AIzaSyAvS00_oarJDXlu9m0HajBH7qxGZA6RLy8"; // Replace with your API key
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
+    _getUserLocation();
   }
 
   Future<void> _getUserLocation() async {
@@ -40,34 +38,53 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
         desiredAccuracy: LocationAccuracy.high);
 
     LatLng userLocation = LatLng(position.latitude, position.longitude);
-    mapController.animateCamera(CameraUpdate.newLatLngZoom(userLocation, 14));
+
+    mapController.animateCamera(
+      CameraUpdate.newLatLngZoom(userLocation, 14),
+    );
+
+    _fetchNearbyRestaurants(userLocation);
   }
 
-  Future<void> _searchLocation(String query) async {
-    try {
-      List<Location> locations = await locationFromAddress(query);
-      if (locations.isNotEmpty) {
-        Location location = locations.first;
-        LatLng newPosition = LatLng(location.latitude, location.longitude);
+  Future<void> _fetchNearbyRestaurants(LatLng location) async {
+    final url =
+        Uri.parse("https://maps.googleapis.com/maps/api/place/nearbysearch/json"
+            "?location=${location.latitude},${location.longitude}"
+            "&radius=10000" // 10km radius
+            "&type=restaurant"
+            "&key=$apiKey");
 
-        mapController
-            .animateCamera(CameraUpdate.newLatLngZoom(newPosition, 14));
+    final response = await http.get(url);
+    print("API Response: ${response.body}"); // Debugging line
+
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      if (data["status"] != "OK") {
+        print("Google Places API Error: ${data["status"]}");
+        return;
       }
-    } catch (e) {
-      print("Error: $e");
-      showDialog(
-        context: context,
-        builder: (context) => CupertinoAlertDialog(
-          title: Text("Location Not Found"),
-          content: Text("Please enter a valid location."),
-          actions: [
-            CupertinoDialogAction(
-              child: Text("OK"),
-              onPressed: () => Navigator.pop(context),
+
+      List results = data["results"];
+      setState(() {
+        _markers.clear();
+        for (var place in results) {
+          final marker = Marker(
+            markerId: MarkerId(place["place_id"]),
+            position: LatLng(
+              place["geometry"]["location"]["lat"],
+              place["geometry"]["location"]["lng"],
             ),
-          ],
-        ),
-      );
+            infoWindow: InfoWindow(
+              title: place["name"],
+              snippet: place["vicinity"],
+            ),
+          );
+          _markers.add(marker);
+        }
+      });
+      print("Markers Added: ${_markers.length}");
+    } else {
+      print("API Request Failed with Status Code: ${response.statusCode}");
     }
   }
 
@@ -87,16 +104,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             ),
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
-          ),
-          Positioned(
-            top: 60,
-            left: 20,
-            right: 20,
-            child: CupertinoSearchTextField(
-              controller: _searchController,
-              placeholder: "Search for a location...",
-              onSubmitted: (value) => _searchLocation(value),
-            ),
+            markers: _markers,
           ),
         ],
       ),

@@ -1,0 +1,97 @@
+final List<Map<String, dynamic>> activityTypes = [
+  {
+    'name': 'Beach Relaxation & Water Sports',
+    'image': 'assets/watersports.jpg',
+    'details': {
+      'places': [
+        'Unawatuna',
+        'Mirissa',
+        'Bentota',
+        'Arugam Bay',
+        'Nilaveli',
+        'Pasikuda',
+        'Kalpitiya',
+        'Hikkaduwa',
+        'Tangalle'
+      ],
+      'activities': [
+        'Sunbathing and swimming',
+        'Snorkeling and scuba diving ',
+        'Whale and dolphin watching ',
+        'Jet skiing, kayaking, and windsurfing',
+      ],
+    }
+  },
+  {
+    'name': 'Wildlife Safaris',
+    'image': 'assets/wildLife.jpg',
+    'details': {
+      'places': [
+        'Yala National Park',
+        'Udawalawe National Park',
+        'Wilpattu National Park',
+        'Minneriya National Park',
+        'Sinharaja Forest Reserve',
+        'Kumana National Park'
+      ],
+      'activities': [
+        'Spotting leopards, elephants, and sloth bears ',
+        'Birdwatching ',
+        'Elephant sightings ',
+        'Jungle trekking and nature walks ',
+      ],
+    }
+  },
+  {
+    'name': 'Cultural & Historical Exploration',
+    'image': 'assets/cultural.jpg',
+    'details': {
+      'places': [
+        'Anuradhapura',
+        'Polonnaruwa',
+        'Sigiriya',
+        'Kandy',
+        'Galle',
+        'Dambulla',
+        'Colombo'
+      ],
+      'activities': [
+        'Visiting ancient temples and stupas',
+        'Exploring the Sigiriya Rock Fortress',
+        'Touring the Temple of the Tooth Relic ',
+        'Walking through the Galle Fort',
+        'Discovering cave temples',
+      ],
+    }
+  },
+  {
+    'name': 'Hiking & Trekking',
+    'image': 'assets/Hiking.jpg',
+    'details': {
+      'places': [
+        'Adam’s Peak (Sri Pada)',
+        'Knuckles Mountain Range',
+        'Horton Plains National Park',
+        'Ella',
+        'Sinharaja Rainforest'
+      ],
+      'activities': [
+        'Climbing Adam’s Peak for sunrise',
+        'Hiking to World’s End in Horton Plains',
+        'Trekking through tea plantations ',
+        'Exploring the Knuckles Mountain Range',
+      ],
+    }
+  },
+  {
+    'name': 'Nightlife & Entertainment',
+    'image': 'assets/nightLife.jpg',
+    'details': {
+      'places': ['Colombo', 'Mirissa', 'Unawatuna', 'Hikkaduwa'],
+      'activities': [
+        'Enjoying beach parties and nightclubs',
+        'Experiencing live music and cultural shows',
+      ],
+    }
+  },
+];
