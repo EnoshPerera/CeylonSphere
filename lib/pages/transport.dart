@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' as polyline;
-import 'place_selection_page.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
-void main() => runApp(TravelBookingApp());
+void main() {
+  runApp(TravelBookingApp());
+}
 
 class TravelBookingApp extends StatelessWidget {
   @override
@@ -24,115 +27,207 @@ class BookingHomePage extends StatefulWidget {
 
 class _BookingHomePageState extends State<BookingHomePage> {
   final _places = GoogleMapsPlaces(apiKey: 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA');
-  final _pickupController = TextEditingController();
-  final _dropOffController = TextEditingController();
-  List<TextEditingController> _stopControllers = [];
+  final String _apiKey = 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA';
   GoogleMapController? _mapController;
-  String _tripType = 'One way';
   Set<Marker> _markers = {};
   List<LatLng> _selectedLocations = [];
   polyline.PolylinePoints polylinePoints = polyline.PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
 
-  @override
-  void dispose() {
-    _pickupController.dispose();
-    _dropOffController.dispose();
-    _stopControllers.forEach((c) => c.dispose());
-    super.dispose();
-  }
+  String? pickupLocation;
+  List<StopLocation> stopLocations = [];
+  String? dropoffLocation;
 
-  Future<void> _updateMapWithSelectedPlace(String placeId, String placeName, int index) async {
+  // Add variables for trip details
+  String? tripDistance;
+  String? tripDuration;
+  bool isCalculatingRoute = false;
+
+  bool _isLocationSelectionOpen = false;
+
+  Future<void> _updateMapWithSelectedPlace(String placeId, String placeName, String type, [int? stopIndex]) async {
     final details = await _places.getDetailsByPlaceId(placeId);
     if (details.result != null) {
       final location = details.result!.geometry!.location;
       final latLng = LatLng(location.lat, location.lng);
       setState(() {
-        if (_selectedLocations.length > index) {
-          _selectedLocations[index] = latLng;
-        } else {
-          _selectedLocations.add(latLng);
-        }
-        _markers.add(
-          Marker(
-            markerId: MarkerId('location$index'),
+        if (type == 'pickup') {
+          pickupLocation = placeName;
+          // If first location, add it
+          if (_selectedLocations.isEmpty) {
+            _selectedLocations.add(latLng);
+          } else {
+            // Replace the first location
+            _selectedLocations[0] = latLng;
+          }
+          _markers.removeWhere((marker) => marker.markerId.value == 'pickup');
+          _markers.add(Marker(
+            markerId: MarkerId('pickup'),
             position: latLng,
-            infoWindow: InfoWindow(title: placeName),
-          ),
-        );
+            infoWindow: InfoWindow(title: 'Pickup: $placeName'),
+          ));
+        } else if (type == 'stop') {
+          if (stopIndex != null && stopIndex < stopLocations.length) {
+            stopLocations[stopIndex].name = placeName;
+            // Replace at calculated position (pickup + stopIndex)
+            int mapIndex = 1 + stopIndex;
+            if (_selectedLocations.length > mapIndex) {
+              _selectedLocations[mapIndex] = latLng;
+            } else {
+              _selectedLocations.add(latLng);
+            }
+            _markers.removeWhere((marker) => marker.markerId.value == 'stop_$stopIndex');
+            _markers.add(Marker(
+              markerId: MarkerId('stop_$stopIndex'),
+              position: latLng,
+              infoWindow: InfoWindow(title: 'Stop: $placeName'),
+            ));
+          }
+        } else if (type == 'dropoff') {
+          dropoffLocation = placeName;
+          // Add as last location or replace if exists
+          if (_selectedLocations.length > stopLocations.length + 1) {
+            _selectedLocations[stopLocations.length + 1] = latLng;
+          } else {
+            _selectedLocations.add(latLng);
+          }
+          _markers.removeWhere((marker) => marker.markerId.value == 'dropoff');
+          _markers.add(Marker(
+            markerId: MarkerId('dropoff'),
+            position: latLng,
+            infoWindow: InfoWindow(title: 'Dropoff: $placeName'),
+          ));
+        }
       });
-      _mapController?.animateCamera(
-        CameraUpdate.newLatLng(latLng),
-      );
-      if (_selectedLocations.length >= 2) {
-        _getDirections();
+      _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+
+      // Generate route if both pickup and dropoff are selected
+      if (pickupLocation != null && dropoffLocation != null) {
+        _generateRoute();
       }
     }
   }
 
-  Future<void> _getDirections() async {
-    if (_selectedLocations.length < 2) return; // Ensure there are at least two points
-
-    List<LatLng> polylineCoordinates = [];
-
-    // Convert intermediate stops into PolylineWayPoint objects
-    List<polyline.PolylineWayPoint> waypoints = _selectedLocations
-        .sublist(1, _selectedLocations.length - 1) // Exclude first (pickup) and last (drop-off)
-        .map((latLng) => polyline.PolylineWayPoint(
-      location: "${latLng.latitude},${latLng.longitude}",
-    ))
-        .toList();
-
-    polyline.PolylineResult result = await polylinePoints.getRouteBetweenCoordinates(
-      'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA', // Replace with your Google Maps API key
-      polyline.PointLatLng(_selectedLocations.first.latitude, _selectedLocations.first.longitude), // Pickup
-      polyline.PointLatLng(_selectedLocations.last.latitude, _selectedLocations.last.longitude), // Drop-off
-      travelMode: polyline.TravelMode.driving,
-      wayPoints: waypoints, // Pass converted waypoints
-    );
-
-    if (result.points.isNotEmpty) {
-      result.points.forEach((polyline.PointLatLng point) {
-        polylineCoordinates.add(LatLng(point.latitude, point.longitude));
-      });
-    }
+  void _generateRoute() async {
+    if (_selectedLocations.length < 2) return;
 
     setState(() {
-      polylines[PolylineId('route')] = Polyline(
-        polylineId: PolylineId('route'),
+      polylines.clear();
+      isCalculatingRoute = true;
+      // Reset trip details when recalculating
+      tripDistance = null;
+      tripDuration = null;
+    });
+
+    List<LatLng> routeCoords = [];
+    int totalDistanceMeters = 0;
+    int totalDurationSeconds = 0;
+
+    for (int i = 0; i < _selectedLocations.length - 1; i++) {
+      // Get route between points
+      var result = await polylinePoints.getRouteBetweenCoordinates(
+        _apiKey,
+        polyline.PointLatLng(_selectedLocations[i].latitude, _selectedLocations[i].longitude),
+        polyline.PointLatLng(_selectedLocations[i + 1].latitude, _selectedLocations[i + 1].longitude),
+      );
+
+      if (result.points.isNotEmpty) {
+        routeCoords.addAll(result.points.map((e) => LatLng(e.latitude, e.longitude)));
+      }
+
+      // Get distance and duration for this segment using direct API call
+      try {
+        final response = await http.get(Uri.parse(
+            'https://maps.googleapis.com/maps/api/directions/json?'
+                'origin=${_selectedLocations[i].latitude},${_selectedLocations[i].longitude}'
+                '&destination=${_selectedLocations[i + 1].latitude},${_selectedLocations[i + 1].longitude}'
+                '&key=$_apiKey'
+        ));
+
+        if (response.statusCode == 200) {
+          final data = json.decode(response.body);
+          if (data['status'] == 'OK' && data['routes'].isNotEmpty) {
+            final route = data['routes'][0];
+            final leg = route['legs'][0];
+
+            totalDistanceMeters += leg['distance']['value'] as int;
+            totalDurationSeconds += leg['duration']['value'] as int;
+          }
+        }
+      } catch (e) {
+        print('Error getting directions: $e');
+      }
+    }
+
+    // Format the distance and duration
+    double distanceKm = totalDistanceMeters / 1000.0;
+    String formattedDistance = '${distanceKm.toStringAsFixed(1)} km';
+    String formattedDuration = _formatDuration(totalDurationSeconds);
+
+    setState(() {
+      polylines[PolylineId("route")] = Polyline(
+        polylineId: PolylineId("route"),
+        points: routeCoords,
         color: Colors.blue,
-        points: polylineCoordinates,
         width: 5,
       );
+
+      tripDistance = formattedDistance;
+      tripDuration = formattedDuration;
+      isCalculatingRoute = false;
     });
   }
 
+  String _formatDuration(int seconds) {
+    if (seconds < 60) {
+      return '$seconds sec';
+    } else if (seconds < 3600) {
+      return '${(seconds / 60).floor()} min';
+    } else {
+      int hours = (seconds / 3600).floor();
+      int minutes = ((seconds % 3600) / 60).floor();
+      return '$hours hr ${minutes > 0 ? '$minutes min' : ''}';
+    }
+  }
 
-  Widget _buildLocationField(String label, TextEditingController controller, int index) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        TextFormField(
-          controller: controller,
-          decoration: InputDecoration(
-            labelText: label,
-            border: OutlineInputBorder(),
-            filled: true,
-            fillColor: Colors.white,
-          ),
-          onTap: () async {
-            final result = await Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => PlaceSelectionPage(places: _places)),
-            );
-            if (result != null) {
-              controller.text = result['name'];
-              _updateMapWithSelectedPlace(result['placeId'], result['name'], index);
-            }
-          },
-        ),
-      ],
-    );
+  void _addStopLocation() {
+    setState(() {
+      stopLocations.add(StopLocation());
+    });
+  }
+
+  void _removeStopLocation(int index) {
+    setState(() {
+      stopLocations.removeAt(index);
+      // Remove from selected locations and markers
+      if (_selectedLocations.length > index + 1) {
+        _selectedLocations.removeAt(index + 1);
+      }
+      _markers.removeWhere((marker) => marker.markerId.value == 'stop_$index');
+
+      // Renumber remaining stop markers
+      for (int i = index; i < stopLocations.length; i++) {
+        _markers.removeWhere((marker) => marker.markerId.value == 'stop_${i+1}');
+        if (i + 1 < _selectedLocations.length - 1) {
+          _markers.add(Marker(
+            markerId: MarkerId('stop_$i'),
+            position: _selectedLocations[i + 1],
+            infoWindow: InfoWindow(title: 'Stop: ${stopLocations[i].name}'),
+          ));
+        }
+      }
+
+      // Regenerate route
+      if (pickupLocation != null && dropoffLocation != null) {
+        _generateRoute();
+      }
+    });
+  }
+
+  void _toggleLocationSelection() {
+    setState(() {
+      _isLocationSelectionOpen = !_isLocationSelectionOpen;
+    });
   }
 
   @override
@@ -146,44 +241,302 @@ class _BookingHomePageState extends State<BookingHomePage> {
             markers: _markers,
             polylines: Set<Polyline>.of(polylines.values),
           ),
-          Positioned(
-            bottom: 20,
-            left: 15,
-            right: 15,
-            child: Container(
-              padding: EdgeInsets.all(15),
-              decoration: BoxDecoration(
-                color: Colors.white,
-                borderRadius: BorderRadius.circular(20),
-                boxShadow: [BoxShadow(color: Colors.black26, blurRadius: 10)],
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _buildLocationField('Pickup Location', _pickupController, 0),
-                  ..._stopControllers.asMap().entries.map((entry) => Row(
-                    children: [
-                      Expanded(child: _buildLocationField('Stop ${entry.key + 1}', entry.value, entry.key + 1)),
-                      IconButton(
-                        icon: Icon(Icons.remove_circle, color: Colors.red),
-                        onPressed: () => setState(() => _stopControllers.removeAt(entry.key)),
-                      ),
-                    ],
-                  )),
-                  GestureDetector(
-                    onTap: () => setState(() => _stopControllers.add(TextEditingController())),
-                    child: Padding(
-                      padding: EdgeInsets.symmetric(vertical: 8.0),
-                      child: Text('+ Add Stop', style: TextStyle(color: Colors.teal, fontWeight: FontWeight.bold)),
-                    ),
-                  ),
-                  _buildLocationField('Drop-off Location', _dropOffController, _stopControllers.length + 1),
-                ],
+          if (!_isLocationSelectionOpen)
+            Positioned(
+              bottom: 20,
+              left: 15,
+              right: 15,
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.teal,
+                  padding: EdgeInsets.symmetric(vertical: 15),
+                ),
+                onPressed: _toggleLocationSelection,
+                child: Text('Book Your Trip', style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ),
-          ),
+          if (_isLocationSelectionOpen)
+            DraggableScrollableSheet(
+              initialChildSize: 0.6,
+              minChildSize: 0.2,
+              maxChildSize: 0.9,
+              builder: (context, scrollController) {
+                return Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.circular(20),
+                      topRight: Radius.circular(20),
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.5),
+                        spreadRadius: 2,
+                        blurRadius: 7,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: SingleChildScrollView(
+                      controller: scrollController,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text('Where do you want to go?',
+                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                              IconButton(
+                                icon: Icon(Icons.close),
+                                onPressed: _toggleLocationSelection,
+                              ),
+                            ],
+                          ),
+                          SizedBox(height: 10),
+                          LocationInputField(
+                            hint: 'Pickup Location',
+                            places: _places,
+                            onPlaceSelected: (placeId, name) => _updateMapWithSelectedPlace(placeId, name, 'pickup'),
+                          ),
+                          SizedBox(height: 10),
+                          // Dynamic stop locations
+                          ...List.generate(stopLocations.length, (index) {
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 10),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: LocationInputField(
+                                      hint: 'Stop Location',
+                                      places: _places,
+                                      initialValue: stopLocations[index].name,
+                                      onPlaceSelected: (placeId, name) =>
+                                          _updateMapWithSelectedPlace(placeId, name, 'stop', index),
+                                    ),
+                                  ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () => _removeStopLocation(index),
+                                  ),
+                                ],
+                              ),
+                            );
+                          }),
+                          // Add stop button
+                          OutlinedButton.icon(
+                            icon: Icon(Icons.add),
+                            label: Text('Add Stop'),
+                            onPressed: _addStopLocation,
+                            style: OutlinedButton.styleFrom(
+                              side: BorderSide(color: Colors.teal),
+                              foregroundColor: Colors.teal,
+                            ),
+                          ),
+                          SizedBox(height: 10),
+                          LocationInputField(
+                            hint: 'Drop-off Location',
+                            places: _places,
+                            onPlaceSelected: (placeId, name) => _updateMapWithSelectedPlace(placeId, name, 'dropoff'),
+                          ),
+                          SizedBox(height: 10),
+
+                          // Trip details section
+                          if (isCalculatingRoute)
+                            Padding(
+                              padding: const EdgeInsets.symmetric(vertical: 10.0),
+                              child: Center(
+                                child: Column(
+                                  children: [
+                                    CircularProgressIndicator(color: Colors.teal),
+                                    SizedBox(height: 8),
+                                    Text('Calculating route...', style: TextStyle(color: Colors.teal)),
+                                  ],
+                                ),
+                              ),
+                            )
+                          else if (tripDistance != null && tripDuration != null)
+                            Container(
+                              padding: EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: Colors.teal.withOpacity(0.1),
+                                borderRadius: BorderRadius.circular(8),
+                                border: Border.all(color: Colors.teal.withOpacity(0.3)),
+                              ),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                children: [
+                                  Column(
+                                    children: [
+                                      Icon(Icons.route, color: Colors.teal),
+                                      SizedBox(height: 4),
+                                      Text(tripDistance!, style: TextStyle(fontWeight: FontWeight.bold)),
+                                      Text('Distance', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                                    ],
+                                  ),
+                                  Column(
+                                    children: [
+                                      Icon(Icons.access_time, color: Colors.teal),
+                                      SizedBox(height: 4),
+                                      Text(tripDuration!, style: TextStyle(fontWeight: FontWeight.bold)),
+                                      Text('Duration', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+
+                          SizedBox(height: 20),
+                          ElevatedButton(
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.teal,
+                              minimumSize: Size(double.infinity, 50),
+                            ),
+                            onPressed: () {
+                              if (pickupLocation != null && dropoffLocation != null) {
+                                _toggleLocationSelection(); // Close the location panel
+                              } else {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text('Please select pickup and dropoff locations'))
+                                );
+                              }
+                            },
+                            child: Text('Confirm Route', style: TextStyle(fontSize: 16)),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              },
+            ),
         ],
       ),
     );
+  }
+}
+
+class StopLocation {
+  String? name;
+  StopLocation({this.name});
+}
+
+class LocationInputField extends StatefulWidget {
+  final String hint;
+  final GoogleMapsPlaces places;
+  final Function(String placeId, String name) onPlaceSelected;
+  final String? initialValue;
+
+  LocationInputField({
+    required this.hint,
+    required this.places,
+    required this.onPlaceSelected,
+    this.initialValue,
+  });
+
+  @override
+  _LocationInputFieldState createState() => _LocationInputFieldState();
+}
+
+class _LocationInputFieldState extends State<LocationInputField> {
+  TextEditingController _controller = TextEditingController();
+  List<PlacesSearchResult> _searchResults = [];
+  bool _showSuggestions = false;
+  bool _isSearching = false;
+
+  @override
+  void initState() {
+    super.initState();
+    if (widget.initialValue != null) {
+      _controller.text = widget.initialValue!;
+    }
+  }
+
+  Future<void> _searchPlaces(String query) async {
+    if (query.length < 2) {
+      setState(() {
+        _searchResults = [];
+        _showSuggestions = false;
+      });
+      return;
+    }
+
+    setState(() {
+      _isSearching = true;
+    });
+
+    final response = await widget.places.searchByText(query);
+
+    setState(() {
+      _searchResults = response.results;
+      _showSuggestions = _searchResults.isNotEmpty;
+      _isSearching = false;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        TextField(
+          controller: _controller,
+          decoration: InputDecoration(
+            labelText: widget.hint,
+            border: OutlineInputBorder(),
+            suffixIcon: _isSearching
+                ? CircularProgressIndicator(strokeWidth: 2)
+                : Icon(Icons.location_on),
+            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          ),
+          onChanged: (value) {
+            _searchPlaces(value);
+          },
+          onTap: () {
+            setState(() {
+              _showSuggestions = _searchResults.isNotEmpty;
+            });
+          },
+        ),
+        if (_showSuggestions)
+          Container(
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey.shade300),
+              borderRadius: BorderRadius.circular(4),
+            ),
+            margin: EdgeInsets.only(top: 4),
+            constraints: BoxConstraints(maxHeight: 200),
+            child: ListView.builder(
+              shrinkWrap: true,
+              itemCount: _searchResults.length,
+              itemBuilder: (context, index) {
+                final place = _searchResults[index];
+                return ListTile(
+                  title: Text(place.name),
+                  subtitle: Text(
+                    place.formattedAddress ?? '',
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                  onTap: () {
+                    _controller.text = place.name;
+                    widget.onPlaceSelected(place.placeId, place.name);
+                    setState(() {
+                      _showSuggestions = false;
+                    });
+                  },
+                );
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
   }
 }

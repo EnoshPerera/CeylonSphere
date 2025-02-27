@@ -23,10 +23,17 @@ class _PlaceSelectionPageState extends State<PlaceSelectionPage> {
     setState(() => _placePredictions = predictions.predictions);
   }
 
+  void _selectPlace(Prediction prediction) {
+    Navigator.pop(context, {
+      'placeId': prediction.placeId,
+      'name': prediction.description,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Select Place')),
+      appBar: AppBar(title: Text('Select Location')),
       body: Column(
         children: [
           Padding(
@@ -46,12 +53,7 @@ class _PlaceSelectionPageState extends State<PlaceSelectionPage> {
               itemBuilder: (context, index) {
                 return ListTile(
                   title: Text(_placePredictions[index].description ?? ''),
-                  onTap: () {
-                    Navigator.pop(context, {
-                      'placeId': _placePredictions[index].placeId,
-                      'name': _placePredictions[index].description,
-                    });
-                  },
+                  onTap: () => _selectPlace(_placePredictions[index]),
                 );
               },
             ),
