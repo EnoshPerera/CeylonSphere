@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'activity_details_screen.dart';
-import 'activities_data.dart';
+import '../models/activities_data.dart';
 
 class ExploreActivitiesScreen extends StatelessWidget {
   const ExploreActivitiesScreen({super.key});

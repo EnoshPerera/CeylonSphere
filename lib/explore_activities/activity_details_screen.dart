@@ -1,7 +1,54 @@
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// 🔹 Place the function here (before ActivityDetailsScreen class)
+IconData getActivityIcon(String activity) {
+  switch (activity.toLowerCase()) {
+    case 'sunbathing and swimming':
+      return CupertinoIcons.sun_max; // ☀️ Sunbathing & Swimming
+    case 'snorkeling and scuba diving':
+      return IconData(0xf06cf,
+          fontFamily: 'MaterialIcons'); // 🌊 Snorkeling & Scuba Diving
+    case 'whale and dolphin watching':
+      return CupertinoIcons.eye; // 🐋 Watching Animals
+    case 'jet skiing, kayaking, and windsurfing':
+      return CupertinoIcons.wind; // 🏄‍♂️ Water Sports
+    case 'spotting leopards, elephants, and sloth bears':
+      return CupertinoIcons.paw; // 🦁 Wildlife Safari
+    case 'birdwatching':
+      return CupertinoIcons.tree; // 🦜 Birdwatching
+    case 'elephant sightings':
+      return CupertinoIcons.paw; // 🐘 Elephant Safari
+    case 'jungle trekking and nature walks':
+      return CupertinoIcons.tree; // 🌳 Jungle Trekking
+    case 'visiting ancient temples and stupas':
+      return CupertinoIcons.book; // 🏛️ Cultural Sites
+    case 'exploring the sigiriya rock fortress':
+      return CupertinoIcons.tree; // ⛰️ Sigiriya
+    case 'touring the temple of the tooth relic':
+      return CupertinoIcons.heart; // 🏯 Temple Tour
+    case 'walking through the galle fort':
+      return CupertinoIcons.map; // 🏰 Galle Fort
+    case 'discovering cave temples':
+      return CupertinoIcons.compass; // 🕍 Cave Exploration
+    case 'climbing adam’s peak for sunrise':
+      return CupertinoIcons.sunrise; // 🌄 Sunrise Hike
+    case 'hiking to world’s end in horton plains':
+      return CupertinoIcons.arrow_up_right; // 🏔️ Mountain Hiking
+    case 'trekking through tea plantations':
+      return CupertinoIcons.tree; // 🍃 Tea Plantation Trek
+    case 'exploring the knuckles mountain range':
+      return CupertinoIcons.hare; // 🏞️ Mountain Adventure
+    case 'enjoying beach parties and nightclubs':
+      return CupertinoIcons.music_note; // 🎵 Nightlife
+    case 'experiencing live music and cultural shows':
+      return CupertinoIcons.mic; // 🎤 Live Music
+    default:
+      return CupertinoIcons.circle; // 🔘 Default Icon
+  }
+}
+
+// 🔹 Below this function, your ActivityDetailsScreen class starts
 class ActivityDetailsScreen extends StatelessWidget {
   final Map<String, dynamic> activity;
 
@@ -48,6 +95,8 @@ class ActivityDetailsScreen extends StatelessWidget {
                     (index) {
                       String activityType =
                           activity['details']['activities'][index];
+                      IconData icon = getActivityIcon(
+                          activityType); // 🔹 Assign icon dynamically
 
                       return Padding(
                         padding: const EdgeInsets.only(bottom: 12.0),
@@ -79,8 +128,15 @@ class ActivityDetailsScreen extends StatelessWidget {
                             padding: const EdgeInsets.all(16),
                             height: 120, // Increased Height
                             child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                // Left Icon
+                                Icon(icon,
+                                    size: 40,
+                                    color: CupertinoColors.systemBlue),
+                                const SizedBox(
+                                    width: 16), // Spacing between icon & text
+
+                                // Activity Type Name
                                 Expanded(
                                   child: Text(
                                     activityType,
@@ -89,6 +145,8 @@ class ActivityDetailsScreen extends StatelessWidget {
                                         fontWeight: FontWeight.bold),
                                   ),
                                 ),
+
+                                // Right Arrow Icon
                                 const Icon(
                                   CupertinoIcons.arrow_right_circle_fill,
                                   color: CupertinoColors.systemBlue,
@@ -121,13 +179,16 @@ class ActivityDetailsScreen extends StatelessWidget {
   }
 }
 
-// New Screen to Show Places
+// 🔹 New Screen to Show Places
 class ActivityPlacesScreen extends StatelessWidget {
   final String activityType;
   final List<String> places;
 
-  const ActivityPlacesScreen(
-      {super.key, required this.activityType, required this.places});
+  const ActivityPlacesScreen({
+    super.key,
+    required this.activityType,
+    required this.places,
+  });
 
   // Function to open Google Maps
   void _openGoogleMaps(String location) async {

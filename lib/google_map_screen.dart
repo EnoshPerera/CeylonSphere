@@ -17,8 +17,9 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   final LatLng _initialPosition =
       const LatLng(6.9271, 79.8612); // Default to Colombo, Sri Lanka
   Set<Marker> _markers = {};
-  String apiKey =
-      "AIzaSyAvS00_oarJDXlu9m0HajBH7qxGZA6RLy8"; // Replace with your API key
+  double _radiusInMeters = 1609; // Default: 1 mile (1 mile = 1609 meters)
+  String apiKey = "AIzaSyBZOOBQ6ME-TXNbD8I2EIF1uOva65zU70s";
+  // "AIzaSyAvS00_oarJDXlu9m0HajBH7qxGZA6RLy8"; // ❗ Replace with your API key (secure it in a .env file!)
 
   void _onMapCreated(GoogleMapController controller) {
     mapController = controller;
@@ -34,65 +35,77 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       }
     }
 
-    Position position = await Geolocator.getCurrentPosition(
-        desiredAccuracy: LocationAccuracy.high);
+    try {
+      Position position = await Geolocator.getCurrentPosition(
+          desiredAccuracy: LocationAccuracy.high);
 
-    LatLng userLocation = LatLng(position.latitude, position.longitude);
+      LatLng userLocation = LatLng(position.latitude, position.longitude);
 
-    mapController.animateCamera(
-      CameraUpdate.newLatLngZoom(userLocation, 14),
-    );
+      mapController.animateCamera(
+        CameraUpdate.newLatLngZoom(userLocation, 14),
+      );
 
-    _fetchNearbyRestaurants(userLocation);
+      _fetchNearbyPlaces(userLocation);
+    } catch (e) {
+      print("Error getting location: $e");
+    }
   }
 
-  Future<void> _fetchNearbyRestaurants(LatLng location) async {
+  Future<void> _fetchNearbyPlaces(LatLng location) async {
     final url =
         Uri.parse("https://maps.googleapis.com/maps/api/place/nearbysearch/json"
             "?location=${location.latitude},${location.longitude}"
-            "&radius=10000" // 10km radius
+            "&radius=$_radiusInMeters" // ✅ Dynamic radius
             "&type=restaurant"
             "&key=$apiKey");
 
-    final response = await http.get(url);
-    print("API Response: ${response.body}"); // Debugging line
+    try {
+      final response = await http.get(url);
 
-    if (response.statusCode == 200) {
-      final data = json.decode(response.body);
-      if (data["status"] != "OK") {
-        print("Google Places API Error: ${data["status"]}");
-        return;
-      }
-
-      List results = data["results"];
-      setState(() {
-        _markers.clear();
-        for (var place in results) {
-          final marker = Marker(
-            markerId: MarkerId(place["place_id"]),
-            position: LatLng(
-              place["geometry"]["location"]["lat"],
-              place["geometry"]["location"]["lng"],
-            ),
-            infoWindow: InfoWindow(
-              title: place["name"],
-              snippet: place["vicinity"],
-            ),
-          );
-          _markers.add(marker);
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        if (data["status"] != "OK") {
+          print("Google Places API Error: ${data["status"]}");
+          return;
         }
-      });
-      print("Markers Added: ${_markers.length}");
-    } else {
-      print("API Request Failed with Status Code: ${response.statusCode}");
+
+        List results = data["results"];
+        setState(() {
+          _markers.clear();
+          for (var place in results) {
+            _markers.add(
+              Marker(
+                markerId: MarkerId(place["place_id"]),
+                position: LatLng(
+                  place["geometry"]["location"]["lat"],
+                  place["geometry"]["location"]["lng"],
+                ),
+                infoWindow: InfoWindow(
+                  title: place["name"],
+                  snippet: place["vicinity"],
+                ),
+              ),
+            );
+          }
+        });
+      } else {
+        print("API Request Failed: ${response.statusCode}");
+      }
+    } catch (e) {
+      print("Error fetching places: $e");
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text('Find Places'),
+      navigationBar: CupertinoNavigationBar(
+        middle: const Text('Find Places'),
+        trailing: CupertinoButton(
+          padding: EdgeInsets.zero,
+          child: const Icon(CupertinoIcons.search),
+          onPressed: () => _fetchNearbyPlaces(_initialPosition),
+        ),
       ),
       child: Stack(
         children: [
@@ -105,6 +118,28 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             myLocationEnabled: true,
             myLocationButtonEnabled: true,
             markers: _markers,
+          ),
+
+          // Radius Selector (Dropdown)
+          Positioned(
+            top: 120, // Increased from 80 to 120 to move it lower
+            left: 20,
+            child: CupertinoSlidingSegmentedControl<double>(
+              groupValue: _radiusInMeters,
+              children: {
+                1609.0: Text("1 Mile"),
+                5000.0: Text("5 Miles"),
+                10000.0: Text("10 Miles"),
+              },
+              onValueChanged: (value) {
+                if (value != null) {
+                  setState(() {
+                    _radiusInMeters = value;
+                    _fetchNearbyPlaces(_initialPosition);
+                  });
+                }
+              },
+            ),
           ),
         ],
       ),

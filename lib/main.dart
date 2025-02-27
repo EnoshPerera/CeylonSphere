@@ -1,8 +1,8 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/profile_screen.dart';
+import 'profile/profile_screen.dart';
 import '/destinations_screen.dart';
-import '/explore_activities_screen.dart';
+import 'explore_activities/explore_activities_screen.dart';
 import '/destination_profile.dart';
 import 'google_map_screen.dart';
 

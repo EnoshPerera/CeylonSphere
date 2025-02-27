@@ -1,7 +1,10 @@
+import 'package:flutter/cupertino.dart';
+
 final List<Map<String, dynamic>> activityTypes = [
   {
     'name': 'Beach Relaxation & Water Sports',
     'image': 'assets/watersports.jpg',
+    'icon': IconData(0xf06c2, fontFamily: 'MaterialIcons'),
     'details': {
       'places': [
         'Unawatuna',
@@ -25,6 +28,7 @@ final List<Map<String, dynamic>> activityTypes = [
   {
     'name': 'Wildlife Safaris',
     'image': 'assets/wildLife.jpg',
+    'icon': CupertinoIcons.tree, // 🏛️ Cultural Icon
     'details': {
       'places': [
         'Yala National Park',
@@ -45,6 +49,7 @@ final List<Map<String, dynamic>> activityTypes = [
   {
     'name': 'Cultural & Historical Exploration',
     'image': 'assets/cultural.jpg',
+    'icon': CupertinoIcons.book, // 🏛️ Cultural Icon
     'details': {
       'places': [
         'Anuradhapura',
@@ -67,6 +72,7 @@ final List<Map<String, dynamic>> activityTypes = [
   {
     'name': 'Hiking & Trekking',
     'image': 'assets/Hiking.jpg',
+    'icon': CupertinoIcons.map, // 🏔️ Hiking Icon
     'details': {
       'places': [
         'Adam’s Peak (Sri Pada)',
@@ -86,6 +92,7 @@ final List<Map<String, dynamic>> activityTypes = [
   {
     'name': 'Nightlife & Entertainment',
     'image': 'assets/nightLife.jpg',
+    'icon': CupertinoIcons.music_note, // 🎵 Nightlife Icon
     'details': {
       'places': ['Colombo', 'Mirissa', 'Unawatuna', 'Hikkaduwa'],
       'activities': [
