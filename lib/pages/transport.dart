@@ -4,6 +4,9 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' as polyline;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import 'vehicle_selection_page.dart';
+import 'transport_final_page.dart';
+
 
 void main() {
   runApp(TravelBookingApp());
@@ -38,7 +41,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
   List<StopLocation> stopLocations = [];
   String? dropoffLocation;
 
-  // Add variables for trip details
   String? tripDistance;
   String? tripDuration;
   bool isCalculatingRoute = false;
@@ -53,11 +55,9 @@ class _BookingHomePageState extends State<BookingHomePage> {
       setState(() {
         if (type == 'pickup') {
           pickupLocation = placeName;
-          // If first location, add it
           if (_selectedLocations.isEmpty) {
             _selectedLocations.add(latLng);
           } else {
-            // Replace the first location
             _selectedLocations[0] = latLng;
           }
           _markers.removeWhere((marker) => marker.markerId.value == 'pickup');
@@ -69,7 +69,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
         } else if (type == 'stop') {
           if (stopIndex != null && stopIndex < stopLocations.length) {
             stopLocations[stopIndex].name = placeName;
-            // Replace at calculated position (pickup + stopIndex)
             int mapIndex = 1 + stopIndex;
             if (_selectedLocations.length > mapIndex) {
               _selectedLocations[mapIndex] = latLng;
@@ -85,7 +84,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
           }
         } else if (type == 'dropoff') {
           dropoffLocation = placeName;
-          // Add as last location or replace if exists
           if (_selectedLocations.length > stopLocations.length + 1) {
             _selectedLocations[stopLocations.length + 1] = latLng;
           } else {
@@ -101,7 +99,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
       });
       _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
 
-      // Generate route if both pickup and dropoff are selected
       if (pickupLocation != null && dropoffLocation != null) {
         _generateRoute();
       }
@@ -114,7 +111,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
     setState(() {
       polylines.clear();
       isCalculatingRoute = true;
-      // Reset trip details when recalculating
       tripDistance = null;
       tripDuration = null;
     });
@@ -124,7 +120,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
     int totalDurationSeconds = 0;
 
     for (int i = 0; i < _selectedLocations.length - 1; i++) {
-      // Get route between points
       var result = await polylinePoints.getRouteBetweenCoordinates(
         _apiKey,
         polyline.PointLatLng(_selectedLocations[i].latitude, _selectedLocations[i].longitude),
@@ -135,7 +130,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
         routeCoords.addAll(result.points.map((e) => LatLng(e.latitude, e.longitude)));
       }
 
-      // Get distance and duration for this segment using direct API call
       try {
         final response = await http.get(Uri.parse(
             'https://maps.googleapis.com/maps/api/directions/json?'
@@ -159,7 +153,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
       }
     }
 
-    // Format the distance and duration
     double distanceKm = totalDistanceMeters / 1000.0;
     String formattedDistance = '${distanceKm.toStringAsFixed(1)} km';
     String formattedDuration = _formatDuration(totalDurationSeconds);
@@ -199,13 +192,11 @@ class _BookingHomePageState extends State<BookingHomePage> {
   void _removeStopLocation(int index) {
     setState(() {
       stopLocations.removeAt(index);
-      // Remove from selected locations and markers
       if (_selectedLocations.length > index + 1) {
         _selectedLocations.removeAt(index + 1);
       }
       _markers.removeWhere((marker) => marker.markerId.value == 'stop_$index');
 
-      // Renumber remaining stop markers
       for (int i = index; i < stopLocations.length; i++) {
         _markers.removeWhere((marker) => marker.markerId.value == 'stop_${i+1}');
         if (i + 1 < _selectedLocations.length - 1) {
@@ -217,7 +208,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
         }
       }
 
-      // Regenerate route
       if (pickupLocation != null && dropoffLocation != null) {
         _generateRoute();
       }
@@ -299,10 +289,10 @@ class _BookingHomePageState extends State<BookingHomePage> {
                           LocationInputField(
                             hint: 'Pickup Location',
                             places: _places,
+                            initialValue: pickupLocation,
                             onPlaceSelected: (placeId, name) => _updateMapWithSelectedPlace(placeId, name, 'pickup'),
                           ),
                           SizedBox(height: 10),
-                          // Dynamic stop locations
                           ...List.generate(stopLocations.length, (index) {
                             return Padding(
                               padding: const EdgeInsets.only(bottom: 10),
@@ -325,7 +315,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
                               ),
                             );
                           }),
-                          // Add stop button
                           OutlinedButton.icon(
                             icon: Icon(Icons.add),
                             label: Text('Add Stop'),
@@ -339,11 +328,10 @@ class _BookingHomePageState extends State<BookingHomePage> {
                           LocationInputField(
                             hint: 'Drop-off Location',
                             places: _places,
+                            initialValue: dropoffLocation,
                             onPlaceSelected: (placeId, name) => _updateMapWithSelectedPlace(placeId, name, 'dropoff'),
                           ),
                           SizedBox(height: 10),
-
-                          // Trip details section
                           if (isCalculatingRoute)
                             Padding(
                               padding: const EdgeInsets.symmetric(vertical: 10.0),
@@ -387,7 +375,6 @@ class _BookingHomePageState extends State<BookingHomePage> {
                                 ],
                               ),
                             ),
-
                           SizedBox(height: 20),
                           ElevatedButton(
                             style: ElevatedButton.styleFrom(
@@ -397,6 +384,26 @@ class _BookingHomePageState extends State<BookingHomePage> {
                             onPressed: () {
                               if (pickupLocation != null && dropoffLocation != null) {
                                 _toggleLocationSelection(); // Close the location panel
+
+                                // Prepare stop location names
+                                List<String> stopNames = stopLocations
+                                    .where((stop) => stop.name != null)
+                                    .map((stop) => stop.name!)
+                                    .toList();
+
+                                // Navigate to vehicle selection page
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => VehicleSelectionPage(
+                                      pickupLocation: pickupLocation!,
+                                      dropoffLocation: dropoffLocation!,
+                                      stopLocations: stopNames,
+                                      distance: tripDistance ?? 'Unknown',
+                                      duration: tripDuration ?? 'Unknown',
+                                    ),
+                                  ),
+                                );
                               } else {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                     SnackBar(content: Text('Please select pickup and dropoff locations'))

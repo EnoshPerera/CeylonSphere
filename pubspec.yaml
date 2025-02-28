@@ -71,6 +71,9 @@ flutter:
     - assets/Logo-10.png
     - assets/Logo-12.png
     - assets/logo-14.png
+    - assets/toyota-corolla.jpg
+    - assets/Honda-Civic.jpeg
+    - assets/Suzuki-Swift.jpg
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
