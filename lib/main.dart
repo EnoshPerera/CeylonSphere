@@ -5,6 +5,7 @@ import '/destinations_screen.dart';
 import 'explore_activities/explore_activities_screen.dart';
 import '/destination_profile.dart';
 import 'google_map_screen.dart';
+import 'destinationCarousel_widget/destination_carousel.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -118,30 +119,9 @@ class HomeScreen extends StatelessWidget {
                   ],
                 ),
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(horizontal: 16.0),
-                child: Text(
-                  'Travel Destinations',
-                  style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
-                ),
-              ),
-              SizedBox(
-                height: 180,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.all(5.0),
-                  children: const [
-                    DestinationImage(
-                        imagePath: 'assets/Kandy.jpg', title: 'Kandy'),
-                    DestinationImage(
-                        imagePath: 'assets/Yala.jpg', title: 'Yala'),
-                    DestinationImage(
-                        imagePath: 'assets/Kandy.jpg', title: 'Sigiriya'),
-                    DestinationImage(
-                        imagePath: 'assets/Yala.jpg', title: 'Galle'),
-                  ],
-                ),
-              ),
+              // Replace the existing ListView with the DestinationCarousel
+              const DestinationCarousel(),
+
               PromoBanner(
                 title: 'Family Package',
                 subtitle: 'Family Fun up to 20%',
@@ -179,67 +159,6 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {},
               ),
               const SizedBox(height: 10),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-}
-
-class DestinationImage extends StatelessWidget {
-  final String imagePath;
-  final String title;
-
-  const DestinationImage({
-    required this.imagePath,
-    required this.title,
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (context) =>
-                DestinationScreen(imagePath: imagePath, title: title),
-          ),
-        );
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 8.0),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(10),
-          child: Stack(
-            children: [
-              Image.asset(
-                imagePath,
-                width: 180,
-                height: 140,
-                fit: BoxFit.cover,
-              ),
-              Positioned(
-                bottom: 8,
-                left: 8,
-                child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                  decoration: BoxDecoration(
-                    color: Colors.black54,
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: Text(
-                    title,
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
             ],
           ),
         ),
@@ -314,7 +233,6 @@ class CategoryItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      // Wrap with GestureDetector to detect taps
       onTap: onTap,
       child: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 12.0),
@@ -325,6 +243,134 @@ class CategoryItem extends StatelessWidget {
             Text(label, style: const TextStyle(color: Colors.grey)),
           ],
         ),
+      ),
+    );
+  }
+}
+
+// Keep your existing DestinationCard class for other parts of the app
+class DestinationCard extends StatefulWidget {
+  final String imagePath;
+  final String title;
+  final String location;
+  final int initialLikes;
+
+  const DestinationCard({
+    Key? key,
+    required this.imagePath,
+    required this.title,
+    required this.location,
+    required this.initialLikes,
+  }) : super(key: key);
+
+  @override
+  State<DestinationCard> createState() => _DestinationCardState();
+}
+
+class _DestinationCardState extends State<DestinationCard> {
+  late int likes;
+  late bool isLiked;
+
+  @override
+  void initState() {
+    super.initState();
+    likes = widget.initialLikes;
+    isLiked = false;
+  }
+
+  void toggleLike() {
+    setState(() {
+      if (isLiked) {
+        likes--;
+      } else {
+        likes++;
+      }
+      isLiked = !isLiked;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      width: 300,
+      margin: const EdgeInsets.only(right: 12),
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(15),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.1),
+            blurRadius: 8,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Expanded(
+            child: ClipRRect(
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(15)),
+              child: Image.asset(
+                widget.imagePath,
+                fit: BoxFit.cover,
+                width: double.infinity,
+              ),
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.all(12),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(bottom: Radius.circular(15)),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  widget.title,
+                  style: const TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Row(
+                  children: [
+                    const Icon(
+                      Icons.location_on,
+                      color: Colors.red,
+                      size: 16,
+                    ),
+                    const SizedBox(width: 4),
+                    Text(
+                      widget.location,
+                      style: TextStyle(
+                        color: Colors.grey[700],
+                        fontSize: 14,
+                      ),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 8),
+                GestureDetector(
+                  onTap: toggleLike,
+                  child: Row(
+                    children: [
+                      Icon(
+                        isLiked ? Icons.favorite : Icons.favorite_border,
+                        color: Colors.red[300],
+                        size: 20,
+                      ),
+                      const SizedBox(width: 4),
+                      Text('$likes'),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
