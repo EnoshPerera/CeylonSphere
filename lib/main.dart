@@ -72,7 +72,7 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
                   },
                 ),
 
-                // Top title
+                // Top title and crowded button
                 Positioned(
                   top: 40,
                   left: 0,
@@ -88,6 +88,33 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
                             color: Colors.white,
                             fontSize: 24,
                             fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        // Crowded button
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.3),
+                            borderRadius: BorderRadius.circular(8),
+                            border: Border.all(color: Colors.white, width: 1),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: const [
+                              Icon(
+                                Icons.groups,
+                                color: Colors.white,
+                                size: 18,
+                              ),
+                              SizedBox(width: 6),
+                              Text(
+                                'Crowded',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ],
@@ -108,13 +135,6 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
                         onTap: () {
                           // Navigate to AR view
                           print('Navigate to AR View');
-                        },
-                      ),
-                      _buildCircularButton(
-                        icon: Icons.language,
-                        onTap: () {
-                          // Navigate to language selection
-                          print('Navigate to Language Selection');
                         },
                       ),
                       _buildCircularButton(
@@ -196,37 +216,6 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
           border: Border.all(color: Colors.white, width: 1),
         ),
         child: Icon(icon, size: 24, color: Colors.white),
-      ),
-    );
-  }
-
-  Widget _buildReviewItem({
-    required String name,
-    required String comment,
-  }) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          CircleAvatar(
-            radius: 20,
-            child: Text(name[0]),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name,
-                  style: const TextStyle(fontWeight: FontWeight.bold),
-                ),
-                Text(comment),
-              ],
-            ),
-          ),
-        ],
       ),
     );
   }
