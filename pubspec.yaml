@@ -16,7 +16,9 @@ dependencies:
   google_fonts: ^6.2.1   # For beautiful fonts
   provider: ^6.1.2      # State management (optional)
   flutter_svg: ^2.0.10   # If you need SVG icons
-  google_maps_flutter: ^2.10.1
+  google_maps_flutter: ^2.10.0
+  geolocator: ^13.0.2
+  http: ^1.3.0         # Updated to the latest version
 
 dev_dependencies:
   flutter_test:
