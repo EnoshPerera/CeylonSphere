@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'screens/destinations_list_page.dart';
-import 'screens/destinations_detail_page.dart';
 
 void main() {
   runApp(const MyApp());
