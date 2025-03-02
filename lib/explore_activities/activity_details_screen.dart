@@ -645,10 +645,19 @@ class _ActivityPlacesScreenState extends State<ActivityPlacesScreen> {
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  'assets/sunbathing.jpg', // Replace with actual image
+                                  getDestinationImage(place),
                                   width: double.infinity,
                                   height: 200,
                                   fit: BoxFit.cover,
+                                  errorBuilder: (context, error, stackTrace) {
+                                    // Fallback image in case of error
+                                    return Image.asset(
+                                      'assets/sunbathing.jpg',
+                                      width: double.infinity,
+                                      height: 200,
+                                      fit: BoxFit.cover,
+                                    );
+                                  },
                                 ),
                                 // Favorite Button Overlay
                                 Positioned(
@@ -837,4 +846,34 @@ class _ActivityPlacesScreenState extends State<ActivityPlacesScreen> {
       debugPrint("Could not open Google Maps");
     }
   }
+}
+
+// Add this function before ActivityPlacesScreen class
+String getDestinationImage(String place) {
+  // Mapping of destinations to their specific images
+  final Map<String, String> destinationImages = {
+    'Unawatuna Beach': 'assets/sunbathing.jpg',
+    'Mirissa Beach': 'assets/images/mirissa_beach.jpg',
+    'Arugam Bay': 'assets/images/arugam_bay.jpg',
+    'Hikkaduwa Beach': 'assets/images/hikkaduwa_beach.jpg',
+    'Bentota Beach': 'assets/images/bentota_beach.jpg',
+    'Yala National Park': 'assets/images/yala_national_park.jpg',
+    'Udawalawe National Park': 'assets/images/udawalawe_national_park.jpg',
+    'Minneriya National Park': 'assets/images/minneriya_national_park.jpg',
+    'Wilpattu National Park': 'assets/images/wilpattu_national_park.jpg',
+    'Sinharaja Forest': 'assets/images/sinharaja_forest.jpg',
+    'Temple of the Tooth': 'assets/images/temple_of_tooth.jpg',
+    'Sigiriya Rock Fortress': 'assets/images/sigiriya_rock.jpg',
+    'Dambulla Cave Temple': 'assets/images/dambulla_cave.jpg',
+    'Galle Fort': 'assets/images/galle_fort.jpg',
+    'Polonnaruwa Ancient City': 'assets/images/polonnaruwa.jpg',
+    'Adams Peak': 'assets/images/adams_peak.jpg',
+    'Horton Plains': 'assets/images/horton_plains.jpg',
+    'Ella Rock': 'assets/images/ella_rock.jpg',
+    'Knuckles Mountain Range': 'assets/images/knuckles_mountain.jpg',
+    'Nuwara Eliya Tea Plantations': 'assets/images/nuwara_eliya_tea.jpg'
+  };
+
+  // Return the specific image for the destination, or a default image if not found
+  return destinationImages[place] ?? 'assets/images/default_destination.jpg';
 }

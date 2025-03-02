@@ -66,20 +66,42 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-  - assets/Kandy.jpg
-  - assets/Yala.jpg
-  - assets/vr_tourism.png
-  - assets/Logo-04.png
-  - assets/watersports.jpg
-  - assets/wildLife.jpg
-  - assets/Hiking.jpg
-  - assets/cultural.jpg
-  - assets/nightLife.jpg
-  - assets/sunbathing.jpg
-  - assets/Sigiriya.jpg
-  - assets/Jetavanaramaya.jpg
-  - assets/ruwanwelisaya.jpg
-  #   - images/a_dot_ham.jpeg
+    - assets/Kandy.jpg
+    - assets/Yala.jpg
+    - assets/vr_tourism.png
+    - assets/Logo-04.png
+    - assets/watersports.jpg
+    - assets/wildLife.jpg
+    - assets/Hiking.jpg
+    - assets/cultural.jpg
+    - assets/nightLife.jpg
+    - assets/sunbathing.jpg
+    - assets/Sigiriya.jpg
+    - assets/Jetavanaramaya.jpg
+    - assets/ruwanwelisaya.jpg
+    - assets/Colombo.jpg
+
+    # - assets/images/unawatuna_beach.jpg
+    # - assets/images/mirissa_beach.jpg
+    # - assets/images/arugam_bay.jpg
+    # - assets/images/hikkaduwa_beach.jpg
+    # - assets/images/bentota_beach.jpg
+    # - assets/images/yala_national_park.jpg
+    # - assets/images/udawalawe_national_park.jpg
+    # - assets/images/minneriya_national_park.jpg
+    # - assets/images/wilpattu_national_park.jpg
+    # - assets/images/sinharaja_forest.jpg
+    # - assets/images/temple_of_tooth.jpg
+    # - assets/images/sigiriya_rock.jpg
+    # - assets/images/dambulla_cave.jpg
+    # - assets/images/galle_fort.jpg
+    # - assets/images/polonnaruwa.jpg
+    # - assets/images/adams_peak.jpg
+    # - assets/images/horton_plains.jpg
+    # - assets/images/ella_rock.jpg
+    # - assets/images/knuckles_mountain.jpg
+    # - assets/images/nuwara_eliya_tea.jpg
+    # - assets/images/default_destination.jpg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
