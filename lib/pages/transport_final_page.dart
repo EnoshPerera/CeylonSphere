@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'transport_cost_page.dart';
 
 class AvailableVehiclesPage extends StatefulWidget {
   final String vehicleType;
@@ -295,7 +296,22 @@ class TripSummaryPage extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.of(context).popUntil((route) => route.isFirst);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => TransportCostPage(
+                        vehicleType: vehicleType,
+                        vehicleModel: vehicleModel,
+                        passengerCount: passengerCount,
+                        distance: distance,
+                        duration: duration,
+                        plannedDays: plannedDays,
+                        pickupLocation: pickupLocation,
+                        dropoffLocation: dropoffLocation,
+                        stopLocations: stopLocations,
+                      ),
+                    ),
+                  );
                 },
                 child: Text(
                   'Confirm Booking',

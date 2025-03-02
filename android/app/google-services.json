@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "229715540772",
+    "project_id": "ceylonsphere-2baa7",
+    "storage_bucket": "ceylonsphere-2baa7.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:229715540772:android:37d5589dba66de477651b1",
+        "android_client_info": {
+          "package_name": "com.example.ceylonsphere"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCVHXs67UNHgRbigLv2PF_3BHsQMVDVWOQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
