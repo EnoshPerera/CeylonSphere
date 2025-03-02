@@ -76,6 +76,9 @@ flutter:
   - assets/cultural.jpg
   - assets/nightLife.jpg
   - assets/sunbathing.jpg
+  - assets/Sigiriya.jpg
+  - assets/Jetavanaramaya.jpg
+  - assets/ruwanwelisaya.jpg
   #   - images/a_dot_ham.jpeg
 
   # An image asset can refer to one or more resolution-specific "variants", see

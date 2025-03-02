@@ -6,6 +6,7 @@ import 'explore_activities/explore_activities_screen.dart';
 import '/destination_profile.dart';
 import 'google_map_screen.dart';
 import 'destinationCarousel_widget/destination_carousel.dart';
+import 'ar_temple_screen.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -20,7 +21,7 @@ class TravelApp extends StatelessWidget {
       title: 'CeylonSphere',
       theme: CupertinoThemeData(
         brightness: Brightness.light,
-        primaryColor: CupertinoColors.activeBlue,
+        primaryColor: CupertinoColors.activeGreen,
       ),
       home: const MainPage(),
     );
@@ -44,6 +45,8 @@ class _MainPageState extends State<MainPage> {
               icon: Icon(CupertinoIcons.home), label: 'Home'),
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.map), label: 'Destinations'),
+          BottomNavigationBarItem(
+              icon: Icon(CupertinoIcons.car), label: 'Transport'),
           BottomNavigationBarItem(
               icon: Icon(CupertinoIcons.person), label: 'Profile'),
         ],
@@ -78,51 +81,197 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Center(
-                  child: ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Image.asset(
-                      'assets/vr_tourism.png',
-                      height: 130,
-                      width: 650,
-                      fit: BoxFit.cover,
-                    ),
-                  ),
+              // Padding(
+              //   padding: const EdgeInsets.all(16.0),
+              //   child: Center(
+              //     child: ClipRRect(
+              //       borderRadius: BorderRadius.circular(15),
+              //       child: Image.asset(
+              //         'assets/vr_tourism.png',
+              //         height: 130,
+              //         width: 650,
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              Container(
+                padding: const EdgeInsets.symmetric(vertical: 16.0),
+                decoration: BoxDecoration(
+                  color: CupertinoColors.systemGrey6.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-              ),
-              SizedBox(
-                height: 100,
-                child: ListView(
-                  scrollDirection: Axis.horizontal,
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    CategoryItem(
-                      icon: CupertinoIcons.map,
-                      label: 'Places',
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => GoogleMapScreen(),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            'Quick Access',
+                            style: TextStyle(
+                              fontSize: 20,
+                              fontWeight: FontWeight.bold,
+                              color: Color(0xFF003734),
+                            ),
                           ),
-                        );
-                      },
+                          GestureDetector(
+                            onTap: () {
+                              // Show all categories
+                              showCupertinoModalPopup(
+                                context: context,
+                                builder: (context) => Container(
+                                  height: 500,
+                                  padding: const EdgeInsets.all(20),
+                                  decoration: const BoxDecoration(
+                                    color: CupertinoColors.systemBackground,
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'All Categories',
+                                        style: TextStyle(
+                                          fontSize: 24,
+                                          fontWeight: FontWeight.bold,
+                                          color: Color(0xFF003734),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 20),
+                                      Expanded(
+                                        child: GridView.count(
+                                          crossAxisCount: 3,
+                                          mainAxisSpacing: 20,
+                                          crossAxisSpacing: 20,
+                                          children: [
+                                            _CategoryGridItem(
+                                              icon: CupertinoIcons.map,
+                                              label: 'Places',
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      GoogleMapScreen(),
+                                                ),
+                                              ),
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.bed_double,
+                                              label: 'Hotels',
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.news,
+                                              label: 'Restaurants',
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.bag,
+                                              label: 'Shopping',
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.tickets,
+                                              label: 'Events',
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.car_detailed,
+                                              label: 'Transport',
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.camera,
+                                              label: 'Photography',
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.gift,
+                                              label: 'Souvenirs',
+                                            ),
+                                            const _CategoryGridItem(
+                                              icon: CupertinoIcons.cart,
+                                              label: 'Markets',
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Row(
+                              children: const [
+                                Text(
+                                  'View All',
+                                  style: TextStyle(
+                                    color: CupertinoColors.activeGreen,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                                SizedBox(width: 4),
+                                Icon(
+                                  CupertinoIcons.chevron_right,
+                                  color: CupertinoColors.activeGreen,
+                                  size: 16,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
-                    const CategoryItem(
-                        icon: CupertinoIcons.news, label: 'Restaurant'),
-                    const CategoryItem(
-                        icon: CupertinoIcons.bag, label: 'Souvenir Shops'),
-                    const CategoryItem(
-                        icon: CupertinoIcons.cart, label: 'Supermarket'),
+                    const SizedBox(height: 16),
+                    SizedBox(
+                      height: 110,
+                      child: ListView(
+                        scrollDirection: Axis.horizontal,
+                        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                        children: [
+                          _CategoryItem(
+                            icon: CupertinoIcons.map,
+                            label: 'Places',
+                            color: const Color(0xFF4CAF50),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => GoogleMapScreen(),
+                                ),
+                              );
+                            },
+                          ),
+                          const _CategoryItem(
+                            icon: CupertinoIcons.bed_double,
+                            label: 'Hotels',
+                            color: Color(0xFF2196F3),
+                          ),
+                          const _CategoryItem(
+                            icon: CupertinoIcons.news,
+                            label: 'Restaurants',
+                            color: Color(0xFFF44336),
+                          ),
+                          const _CategoryItem(
+                            icon: CupertinoIcons.bag,
+                            label: 'Shopping',
+                            color: Color(0xFF9C27B0),
+                          ),
+                          const _CategoryItem(
+                            icon: CupertinoIcons.tickets,
+                            label: 'Events',
+                            color: Color(0xFFFF9800),
+                          ),
+                        ],
+                      ),
+                    ),
                   ],
                 ),
               ),
+              const SizedBox(height: 16),
               // Replace the existing ListView with the DestinationCarousel
               const DestinationCarousel(),
 
-              //Promo Banner
               PromoBanner(
                 title: 'Explore Activities',
                 subtitle: 'Discover top adventure & cultural tours',
@@ -141,6 +290,22 @@ class HomeScreen extends StatelessWidget {
                 subtitle: '30% OFF',
                 color: Colors.orangeAccent,
                 onTap: () {},
+              ),
+
+              //Promo Banner
+              PromoBanner(
+                title: 'AR Experience',
+                subtitle: 'Explore temples in Augmented Reality',
+                color: const Color.fromARGB(
+                    255, 0, 102, 255), // Deep purple for tech feel
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => ARTempleScreen(),
+                    ),
+                  );
+                },
               ),
               const SizedBox(height: 10),
             ],
@@ -277,29 +442,117 @@ class PromoBanner extends StatelessWidget {
   }
 }
 
-class CategoryItem extends StatelessWidget {
+class _CategoryItem extends StatelessWidget {
   final IconData icon;
   final String label;
+  final Color color;
   final VoidCallback? onTap;
 
-  const CategoryItem({
+  const _CategoryItem({
     required this.icon,
     required this.label,
+    required this.color,
     this.onTap,
-    super.key,
   });
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12.0),
+      child: Container(
+        width: 85,
+        margin: const EdgeInsets.only(right: 12),
+        decoration: BoxDecoration(
+          color: CupertinoColors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: CupertinoColors.systemGrey.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(icon, size: 40, color: Colors.green),
-            const SizedBox(height: 5),
-            Text(label, style: const TextStyle(color: Colors.grey)),
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: color.withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(icon, color: color, size: 28),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 13,
+                color: color.withOpacity(0.8),
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _CategoryGridItem extends StatelessWidget {
+  final IconData icon;
+  final String label;
+  final VoidCallback? onTap;
+
+  const _CategoryGridItem({
+    required this.icon,
+    required this.label,
+    this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          color: CupertinoColors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: CupertinoColors.systemGrey.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: const Color(0xFF003734).withOpacity(0.1),
+                shape: BoxShape.circle,
+              ),
+              child: Icon(
+                icon,
+                color: const Color(0xFF003734),
+                size: 28,
+              ),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              label,
+              style: const TextStyle(
+                fontSize: 13,
+                color: Color(0xFF003734),
+                fontWeight: FontWeight.w600,
+              ),
+              textAlign: TextAlign.center,
+            ),
           ],
         ),
       ),

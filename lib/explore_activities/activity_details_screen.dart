@@ -645,7 +645,7 @@ class _ActivityPlacesScreenState extends State<ActivityPlacesScreen> {
                             child: Stack(
                               children: [
                                 Image.asset(
-                                  'assets/images/placeholder.jpg', // Replace with actual image
+                                  'assets/sunbathing.jpg', // Replace with actual image
                                   width: double.infinity,
                                   height: 200,
                                   fit: BoxFit.cover,
