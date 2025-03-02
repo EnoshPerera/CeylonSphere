@@ -122,12 +122,7 @@ class HomeScreen extends StatelessWidget {
               // Replace the existing ListView with the DestinationCarousel
               const DestinationCarousel(),
 
-              PromoBanner(
-                title: 'Family Package',
-                subtitle: 'Family Fun up to 20%',
-                color: Color(0xFFAED581),
-                onTap: () {},
-              ),
+              //Promo Banner
               PromoBanner(
                 title: 'Explore Activities',
                 subtitle: 'Discover top adventure & cultural tours',
@@ -140,18 +135,7 @@ class HomeScreen extends StatelessWidget {
                   );
                 },
               ),
-              PromoBanner(
-                title: 'Top Activities',
-                subtitle: 'Find the best experiences',
-                color: Colors.grey,
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                        builder: (context) => ExploreActivitiesScreen()),
-                  );
-                },
-              ),
+
               PromoBanner(
                 title: 'Adventure Deal',
                 subtitle: '30% OFF',
@@ -183,32 +167,107 @@ class PromoBanner extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 6.0),
+      child: GestureDetector(
+        onTap: onTap,
         child: Container(
           width: double.infinity,
-          height: 160,
-          padding: const EdgeInsets.all(16.0),
+          height: 140,
           decoration: BoxDecoration(
-            color: color,
-            borderRadius: BorderRadius.circular(12),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                title,
-                style: const TextStyle(
-                    fontSize: 30,
-                    fontWeight: FontWeight.w800,
-                    color: Colors.white),
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [
+                color,
+                color.withOpacity(0.8),
+              ],
+            ),
+            borderRadius: BorderRadius.circular(20),
+            boxShadow: [
+              BoxShadow(
+                color: color.withOpacity(0.3),
+                blurRadius: 15,
+                offset: const Offset(0, 8),
               ),
-              const SizedBox(height: 5),
-              Text(
-                subtitle,
-                style: const TextStyle(fontSize: 22, color: Colors.white),
+            ],
+          ),
+          child: Stack(
+            children: [
+              // Background Pattern
+              Positioned(
+                right: -20,
+                top: -20,
+                child: Container(
+                  width: 120,
+                  height: 120,
+                  decoration: BoxDecoration(
+                    color: Colors.white.withOpacity(0.1),
+                    shape: BoxShape.circle,
+                  ),
+                ),
+              ),
+              // Content
+              Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        fontSize: 24,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        letterSpacing: 0.5,
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      style: TextStyle(
+                        fontSize: 16,
+                        color: Colors.white.withOpacity(0.9),
+                        letterSpacing: 0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 12),
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                'Explore Now',
+                                style: TextStyle(
+                                  color: Colors.white.withOpacity(0.9),
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Icon(
+                                CupertinoIcons.arrow_right,
+                                color: Colors.white,
+                                size: 14,
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
