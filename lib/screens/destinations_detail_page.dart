@@ -22,6 +22,13 @@ class DestinationDetailPage extends StatefulWidget {
 class _DestinationDetailPageState extends State<DestinationDetailPage> {
   // This would eventually come from your teammate's implementation
   bool isCrowded = false;
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -70,7 +70,8 @@ class DestinationsListPage extends StatelessWidget {
                         const SizedBox(height: 4),
                         Row(
                           children: [
-                            const Icon(Icons.location_on, size: 16, color: Colors.grey),
+                            const Icon(Icons.location_on,
+                                size: 16, color: Colors.grey),
                             const SizedBox(width: 4),
                             Text(
                               destination.country,

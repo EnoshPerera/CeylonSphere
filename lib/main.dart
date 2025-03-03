@@ -1,23 +1,22 @@
 import 'package:flutter/material.dart';
-import 'screens/destinations_list_page.dart';
+import 'screens/main_navigation.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Ceylonsphere',
+      title: 'Travel App',
       theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
-        useMaterial3: true,
+        primarySwatch: Colors.green,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // Start with the destinations list page
-      home: const DestinationsListPage(),
+      home: const MainNavigation(),
     );
   }
 }
