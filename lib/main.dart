@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'pages/firstscreen.dart'; // Ensure this file exists
+import 'pages/firstscreen.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,6 +17,6 @@ class MyApp extends StatelessWidget {
           secondary: Colors.tealAccent,
         ),
       ),
-      home: FirstScreen(), // Start with the splash screen
+      home: FirstScreen(),
     );  }
 }

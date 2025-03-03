@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'transport_cost_page.dart';
+import 'package:intl/intl.dart';
 
 class AvailableVehiclesPage extends StatefulWidget {
   final String vehicleType;
@@ -207,7 +208,7 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
                   ),
                 );
               } : null,
-              child: Text('Proceed to Summary', style: TextStyle(fontSize: 16)),
+              child: Text('Proceed to Summary', style: TextStyle(fontSize: 16, color: Colors.white)),
             ),
           ],
         ),
@@ -230,7 +231,7 @@ class VehicleDetails {
   });
 }
 
-class TripSummaryPage extends StatelessWidget {
+class TripSummaryPage extends StatefulWidget {
   final String vehicleType;
   final String vehicleModel;
   final int passengerCount;
@@ -255,9 +256,89 @@ class TripSummaryPage extends StatelessWidget {
   }) : super(key: key);
 
   @override
+  _TripSummaryPageState createState() => _TripSummaryPageState();
+}
+
+class _TripSummaryPageState extends State<TripSummaryPage> {
+  // Default pickup date as tomorrow
+  DateTime pickupDate = DateTime.now().add(Duration(days: 1));
+  TimeOfDay pickupTime = TimeOfDay(hour: 9, minute: 0); // Default 9:00 AM
+
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: pickupDate,
+      firstDate: DateTime.now(),
+      lastDate: DateTime.now().add(Duration(days: 365)),
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.teal, // header background color
+              onPrimary: Colors.white, // header text color
+              onSurface: Colors.black, // calendar text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.teal, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != pickupDate) {
+      setState(() {
+        pickupDate = picked;
+      });
+    }
+  }
+
+  Future<void> _selectTime(BuildContext context) async {
+    final TimeOfDay? picked = await showTimePicker(
+      context: context,
+      initialTime: pickupTime,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(
+            colorScheme: ColorScheme.light(
+              primary: Colors.teal, // header background color
+              onPrimary: Colors.white, // header text color
+              onSurface: Colors.black, // dial text color
+            ),
+            textButtonTheme: TextButtonThemeData(
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.teal, // button text color
+              ),
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+    if (picked != null && picked != pickupTime) {
+      setState(() {
+        pickupTime = picked;
+      });
+    }
+  }
+
+  String formatDate(DateTime date) {
+    return DateFormat('EEE, MMM d, yyyy').format(date);
+  }
+
+  String formatTime(TimeOfDay time) {
+    final hours = time.hourOfPeriod == 0 ? 12 : time.hourOfPeriod;
+    final minutes = time.minute.toString().padLeft(2, '0');
+    final period = time.period == DayPeriod.am ? 'AM' : 'PM';
+    return '$hours:$minutes $period';
+  }
+
+  @override
   Widget build(BuildContext context) {
-    // Generate a random booking reference
-    final String bookingRef = 'TR${DateTime.now().millisecondsSinceEpoch.toString().substring(7, 13)}';
+    final screenWidth = MediaQuery.of(context).size.width;
+    final isSmallScreen = screenWidth < 360;
 
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
@@ -268,7 +349,7 @@ class TripSummaryPage extends StatelessWidget {
       ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
+          padding: EdgeInsets.all(isSmallScreen ? 12.0 : 16.0),
           child: Column(
             children: [
               // Ticket Header
@@ -293,18 +374,11 @@ class TripSummaryPage extends StatelessWidget {
                               'TRAVEL TICKET',
                               style: TextStyle(
                                 color: Colors.white,
-                                fontSize: 22,
+                                fontSize: isSmallScreen ? 18 : 22,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
                             SizedBox(height: 4),
-                            Text(
-                              'Booking Ref: $bookingRef',
-                              style: TextStyle(
-                                color: Colors.white.withOpacity(0.8),
-                                fontSize: 14,
-                              ),
-                            ),
                           ],
                         ),
                         Icon(
@@ -387,6 +461,7 @@ class TripSummaryPage extends StatelessWidget {
                   ],
                 ),
                 child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     // Route Section
                     Row(
@@ -404,10 +479,10 @@ class TripSummaryPage extends StatelessWidget {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                pickupLocation,
+                                widget.pickupLocation,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: isSmallScreen ? 14 : 16,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -435,10 +510,10 @@ class TripSummaryPage extends StatelessWidget {
                               ),
                               SizedBox(height: 4),
                               Text(
-                                dropoffLocation,
+                                widget.dropoffLocation,
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 16,
+                                  fontSize: isSmallScreen ? 14 : 16,
                                 ),
                                 maxLines: 1,
                                 overflow: TextOverflow.ellipsis,
@@ -452,28 +527,100 @@ class TripSummaryPage extends StatelessWidget {
 
                     SizedBox(height: 20),
 
+                    // Pickup Date and Time Section
+                    Text(
+                      'PICKUP DETAILS',
+                      style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 12,
+                      ),
+                    ),
+                    SizedBox(height: 8),
+
+                    // Date Selector
+                    InkWell(
+                      onTap: () => _selectDate(context),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.calendar_today, color: Colors.teal),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                formatDate(pickupDate),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 12),
+
+                    // Time Selector
+                    InkWell(
+                      onTap: () => _selectTime(context),
+                      child: Container(
+                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        decoration: BoxDecoration(
+                          border: Border.all(color: Colors.grey.shade300),
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Row(
+                          children: [
+                            Icon(Icons.access_time, color: Colors.teal),
+                            SizedBox(width: 12),
+                            Expanded(
+                              child: Text(
+                                formatTime(pickupTime),
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                            Icon(Icons.arrow_drop_down, color: Colors.grey),
+                          ],
+                        ),
+                      ),
+                    ),
+
+                    SizedBox(height: 20),
+
                     // Trip Details
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Wrap(
+                      spacing: isSmallScreen ? 10 : 20,
+                      runSpacing: 15,
                       children: [
-                        _buildDetailColumn('VEHICLE', '$vehicleType\n$vehicleModel'),
-                        _buildDetailColumn('PASSENGERS', passengerCount.toString()),
-                        _buildDetailColumn('DURATION', duration),
+                        _buildDetailColumn('VEHICLE', '${widget.vehicleType}\n${widget.vehicleModel}', isSmallScreen),
+                        _buildDetailColumn('PASSENGERS', widget.passengerCount.toString(), isSmallScreen),
+                        _buildDetailColumn('DURATION', widget.duration, isSmallScreen),
                       ],
                     ),
 
                     SizedBox(height: 20),
 
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    Wrap(
+                      spacing: isSmallScreen ? 10 : 20,
+                      runSpacing: 15,
                       children: [
-                        _buildDetailColumn('DISTANCE', distance),
-                        _buildDetailColumn('DAYS', plannedDays.toString()),
-                        _buildDetailColumn('TYPE', 'Air-Conditioned'),
+                        _buildDetailColumn('DISTANCE', widget.distance, isSmallScreen),
+                        _buildDetailColumn('DAYS', widget.plannedDays.toString(), isSmallScreen),
+                        _buildDetailColumn('TYPE', 'Air-Conditioned', isSmallScreen),
                       ],
                     ),
 
-                    if (stopLocations.isNotEmpty) ...[
+                    if (widget.stopLocations.isNotEmpty) ...[
                       SizedBox(height: 20),
                       Divider(color: Colors.grey.withOpacity(0.3)),
                       SizedBox(height: 10),
@@ -490,7 +637,7 @@ class TripSummaryPage extends StatelessWidget {
                             ),
                           ),
                           SizedBox(height: 8),
-                          ...stopLocations.map((stop) => Padding(
+                          ...widget.stopLocations.map((stop) => Padding(
                             padding: const EdgeInsets.only(bottom: 4.0),
                             child: Row(
                               children: [
@@ -567,7 +714,6 @@ class TripSummaryPage extends StatelessWidget {
                 ),
               ),
 
-              // Barcode Section
               Container(
                 padding: EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
@@ -576,26 +722,6 @@ class TripSummaryPage extends StatelessWidget {
                     bottomLeft: Radius.circular(20),
                     bottomRight: Radius.circular(20),
                   ),
-                ),
-                child: Column(
-                  children: [
-                    // Fake barcode
-                    Container(
-                      height: 70,
-                      width: 200,
-                      child: CustomPaint(
-                        painter: BarcodePainter(),
-                      ),
-                    ),
-                    SizedBox(height: 8),
-                    Text(
-                      bookingRef,
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
                 ),
               ),
 
@@ -615,22 +741,24 @@ class TripSummaryPage extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: (context) => TransportCostPage(
-                        vehicleType: vehicleType,
-                        vehicleModel: vehicleModel,
-                        passengerCount: passengerCount,
-                        distance: distance,
-                        duration: duration,
-                        plannedDays: plannedDays,
-                        pickupLocation: pickupLocation,
-                        dropoffLocation: dropoffLocation,
-                        stopLocations: stopLocations,
+                        vehicleType: widget.vehicleType,
+                        vehicleModel: widget.vehicleModel,
+                        passengerCount: widget.passengerCount,
+                        distance: widget.distance,
+                        duration: widget.duration,
+                        plannedDays: widget.plannedDays,
+                        pickupLocation: widget.pickupLocation,
+                        dropoffLocation: widget.dropoffLocation,
+                        stopLocations: widget.stopLocations,
+                        pickupDate: pickupDate,
+                        pickupTime: pickupTime,
                       ),
                     ),
                   );
                 },
                 child: Text(
                   'Confirm Booking',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600),
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
                 ),
               ),
             ],
@@ -640,53 +768,30 @@ class TripSummaryPage extends StatelessWidget {
     );
   }
 
-  Widget _buildDetailColumn(String label, String value) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          label,
-          style: TextStyle(
-            color: Colors.grey,
-            fontSize: 12,
+  Widget _buildDetailColumn(String label, String value, bool isSmallScreen) {
+    return Container(
+      width: isSmallScreen ? 90 : 100,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            label,
+            style: TextStyle(
+              color: Colors.grey,
+              fontSize: 12,
+            ),
           ),
-        ),
-        SizedBox(height: 4),
-        Text(
-          value,
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14,
+          SizedBox(height: 4),
+          Text(
+            value,
+            style: TextStyle(
+              fontWeight: FontWeight.bold,
+              fontSize: isSmallScreen ? 12 : 14,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }
 
-// Custom painter for barcode effect
-class BarcodePainter extends CustomPainter {
-  @override
-  void paint(Canvas canvas, Size size) {
-    final paint = Paint()
-      ..color = Colors.black
-      ..strokeWidth = 2.0;
-
-    final random = DateTime.now().millisecondsSinceEpoch;
-
-    // Draw random vertical lines to simulate barcode
-    for (int i = 0; i < size.width; i += 4) {
-      if ((i + random) % 3 == 0) {
-        final height = (i % 7 == 0) ? size.height : size.height * 0.7;
-        canvas.drawLine(
-          Offset(i.toDouble(), 0),
-          Offset(i.toDouble(), height),
-          paint,
-        );
-      }
-    }
-  }
-
-  @override
-  bool shouldRepaint(covariant CustomPainter oldDelegate) => false;
-}
