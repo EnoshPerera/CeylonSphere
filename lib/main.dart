@@ -7,7 +7,7 @@ import '/destination_profile.dart';
 import 'google_map_screen.dart';
 import 'destinationCarousel_widget/destination_carousel.dart';
 import 'ar_temple_screen.dart';
-import 'transport_screen.dart';
+import 'transport/transport_screen.dart';
 
 void main() {
   runApp(const TravelApp());
