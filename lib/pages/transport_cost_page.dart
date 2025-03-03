@@ -22,7 +22,7 @@ class TransportCostPage extends StatefulWidget {
     required this.plannedDays,
     required this.pickupLocation,
     required this.dropoffLocation,
-    required this.stopLocations,
+    required this.stopLocations, required DateTime pickupDate, required TimeOfDay pickupTime,
   }) : super(key: key);
 
   @override
@@ -81,17 +81,14 @@ class _TransportCostPageState extends State<TransportCostPage> {
         _dailyRate = 2000.0; // Default daily rate
     }
 
-    // Calculate base cost (distance * rate)
+    // Calculate base cost (distance * rate per km)
     double baseCost = _distanceValue * _ratePerKm;
 
-    // Add daily rate for additional days
-    double additionalDayCost = 0;
-    if (widget.plannedDays > 1) {
-      additionalDayCost = _dailyRate * (widget.plannedDays - 1);
-    }
+    // Calculate cost per day
+    double costPerDay = _dailyRate * widget.plannedDays;
 
-    // Calculate total cost in LKR
-    _totalCostLKR = baseCost + additionalDayCost;
+    // Calculate total cost
+    _totalCostLKR = baseCost + costPerDay;
 
     // Convert to USD (assuming 1 USD = 318 LKR as of March 2025)
     _totalCostUSD = _totalCostLKR / 318;
@@ -259,11 +256,12 @@ class _TransportCostPageState extends State<TransportCostPage> {
               ),
             ),
             SizedBox(height: 16),
-            _buildCostRow('Distance', '${widget.distance}'),
+            _buildCostRow('Distance', widget.distance),
             _buildCostRow('Rate per km', '${_ratePerKm.toStringAsFixed(2)} LKR'),
             _buildCostRow('Base Cost', '${(_distanceValue * _ratePerKm).toStringAsFixed(2)} LKR'),
-            if (widget.plannedDays > 1)
-              _buildCostRow('Additional ${widget.plannedDays - 1} Day(s)', '${(_dailyRate * (widget.plannedDays - 1)).toStringAsFixed(2)} LKR'),
+            _buildCostRow('Cost per Day', '${_dailyRate.toStringAsFixed(2)} LKR'),
+            _buildCostRow('Number of Days', '${widget.plannedDays}'),
+            _buildCostRow('Total Cost per Day', '${(_dailyRate * widget.plannedDays).toStringAsFixed(2)} LKR'),
             Divider(thickness: 1.5),
             _buildCostRow('Total Cost (LKR)', '${_totalCostLKR.toStringAsFixed(2)} LKR', isTotal: true),
             _buildCostRow('Total Cost (USD)', '\$${_totalCostUSD.toStringAsFixed(2)}', isTotal: true),
@@ -350,7 +348,7 @@ class _TransportCostPageState extends State<TransportCostPage> {
             SizedBox(height: 16),
             _buildTermItem('Additional kilometers will be charged at the rate of ${_ratePerKm.toStringAsFixed(2)} LKR per km.'),
             _buildTermItem('Additional days will be charged at the rate of ${_dailyRate.toStringAsFixed(2)} LKR per day.'),
-            _buildTermItem('Fuel, tolls, and parking fees are not included in the price.'),
+            _buildTermItem('Fuel is included in the price. Tolls and parking fees are not included and will be charged separately.'),
             _buildTermItem('A 50% deposit is required to confirm the booking.'),
           ],
         ),
@@ -466,3 +464,4 @@ class _TransportCostPageState extends State<TransportCostPage> {
     );
   }
 }
+
