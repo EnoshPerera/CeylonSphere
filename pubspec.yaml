@@ -30,7 +30,10 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-
+  speech_to_text: ^6.1.1 # For speech recognition
+  flutter_tts: ^3.7.0 # For text-to-speech
+  dialogflow_flutter: ^1.0.0 # If using Dialogflow for AI responses
+  http: ^0.13.6 # If using OpenAI API
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^1.0.8
