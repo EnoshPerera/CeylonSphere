@@ -307,21 +307,23 @@ class _BookingHomePageState extends State<BookingHomePage> {
                                           _updateMapWithSelectedPlace(placeId, name, 'stop', index),
                                     ),
                                   ),
-                                  IconButton(
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                    onPressed: () => _removeStopLocation(index),
-                                  ),
                                 ],
                               ),
                             );
                           }),
-                          OutlinedButton.icon(
-                            icon: Icon(Icons.add),
-                            label: Text('Add Stop'),
-                            onPressed: _addStopLocation,
-                            style: OutlinedButton.styleFrom(
-                              side: BorderSide(color: Colors.teal),
-                              foregroundColor: Colors.teal,
+                          Center(
+                            child: TextButton.icon(
+                              icon: Icon(Icons.add),
+                              label: Text('Add Stop'),
+                              onPressed: _addStopLocation,
+                              style: TextButton.styleFrom(
+                                backgroundColor: Colors.teal,
+                                foregroundColor: Colors.white,
+                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(8),
+                                ),
+                              ),
                             ),
                           ),
                           SizedBox(height: 10),
@@ -380,6 +382,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
                             style: ElevatedButton.styleFrom(
                               backgroundColor: Colors.teal,
                               minimumSize: Size(double.infinity, 50),
+                              foregroundColor: Colors.white,
                             ),
                             onPressed: () {
                               if (pickupLocation != null && dropoffLocation != null) {
@@ -488,30 +491,74 @@ class _LocationInputFieldState extends State<LocationInputField> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TextField(
-          controller: _controller,
-          decoration: InputDecoration(
-            labelText: widget.hint,
-            border: OutlineInputBorder(),
-            suffixIcon: _isSearching
-                ? CircularProgressIndicator(strokeWidth: 2)
-                : Icon(Icons.location_on),
-            contentPadding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+        Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.grey.withOpacity(0.2),
+                spreadRadius: 1,
+                blurRadius: 4,
+                offset: Offset(0, 2),
+              ),
+            ],
           ),
-          onChanged: (value) {
-            _searchPlaces(value);
-          },
-          onTap: () {
-            setState(() {
-              _showSuggestions = _searchResults.isNotEmpty;
-            });
-          },
+          child: TextField(
+            controller: _controller,
+            decoration: InputDecoration(
+              labelText: widget.hint,
+              filled: true,
+              fillColor: Colors.white,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.teal.withOpacity(0.3)),
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.teal.withOpacity(0.3)),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide(color: Colors.teal, width: 2),
+              ),
+              suffixIcon: _isSearching
+                  ? Container(
+                width: 20,
+                height: 20,
+                padding: EdgeInsets.all(8),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.teal,
+                ),
+              )
+                  : Icon(Icons.location_on, color: Colors.teal),
+              contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              floatingLabelBehavior: FloatingLabelBehavior.never,
+              hintStyle: TextStyle(color: Colors.grey[400]),
+            ),
+            onChanged: (value) {
+              _searchPlaces(value);
+            },
+            onTap: () {
+              setState(() {
+                _showSuggestions = _searchResults.isNotEmpty;
+              });
+            },
+          ),
         ),
         if (_showSuggestions)
           Container(
             decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey.shade300),
-              borderRadius: BorderRadius.circular(4),
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.3),
+                  spreadRadius: 1,
+                  blurRadius: 5,
+                  offset: Offset(0, 3),
+                ),
+              ],
             ),
             margin: EdgeInsets.only(top: 4),
             constraints: BoxConstraints(maxHeight: 200),
@@ -521,10 +568,11 @@ class _LocationInputFieldState extends State<LocationInputField> {
               itemBuilder: (context, index) {
                 final place = _searchResults[index];
                 return ListTile(
-                  title: Text(place.name),
+                  title: Text(place.name, style: TextStyle(fontWeight: FontWeight.w500)),
                   subtitle: Text(
                     place.formattedAddress ?? '',
                     overflow: TextOverflow.ellipsis,
+                    style: TextStyle(fontSize: 12),
                   ),
                   onTap: () {
                     _controller.text = place.name;
