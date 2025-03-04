@@ -12,7 +12,7 @@ import GoogleMaps
   ) -> Bool {
     // Provide Google Maps API Key
     GMSServices.provideAPIKey("AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA")
-    
+      
     GeneratedPluginRegistrant.register(with: self)
     return super.application(application, didFinishLaunchingWithOptions: launchOptions)
   }
@@ -35,4 +35,3 @@ import GoogleMaps
     return window?.rootViewController ?? UIViewController()
   }
 }
-

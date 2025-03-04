@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 class GoogleMapScreen extends StatefulWidget {
   const GoogleMapScreen({super.key});
@@ -63,6 +64,12 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       'icon': CupertinoIcons.sunrise,
       'color': Color(0xFF00BCD4),
     },
+    'bar': {
+      'label': 'Bars & Wine',
+      'icon': CupertinoIcons.circle_grid_3x3,
+      'color': Color(0xFF9C27B0),
+      'types': ['bar', 'liquor_store'],
+    },
   };
 
   List<Map<String, dynamic>> _places = [];
@@ -105,11 +112,16 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       _places.clear();
     });
 
+    String typeParam = _selectedPlaceType;
+    if (_selectedPlaceType == 'bar') {
+      typeParam = 'bar|liquor_store';
+    }
+
     final url =
         Uri.parse("https://maps.googleapis.com/maps/api/place/nearbysearch/json"
             "?location=${location.latitude},${location.longitude}"
             "&radius=$_radiusInMeters"
-            "&type=$_selectedPlaceType"
+            "&type=$typeParam"
             "&key=$apiKey");
 
     try {
@@ -156,6 +168,33 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
       setState(() {
         _isLoading = false;
       });
+    }
+  }
+
+  Future<void> _openDirections(Map<String, dynamic> place) async {
+    final lat = place['geometry']['location']['lat'];
+    final lng = place['geometry']['location']['lng'];
+    final name = Uri.encodeComponent(place['name']);
+
+    final url = Uri.parse(
+        'https://www.google.com/maps/dir/?api=1&destination=$lat,$lng&destination_name=$name');
+
+    if (await canLaunchUrl(url)) {
+      await launchUrl(url);
+    } else {
+      showCupertinoDialog(
+        context: context,
+        builder: (context) => CupertinoAlertDialog(
+          title: Text('Error'),
+          content: Text('Could not open directions'),
+          actions: [
+            CupertinoDialogAction(
+              child: Text('OK'),
+              onPressed: () => Navigator.pop(context),
+            ),
+          ],
+        ),
+      );
     }
   }
 
@@ -221,12 +260,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             ],
             const SizedBox(height: 16),
             CupertinoButton.filled(
-              onPressed: () {
-                // Open in Google Maps
-                final url = Uri.parse(
-                    "https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(place["name"])}");
-                // You'll need to add url_launcher package to implement this
-              },
+              onPressed: () => _openDirections(place),
               child: const Text('Get Directions'),
             ),
           ],
@@ -321,6 +355,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
                               15,
                             ),
                           );
+                          _openDirections(place);
                           Navigator.pop(context);
                         },
                         borderRadius: BorderRadius.circular(15),
