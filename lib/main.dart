@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:dio/dio.dart';
 import 'dart:math' as math;
+
+// Google Places API key
+const String apiKey = 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -32,7 +37,9 @@ class Place {
   final LatLng location;
   final String description;
   final double rating;
-  final double distance; // Distance from current location
+  final double distance;
+  final String address;
+  final String photoReference;
 
   Place({
     required this.id,
@@ -42,7 +49,23 @@ class Place {
     required this.description,
     required this.rating,
     this.distance = 0,
+    required this.address,
+    this.photoReference = '',
   });
+
+  factory Place.fromGooglePlace(Map<String, dynamic> place, String category) {
+    final location = place['geometry']['location'];
+    return Place(
+      id: place['place_id'],
+      name: place['name'],
+      category: category,
+      location: LatLng(location['lat'], location['lng']),
+      description: place['vicinity'] ?? '',
+      rating: (place['rating'] ?? 0.0).toDouble(),
+      address: place['vicinity'] ?? '',
+      photoReference: place['photos']?[0]?['photo_reference'] ?? '',
+    );
+  }
 }
 
 class NearbyServicesPage extends StatefulWidget {
@@ -61,6 +84,7 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
   bool _isLoading = false;
   LatLng? _currentLocation;
   String? _errorMessage;
+  final Dio _dio = Dio();
 
   @override
   void initState() {
@@ -79,13 +103,11 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
     });
 
     try {
-      // Check if location service is enabled
       bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
       if (!serviceEnabled) {
         throw Exception('Location services are disabled. Please enable location services in your device settings.');
       }
 
-      // Check location permissions
       LocationPermission permission = await Geolocator.checkPermission();
       if (permission == LocationPermission.denied) {
         permission = await Geolocator.requestPermission();
@@ -98,20 +120,18 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
         throw Exception('Location permissions are permanently denied. Please enable location permissions in your device settings.');
       }
 
-      // Get current position with timeout
       Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.high,
         timeLimit: const Duration(seconds: 5),
-      ).catchError((error) {
-        throw Exception('Failed to get location: $error');
-      });
+      );
 
       setState(() {
         _currentLocation = LatLng(position.latitude, position.longitude);
-        _loadSampleData();
       });
 
-      // Animate camera to current location
+      // Load nearby places once we have the location
+      await _loadNearbyPlaces();
+
       if (mapController != null) {
         await mapController!.animateCamera(
           CameraUpdate.newLatLngZoom(_currentLocation!, 14),
@@ -121,12 +141,13 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
       print('Location error: $e');
       setState(() {
         _errorMessage = e.toString();
-        // Fallback to Kandy location
-        _currentLocation = const LatLng(7.2906, 80.6337);
-        _loadSampleData();
+        // Use a default location (center of Sri Lanka) if location access fails
+        _currentLocation = const LatLng(7.8731, 80.7718);
       });
+      
+      // Try to load places even with default location
+      await _loadNearbyPlaces();
 
-      // Show error message to user
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
@@ -146,70 +167,6 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
     }
   }
 
-  void _loadSampleData() {
-    if (_currentLocation == null) return;
-
-    final random = math.Random();
-    final categories = ['Tourist Spots', 'Restaurants', 'Hotels', 'Shopping'];
-    
-    // Real sample data for Kandy area
-    final names = {
-      'Tourist Spots': [
-        {'name': 'Temple of the Sacred Tooth Relic', 'lat': 7.2936, 'lng': 80.6413},
-        {'name': 'Kandy Lake', 'lat': 7.2912, 'lng': 80.6421},
-        {'name': 'Royal Palace of Kandy', 'lat': 7.2937, 'lng': 80.6409},
-        {'name': 'Peradeniya Botanical Garden', 'lat': 7.2717, 'lng': 80.5949},
-        {'name': 'Udawattakele Forest Reserve', 'lat': 7.2989, 'lng': 80.6368},
-      ],
-      'Restaurants': [
-        {'name': 'The Empire Cafe', 'lat': 7.2931, 'lng': 80.6385},
-        {'name': 'Slightly Chilled Lounge', 'lat': 7.2967, 'lng': 80.6329},
-        {'name': 'Licensed to Grill', 'lat': 7.2912, 'lng': 80.6401},
-        {'name': 'Cafe Divine Street', 'lat': 7.2922, 'lng': 80.6376},
-        {'name': 'The Pub', 'lat': 7.2928, 'lng': 80.6385},
-      ],
-      'Hotels': [
-        {'name': 'Earl\'s Regency', 'lat': 7.2890, 'lng': 80.6027},
-        {'name': 'Hotel Topaz', 'lat': 7.2983, 'lng': 80.6317},
-        {'name': 'Grand Kandyan', 'lat': 7.2946, 'lng': 80.6314},
-        {'name': 'OZO Kandy', 'lat': 7.2932, 'lng': 80.6358},
-        {'name': 'Queens Hotel', 'lat': 7.2927, 'lng': 80.6401},
-      ],
-      'Shopping': [
-        {'name': 'Kandy City Center', 'lat': 7.2912, 'lng': 80.6355},
-        {'name': 'Central Market', 'lat': 7.2920, 'lng': 80.6334},
-        {'name': 'Kandy Shopping Complex', 'lat': 7.2915, 'lng': 80.6349},
-        {'name': 'Waruna Shops', 'lat': 7.2909, 'lng': 80.6345},
-        {'name': 'Gamage Stores', 'lat': 7.2918, 'lng': 80.6339},
-      ],
-    };
-
-    _places.clear();
-    
-    for (var category in categories) {
-      for (var place in names[category]!) {
-        final location = LatLng(place['lat'] as double, place['lng'] as double);
-        _places.add(
-          Place(
-            id: '${category}_${place['name']}',
-            name: place['name'] as String,
-            category: category,
-            location: location,
-            description: 'A popular ${category.toLowerCase()} in Kandy',
-            rating: 3.5 + random.nextDouble() * 1.5,
-            distance: Geolocator.distanceBetween(
-              _currentLocation!.latitude,
-              _currentLocation!.longitude,
-              location.latitude,
-              location.longitude,
-            ) / 1000, // Convert to kilometers
-          ),
-        );
-      }
-    }
-    _updateMarkers();
-  }
-
   void _updateMarkers() {
     setState(() {
       _markers.clear();
@@ -222,7 +179,7 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
             position: place.location,
             infoWindow: InfoWindow(
               title: place.name,
-              snippet: '${place.rating.toStringAsFixed(1)}★ - ${place.description}',
+              snippet: '${place.rating.toStringAsFixed(1)}★ - ${place.address}',
             ),
             icon: _getMarkerIcon(place.category),
           ),
@@ -280,23 +237,77 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
       controller.animateCamera(
         CameraUpdate.newLatLngZoom(_currentLocation!, 14),
       );
+      _loadNearbyPlaces();
     }
-    _updateMarkers();
   }
 
-  void _refreshPlaces() {
+  Future<void> _loadNearbyPlaces() async {
+    if (_currentLocation == null) return;
+
     setState(() {
       _isLoading = true;
+      _places.clear();
+      _markers.clear();
     });
 
-    // Simulate loading delay
-    Future.delayed(const Duration(seconds: 1), () {
-      _loadSampleData();
-      _updateMarkers();
+    try {
+      final selectedDistanceMeters = double.parse(selectedDistance.replaceAll('km', '')) * 1000;
+      
+      String placeType;
+      switch (selectedCategory) {
+        case 'Restaurants':
+          placeType = 'restaurant';
+          break;
+        case 'Hotels':
+          placeType = 'lodging';
+          break;
+        case 'Shopping':
+          placeType = 'shopping_mall';
+          break;
+        case 'Tourist Spots':
+          placeType = 'tourist_attraction';
+          break;
+        default:
+          placeType = 'point_of_interest';
+      }
+
+      final response = await _dio.get(
+        'https://maps.googleapis.com/maps/api/place/nearbysearch/json',
+        queryParameters: {
+          'location': '${_currentLocation!.latitude},${_currentLocation!.longitude}',
+          'radius': selectedDistanceMeters.toString(),
+          'type': placeType,
+          'key': apiKey,
+        },
+      );
+
+      if (response.data['status'] == 'OK') {
+        final results = response.data['results'] as List;
+        for (var place in results) {
+          final newPlace = Place.fromGooglePlace(place, selectedCategory);
+          _places.add(newPlace);
+        }
+        _updateMarkers();
+      } else {
+        throw Exception('Failed to load places: ${response.data['status']}');
+      }
+    } catch (e) {
+      print('Error loading places: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load nearby places: $e'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } finally {
       setState(() {
         _isLoading = false;
       });
-    });
+    }
+  }
+
+  void _refreshPlaces() {
+    _loadNearbyPlaces();
   }
 
   void _showPlacesList() {
@@ -439,6 +450,10 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
               icon: const Icon(Icons.my_location),
               onPressed: _getCurrentLocation,
             ),
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: _loadNearbyPlaces,
+          ),
           const SizedBox(width: 8),
         ],
       ),
