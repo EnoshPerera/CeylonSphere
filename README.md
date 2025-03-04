@@ -1,4 +1,4 @@
-# nearby_services_page
+# nearby_services
 
 A new Flutter project.
 
