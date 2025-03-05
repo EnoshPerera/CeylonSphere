@@ -206,6 +206,10 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueBlue);
       case 'Shopping':
         return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueViolet);
+      case 'Grocery':
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueOrange);
+      case 'Liquor Stores':
+        return BitmapDescriptor.defaultMarkerWithHue(BitmapDescriptor.hueRed);
       default:
         return BitmapDescriptor.defaultMarker;
     }
@@ -274,6 +278,12 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
           break;
         case 'Tourist Spots':
           placeType = 'tourist_attraction';
+          break;
+        case 'Grocery':
+          placeType = 'supermarket';
+          break;
+        case 'Liquor Stores':
+          placeType = 'liquor_store';
           break;
         default:
           placeType = 'point_of_interest';
@@ -410,6 +420,10 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
         return Icons.hotel;
       case 'Shopping':
         return Icons.shopping_cart;
+      case 'Grocery':
+        return Icons.local_grocery_store;
+      case 'Liquor Stores':
+        return Icons.local_bar;
       default:
         return Icons.place;
     }
@@ -425,6 +439,10 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
         return Colors.blue;
       case 'Shopping':
         return Colors.purple;
+      case 'Grocery':
+        return Colors.orange;
+      case 'Liquor Stores':
+        return Colors.red;
       default:
         return Colors.grey;
     }
@@ -534,14 +552,25 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
                       ),
                     ],
                   ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      _buildCategoryButton('Tourist Spots', Icons.photo_camera, Colors.green),
-                      _buildCategoryButton('Restaurants', Icons.restaurant, Colors.pink),
-                      _buildCategoryButton('Hotels', Icons.hotel, Colors.blue),
-                      _buildCategoryButton('Shopping', Icons.shopping_cart, Colors.purple),
-                    ],
+                  child: SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    physics: const BouncingScrollPhysics(),
+                    child: Row(
+                      children: [
+                        _buildCategoryButton('Tourist Spots', Icons.photo_camera, Colors.green),
+                        const SizedBox(width: 16),
+                        _buildCategoryButton('Restaurants', Icons.restaurant, Colors.pink),
+                        const SizedBox(width: 16),
+                        _buildCategoryButton('Hotels', Icons.hotel, Colors.blue),
+                        const SizedBox(width: 16),
+                        _buildCategoryButton('Shopping', Icons.shopping_cart, Colors.purple),
+                        const SizedBox(width: 16),
+                        _buildCategoryButton('Grocery', Icons.local_grocery_store, Colors.orange),
+                        const SizedBox(width: 16),
+                        _buildCategoryButton('Liquor Stores', Icons.local_bar, Colors.red),
+                      ],
+                    ),
                   ),
                 ),
                 const SizedBox(height: 16),
@@ -636,18 +665,21 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
           bottom: 16,
           left: 16,
           right: 16,
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.green,
-              padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
+          child: Padding(
+            padding: EdgeInsets.only(bottom: MediaQuery.of(context).viewPadding.bottom),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.green,
+                padding: const EdgeInsets.symmetric(vertical: 16),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
-            ),
-            onPressed: _showPlacesList,
-            child: Text(
-              'View Places (${_getFilteredPlaces().length})',
-              style: const TextStyle(color: Colors.white, fontSize: 16),
+              onPressed: _showPlacesList,
+              child: Text(
+                'View Places (${_getFilteredPlaces().length})',
+                style: const TextStyle(color: Colors.white, fontSize: 16),
+              ),
             ),
           ),
         ),
@@ -664,31 +696,45 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
           _updateMarkers();
         });
       },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: isSelected ? color : Colors.grey[200],
-              borderRadius: BorderRadius.circular(12),
+      child: Container(
+        width: 90,
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 12),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: isSelected ? color : Colors.grey[200],
+                borderRadius: BorderRadius.circular(12),
+                boxShadow: isSelected ? [
+                  BoxShadow(
+                    color: color.withOpacity(0.3),
+                    blurRadius: 8,
+                    offset: const Offset(0, 4),
+                  ),
+                ] : null,
+              ),
+              child: Icon(
+                icon,
+                color: isSelected ? Colors.white : Colors.grey,
+                size: 24,
+              ),
             ),
-            child: Icon(
-              icon,
-              color: isSelected ? Colors.white : Colors.grey,
-              size: 24,
+            const SizedBox(height: 8),
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? color : Colors.grey,
+                fontSize: 11,
+                fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
             ),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            title,
-            style: TextStyle(
-              color: isSelected ? color : Colors.grey,
-              fontSize: 12,
-              fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
