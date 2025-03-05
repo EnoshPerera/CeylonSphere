@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_places_flutter/google_places_flutter.dart';
+import 'package:flutter_polyline_points/flutter_polyline_points.dart';
 import 'package:dio/dio.dart';
 import 'dart:math' as math;
 
@@ -85,6 +86,13 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
   LatLng? _currentLocation;
   String? _errorMessage;
   final Dio _dio = Dio();
+
+  // Add new variables for directions
+  Set<Polyline> _polylines = {};
+  LatLng? _destinationLocation;
+  String _selectedTravelMode = 'driving';
+  Map<String, dynamic>? _directionsInfo;
+  bool _showDirections = false;
 
   @override
   void initState() {
@@ -377,10 +385,8 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
                           ],
                         ),
                         onTap: () {
-                          mapController?.animateCamera(
-                            CameraUpdate.newLatLngZoom(place.location, 16),
-                          );
                           Navigator.pop(context);
+                          _getDirections(place.location);
                         },
                       );
                     },
@@ -502,69 +508,130 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
             zoom: 14.0,
           ),
           markers: _markers,
+          polylines: _polylines,
           myLocationEnabled: true,
           myLocationButtonEnabled: true,
           zoomControlsEnabled: true,
           compassEnabled: true,
         ),
-        Positioned(
-          top: 16,
-          left: 16,
-          right: 16,
-          child: Column(
-            children: [
-              // Category buttons
-              Container(
-                height: 100,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(12),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
+        if (!_showDirections) ...[
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: Column(
+              children: [
+                Container(
+                  height: 100,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildCategoryButton('Tourist Spots', Icons.photo_camera, Colors.green),
+                      _buildCategoryButton('Restaurants', Icons.restaurant, Colors.pink),
+                      _buildCategoryButton('Hotels', Icons.hotel, Colors.blue),
+                      _buildCategoryButton('Shopping', Icons.shopping_cart, Colors.purple),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildCategoryButton('Tourist Spots', Icons.photo_camera, Colors.green),
-                    _buildCategoryButton('Restaurants', Icons.restaurant, Colors.pink),
-                    _buildCategoryButton('Hotels', Icons.hotel, Colors.blue),
-                    _buildCategoryButton('Shopping', Icons.shopping_cart, Colors.purple),
-                  ],
+                const SizedBox(height: 16),
+                Container(
+                  height: 50,
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(25),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withOpacity(0.1),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      _buildDistanceButton('2km'),
+                      _buildDistanceButton('5km'),
+                      _buildDistanceButton('10km'),
+                    ],
+                  ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              // Distance filter
-              Container(
-                height: 50,
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(25),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 10,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    _buildDistanceButton('2km'),
-                    _buildDistanceButton('5km'),
-                    _buildDistanceButton('10km'),
-                  ],
-                ),
-              ),
-            ],
+              ],
+            ),
           ),
-        ),
-        // View Places button at bottom
+        ],
+        if (_showDirections && _directionsInfo != null)
+          Positioned(
+            top: 16,
+            left: 16,
+            right: 16,
+            child: Card(
+              elevation: 4,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      children: [
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back),
+                          onPressed: _clearDirections,
+                        ),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                _directionsInfo!['duration'],
+                                style: const TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              Text(
+                                _directionsInfo!['distance'],
+                                style: TextStyle(
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
+                    SingleChildScrollView(
+                      scrollDirection: Axis.horizontal,
+                      child: Row(
+                        children: [
+                          _buildTravelModeButton('driving', Icons.directions_car, 'Drive'),
+                          _buildTravelModeButton('walking', Icons.directions_walk, 'Walk'),
+                          _buildTravelModeButton('bicycling', Icons.directions_bike, 'Bike'),
+                          _buildTravelModeButton('transit', Icons.directions_bus, 'Transit'),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
         Positioned(
           bottom: 16,
           left: 16,
@@ -648,6 +715,124 @@ class _NearbyServicesPageState extends State<NearbyServicesPage> {
             fontWeight: isSelected ? FontWeight.bold : FontWeight.normal,
           ),
         ),
+      ),
+    );
+  }
+
+  Future<void> _getDirections(LatLng destination) async {
+    setState(() {
+      _isLoading = true;
+      _showDirections = true;
+      _destinationLocation = destination;
+    });
+
+    try {
+      final response = await _dio.get(
+        'https://maps.googleapis.com/maps/api/directions/json',
+        queryParameters: {
+          'origin': '${_currentLocation!.latitude},${_currentLocation!.longitude}',
+          'destination': '${destination.latitude},${destination.longitude}',
+          'mode': _selectedTravelMode,
+          'key': apiKey,
+        },
+      );
+
+      if (response.data['status'] == 'OK') {
+        final route = response.data['routes'][0];
+        final leg = route['legs'][0];
+        final polylinePoints = PolylinePoints();
+        final points = polylinePoints.decodePolyline(route['overview_polyline']['points']);
+
+        setState(() {
+          _directionsInfo = {
+            'distance': leg['distance']['text'],
+            'duration': leg['duration']['text'],
+            'start_address': leg['start_address'],
+            'end_address': leg['end_address'],
+          };
+
+          _polylines.clear();
+          _polylines.add(
+            Polyline(
+              polylineId: const PolylineId('route'),
+              color: Colors.blue,
+              points: points.map((point) => LatLng(point.latitude, point.longitude)).toList(),
+              width: 4,
+            ),
+          );
+        });
+
+        // Adjust map bounds to show the entire route
+        final bounds = LatLngBounds(
+          southwest: LatLng(
+            route['bounds']['southwest']['lat'],
+            route['bounds']['southwest']['lng'],
+          ),
+          northeast: LatLng(
+            route['bounds']['northeast']['lat'],
+            route['bounds']['northeast']['lng'],
+          ),
+        );
+
+        mapController?.animateCamera(
+          CameraUpdate.newLatLngBounds(bounds, 50),
+        );
+      } else {
+        throw Exception('Failed to load directions: ${response.data['status']}');
+      }
+    } catch (e) {
+      print('Error loading directions: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to load directions: $e'),
+          duration: const Duration(seconds: 3),
+        ),
+      );
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  void _clearDirections() {
+    setState(() {
+      _showDirections = false;
+      _polylines.clear();
+      _directionsInfo = null;
+      _destinationLocation = null;
+    });
+  }
+
+  Widget _buildTravelModeButton(String mode, IconData icon, String label) {
+    final isSelected = _selectedTravelMode == mode;
+    return Padding(
+      padding: const EdgeInsets.only(right: 8),
+      child: ElevatedButton.icon(
+        icon: Icon(
+          icon,
+          color: isSelected ? Colors.white : Colors.grey[600],
+        ),
+        label: Text(
+          label,
+          style: TextStyle(
+            color: isSelected ? Colors.white : Colors.grey[600],
+          ),
+        ),
+        style: ElevatedButton.styleFrom(
+          backgroundColor: isSelected ? Colors.green : Colors.grey[200],
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+        ),
+        onPressed: () {
+          setState(() {
+            _selectedTravelMode = mode;
+          });
+          if (_destinationLocation != null) {
+            _getDirections(_destinationLocation!);
+          }
+        },
       ),
     );
   }
