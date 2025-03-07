@@ -8,6 +8,7 @@ import 'google_map_screen.dart';
 import 'destinationCarousel_widget/destination_carousel.dart';
 import 'ar_temple_screen.dart';
 import 'transport/transport_screen.dart';
+import 'chatbot/travel_chatbot_screen.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -195,6 +196,18 @@ class HomeScreen extends StatelessWidget {
                                             const _CategoryGridItem(
                                               icon: CupertinoIcons.cart,
                                               label: 'Markets',
+                                            ),
+                                            _CategoryGridItem(
+                                              icon:
+                                                  CupertinoIcons.chat_bubble_2,
+                                              label: 'Travel Assistant',
+                                              onTap: () => Navigator.push(
+                                                context,
+                                                CupertinoPageRoute(
+                                                  builder: (context) =>
+                                                      const TravelChatbotScreen(),
+                                                ),
+                                              ),
                                             ),
                                           ],
                                         ),
