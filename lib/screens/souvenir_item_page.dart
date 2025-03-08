@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'ar_camera_view.dart';
 
 class SouvenirItemPage extends StatelessWidget {
   const SouvenirItemPage({super.key});
@@ -15,7 +16,7 @@ class SouvenirItemPage extends StatelessWidget {
               children: [
                 // Background Image
                 Image.asset(
-                  'assets/bamunu_mask.jpg', // Make sure to add this image to your assets
+                  'assets/bamunu_mask.jpg',
                   width: double.infinity,
                   height: 300,
                   fit: BoxFit.cover,
@@ -58,8 +59,12 @@ class SouvenirItemPage extends StatelessWidget {
                   child: Center(
                     child: GestureDetector(
                       onTap: () {
-                        // This will be implemented by your friend for AR functionality
-                        print('Navigate to AR View');
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => const ARCameraView(),
+                          ),
+                        );
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(
