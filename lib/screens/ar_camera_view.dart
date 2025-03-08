@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
-import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class ARCameraView extends StatefulWidget {
   const ARCameraView({super.key});
@@ -71,15 +70,9 @@ class _ARCameraViewState extends State<ARCameraView> {
             Positioned.fill(
               child: Container(
                 color: Colors.transparent,
-                child: ModelViewer(
-                  backgroundColor: const Color.fromARGB(0, 0, 0, 0),
-                  src: 'assets/models/wooden_mask.glb',
-                  alt: "A 3D model of a wooden mask",
-                  ar: true,
-                  arModes: const ['scene-viewer', 'webxr', 'quick-look'],
-                  autoRotate: true,
-                  cameraControls: true,
-                  disableZoom: false,
+                child: Image.asset(
+                  'assets/bamunu_mask_01.png',
+                  fit: BoxFit.contain,
                 ),
               ),
             ),
