@@ -1,92 +1,236 @@
 import 'package:flutter/material.dart';
 import 'destinations_detail_page.dart';
+import '../models/destination.dart';
 
-class DestinationsListPage extends StatelessWidget {
-  const DestinationsListPage({Key? key}) : super(key: key);
+class DestinationsListPage extends StatefulWidget {
+  const DestinationsListPage({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    // This is a placeholder for my teammate's implementation
-    // When they complete their work, this will be replaced
+  State<DestinationsListPage> createState() => _DestinationsListPageState();
+}
 
-    // Get destinations data from the DestinationsData class
-    final destinations = DestinationsData.getDestinations();
+class _DestinationsListPageState extends State<DestinationsListPage> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  
+  @override
+  Widget build(BuildContext context) {
+    final destinations = DestinationsData.getDestinations()
+        .where((d) => d.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            d.country.toLowerCase().contains(_searchQuery.toLowerCase()))
+        .toList();
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('Ceylonsphere'),
-      ),
-      body: ListView.builder(
-        itemCount: destinations.length,
-        itemBuilder: (context, index) {
-          final destination = destinations[index];
-          return GestureDetector(
-            onTap: () {
-              // Navigate to the detail page when a destination is tapped
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => DestinationDetailPage(
-                    destinationName: destination.name,
-                    imagePath: destination.imagePath,
-                    description: destination.description,
-                    country: destination.country,
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            floating: true,
+            pinned: true,
+            elevation: 0,
+            backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+            flexibleSpace: FlexibleSpaceBar(
+              background: Container(
+                padding: const EdgeInsets.fromLTRB(16, 60, 16, 0),
+                child: TextField(
+                  controller: _searchController,
+                  onChanged: (value) => setState(() => _searchQuery = value),
+                  decoration: InputDecoration(
+                    hintText: 'Search destinations...',
+                    prefixIcon: const Icon(Icons.search),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(30),
+                      borderSide: BorderSide.none,
+                    ),
+                    filled: true,
+                    fillColor: Colors.grey[200],
                   ),
                 ),
-              );
-            },
-            child: Card(
-              margin: const EdgeInsets.all(8.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // Destination image
-                  Image.asset(
-                    destination.imagePath,
-                    height: 150,
-                    width: double.infinity,
-                    fit: BoxFit.cover,
-                    errorBuilder: (context, error, stackTrace) {
-                      return Container(
-                        height: 150,
-                        color: Colors.grey[300],
-                        child: const Center(child: Icon(Icons.image, size: 50)),
-                      );
-                    },
-                  ),
-                  // Destination details
-                  Padding(
-                    padding: const EdgeInsets.all(12.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          destination.name,
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+              ),
+            ),
+          ),
+          SliverPadding(
+            padding: const EdgeInsets.all(16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  if (index == 0) {
+                    return const Padding(
+                      padding: EdgeInsets.only(bottom: 16),
+                      child: Text(
+                        'Popular Destinations',
+                        style: TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
-                        const SizedBox(height: 4),
-                        Row(
-                          children: [
-                            const Icon(Icons.location_on,
-                                size: 16, color: Colors.grey),
-                            const SizedBox(width: 4),
-                            Text(
-                              destination.country,
-                              style: const TextStyle(color: Colors.grey),
+                      ),
+                    );
+                  }
+                  final destination = destinations[index - 1];
+                  return Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => DestinationDetailPage(
+                              destinationName: destination.name,
+                              imagePath: destination.imagePath,
+                              description: destination.description,
+                              country: destination.country,
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        height: 280,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(20),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 10,
+                              offset: const Offset(0, 5),
                             ),
                           ],
                         ),
-                      ],
+                        child: Stack(
+                          children: [
+                            // Image with gradient overlay
+                            ClipRRect(
+                              borderRadius: BorderRadius.circular(20),
+                              child: Stack(
+                                children: [
+                                  Image.asset(
+                                    destination.imagePath,
+                                    height: 280,
+                                    width: double.infinity,
+                                    fit: BoxFit.cover,
+                                  ),
+                                  Container(
+                                    decoration: BoxDecoration(
+                                      gradient: LinearGradient(
+                                        begin: Alignment.topCenter,
+                                        end: Alignment.bottomCenter,
+                                        colors: [
+                                          Colors.transparent,
+                                          Colors.black.withOpacity(0.7),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            // Content
+                            Positioned(
+                              bottom: 16,
+                              left: 16,
+                              right: 16,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Categories
+                                  Wrap(
+                                    spacing: 8,
+                                    children: destination.categories.map((category) {
+                                      return Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 12,
+                                          vertical: 6,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(20),
+                                        ),
+                                        child: Text(
+                                          category,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 12,
+                                          ),
+                                        ),
+                                      );
+                                    }).toList(),
+                                  ),
+                                  const SizedBox(height: 8),
+                                  // Name and Rating
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child: Text(
+                                          destination.name,
+                                          style: const TextStyle(
+                                            color: Colors.white,
+                                            fontSize: 24,
+                                            fontWeight: FontWeight.bold,
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withOpacity(0.2),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            const Icon(
+                                              Icons.star,
+                                              color: Colors.amber,
+                                              size: 16,
+                                            ),
+                                            const SizedBox(width: 4),
+                                            Text(
+                                              destination.rating.toString(),
+                                              style: const TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(height: 4),
+                                  // Location
+                                  Row(
+                                    children: [
+                                      const Icon(
+                                        Icons.location_on,
+                                        color: Colors.white70,
+                                        size: 16,
+                                      ),
+                                      const SizedBox(width: 4),
+                                      Text(
+                                        destination.country,
+                                        style: const TextStyle(
+                                          color: Colors.white70,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
-                  ),
-                ],
+                  );
+                },
+                childCount: destinations.length + 1,
               ),
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }
