@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class ARCameraView extends StatefulWidget {
   const ARCameraView({super.key});
@@ -11,6 +12,8 @@ class ARCameraView extends StatefulWidget {
 class _ARCameraViewState extends State<ARCameraView> {
   CameraController? _controller;
   Future<void>? _initializeControllerFuture;
+  bool _showModel = false;
+  bool _modelError = false;
 
   @override
   void initState() {
@@ -51,6 +54,7 @@ class _ARCameraViewState extends State<ARCameraView> {
     return Scaffold(
       body: Stack(
         children: [
+          // Camera Preview
           FutureBuilder<void>(
             future: _initializeControllerFuture,
             builder: (context, snapshot) {
@@ -61,24 +65,63 @@ class _ARCameraViewState extends State<ARCameraView> {
               }
             },
           ),
-          // Back button
-          Positioned(
-            top: 40,
-            left: 16,
-            child: GestureDetector(
-              onTap: () => Navigator.pop(context),
+
+          // 3D Model Viewer
+          if (_showModel)
+            Positioned.fill(
               child: Container(
-                padding: const EdgeInsets.all(12),
-                decoration: BoxDecoration(
-                  color: Colors.grey[800]?.withOpacity(0.5),
-                  shape: BoxShape.circle,
-                ),
-                child: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.white,
-                  size: 24,
+                color: Colors.transparent,
+                child: ModelViewer(
+                  backgroundColor: const Color.fromARGB(0, 0, 0, 0),
+                  src: 'assets/models/wooden_mask.glb',
+                  alt: "A 3D model of a wooden mask",
+                  ar: true,
+                  arModes: const ['scene-viewer', 'webxr', 'quick-look'],
+                  autoRotate: true,
+                  cameraControls: true,
+                  disableZoom: false,
                 ),
               ),
+            ),
+
+          // Error Message
+          if (_showModel && _modelError)
+            const Center(
+              child: Text(
+                'Error loading 3D model',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontSize: 18,
+                  backgroundColor: Colors.white,
+                ),
+              ),
+            ),
+
+          // Controls
+          Positioned(
+            bottom: 20,
+            left: 0,
+            right: 0,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                FloatingActionButton(
+                  heroTag: 'back',
+                  onPressed: () => Navigator.pop(context),
+                  child: const Icon(Icons.arrow_back),
+                ),
+                FloatingActionButton(
+                  heroTag: 'toggle',
+                  onPressed: () {
+                    setState(() {
+                      _showModel = !_showModel;
+                      if (_showModel) _modelError = false;
+                    });
+                  },
+                  child:
+                      Icon(_showModel ? Icons.hide_source : Icons.view_in_ar),
+                ),
+              ],
             ),
           ),
         ],
