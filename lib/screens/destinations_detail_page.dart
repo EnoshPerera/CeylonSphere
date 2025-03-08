@@ -205,52 +205,142 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'About',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        widget.description.split("Why Visit")[0],
-                        style: const TextStyle(
-                          fontSize: 16,
-                          color: Colors.black87,
-                          height: 1.5,
-                        ),
+                      // About Section Header
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.info_outline,
+                              color: Colors.green,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            'About',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
-                      const Text(
-                        'Why Visit?',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
+                      // About Content Card
+                      Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 10,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
+                        ),
+                        child: Text(
+                          widget.description.split("Why Visit")[0],
+                          style: const TextStyle(
+                            fontSize: 16,
+                            color: Colors.black87,
+                            height: 1.6,
+                            letterSpacing: 0.3,
+                          ),
                         ),
                       ),
-                      const SizedBox(height: 8),
+                      const SizedBox(height: 24),
+                      
+                      // Why Visit Section Header
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.lightbulb_outline,
+                              color: Colors.amber,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            'Why Visit?',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 16),
+                      // Why Visit Points
                       ...widget.description
                           .split("Why Visit")[1]
                           .split("✅")
                           .where((s) => s.trim().isNotEmpty)
-                          .map((point) => Padding(
-                                padding:
-                                    const EdgeInsets.symmetric(vertical: 4),
+                          .map((point) => Container(
+                                margin: const EdgeInsets.only(bottom: 12),
+                                padding: const EdgeInsets.all(16),
+                                decoration: BoxDecoration(
+                                  color: Colors.white,
+                                  borderRadius: BorderRadius.circular(16),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.05),
+                                      blurRadius: 10,
+                                      offset: const Offset(0, 4),
+                                    ),
+                                  ],
+                                ),
                                 child: Row(
-                                  crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.check_circle,
-                                        color: Colors.green, size: 20),
-                                    const SizedBox(width: 8),
+                                    Container(
+                                      padding: const EdgeInsets.all(8),
+                                      decoration: BoxDecoration(
+                                        color: Colors.green.withOpacity(0.1),
+                                        shape: BoxShape.circle,
+                                      ),
+                                      child: const Icon(
+                                        Icons.check,
+                                        color: Colors.green,
+                                        size: 20,
+                                      ),
+                                    ),
+                                    const SizedBox(width: 12),
                                     Expanded(
-                                      child: Text(
-                                        point.trim(),
-                                        style: const TextStyle(
-                                          fontSize: 16,
-                                          height: 1.5,
-                                        ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            point.split('–')[0].trim(),
+                                            style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                              height: 1.4,
+                                            ),
+                                          ),
+                                          if (point.contains('–'))
+                                            Padding(
+                                              padding: const EdgeInsets.only(top: 4),
+                                              child: Text(
+                                                point.split('–')[1].trim(),
+                                                style: const TextStyle(
+                                                  fontSize: 14,
+                                                  color: Colors.black87,
+                                                  height: 1.5,
+                                                ),
+                                              ),
+                                            ),
+                                        ],
                                       ),
                                     ),
                                   ],
@@ -267,12 +357,28 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text(
-                        'Nearby Services',
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.green.withOpacity(0.1),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Icon(
+                              Icons.location_city,
+                              color: Colors.green,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          const Text(
+                            'Nearby Services',
+                            style: TextStyle(
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
                       ),
                       const SizedBox(height: 16),
                       SizedBox(
@@ -313,9 +419,15 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {},
-        icon: const Icon(Icons.navigation),
-        label: const Text('Start AR Tour'),
-        backgroundColor: Theme.of(context).primaryColor,
+        icon: const Icon(Icons.navigation, color: Colors.green),
+        label: const Text(
+          'Start AR Tour',
+          style: TextStyle(
+            color: Colors.green,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        backgroundColor: Colors.white,
       ),
     );
   }
@@ -332,10 +444,10 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
           Container(
             padding: const EdgeInsets.all(12),
             decoration: BoxDecoration(
-              color: Colors.grey[100],
+              color: Colors.green.withOpacity(0.1),
               shape: BoxShape.circle,
             ),
-            child: Icon(icon, color: Theme.of(context).primaryColor),
+            child: Icon(icon, color: Colors.green),
           ),
           const SizedBox(height: 4),
           Text(
@@ -359,13 +471,13 @@ class _DestinationDetailPageState extends State<DestinationDetailPage> {
       width: 120,
       margin: const EdgeInsets.only(right: 12),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
+        color: Colors.green.withOpacity(0.05),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 32, color: Theme.of(context).primaryColor),
+          Icon(icon, size: 32, color: Colors.green),
           const SizedBox(height: 8),
           Text(
             title,
