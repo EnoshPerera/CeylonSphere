@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
 
 class ARTempleScreen extends StatefulWidget {
+  const ARTempleScreen({super.key});
+
   @override
   _ARTempleScreenState createState() => _ARTempleScreenState();
 }
@@ -14,31 +16,43 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
   double currentScale = 1.0;
   double currentRotation = 0.0;
   String? selectedModel;
+  bool isPlaneDetected = false;
 
-  final List<ARExperience> arExperiences = [
+  static const List<ARExperience> arExperiences = [
     ARExperience(
       title: 'Temple of the Tooth',
-      description: 'Explore the sacred Temple of the Tooth in AR',
-      modelPath: 'AirForce.usdz',
+      description: 'Coming Soon',
+      modelPath: '',
       thumbnail: 'assets/Kandy.jpg',
+      isComingSoon: true,
     ),
     ARExperience(
       title: 'Sigiriya Rock',
-      description: 'Ancient palace and fortress complex',
-      modelPath: 'AirForce.usdz',
+      description: 'Coming Soon',
+      modelPath: '',
       thumbnail: 'assets/Sigiriya.jpg',
+      isComingSoon: true,
     ),
     ARExperience(
       title: 'Jetavanaramaya',
-      description: 'Ancient Buddhist stupa',
-      modelPath: 'AirForce.usdz',
+      description: 'Coming Soon',
+      modelPath: '',
       thumbnail: 'assets/Jetavanaramaya.jpg',
+      isComingSoon: true,
     ),
     ARExperience(
       title: 'Ruwanwelisaya',
-      description: 'Sacred stupa in Anuradhapura',
-      modelPath: 'AirForce.usdz',
+      description: 'Coming Soon',
+      modelPath: '',
       thumbnail: 'assets/ruwanwelisaya.jpg',
+      isComingSoon: true,
+    ),
+    ARExperience(
+      title: 'Sri Lankan Elephant',
+      description: 'Experience the majestic Sri Lankan elephant in AR',
+      modelPath: 'elemodel.usdz',
+      thumbnail: 'assets/elephant.jpg',
+      isComingSoon: false,
     ),
   ];
 
@@ -48,16 +62,87 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
     super.dispose();
   }
 
+  void onARKitViewCreated(ARKitController controller) {
+    arkitController = controller;
+    arkitController.onAddNodeForAnchor = _handleAddAnchor;
+    arkitController.onUpdateNodeForAnchor = _handleUpdateAnchor;
+
+    // Enable plane detection
+    arkitController.addCoachingOverlay(CoachingOverlayGoal.horizontalPlane);
+  }
+
+  void _handleAddAnchor(ARKitAnchor anchor) {
+    if (anchor is ARKitPlaneAnchor) {
+      setState(() {
+        isPlaneDetected = true;
+      });
+      if (selectedModel != null) {
+        addUpdatedNode(anchor);
+      }
+    }
+  }
+
+  void _handleUpdateAnchor(ARKitAnchor anchor) {
+    if (anchor is ARKitPlaneAnchor && node != null) {
+      final position = anchor.transform.getColumn(3);
+      node?.position = vector.Vector3(position.x, position.y, position.z);
+      arkitController.update(node!.name);
+    }
+  }
+
+  void addUpdatedNode(ARKitAnchor anchor) {
+    if (node != null) {
+      arkitController.remove(node!.name);
+    }
+
+    final position = anchor.transform.getColumn(3);
+    node = ARKitReferenceNode(
+      url: selectedModel!,
+      scale: vector.Vector3.all(currentScale),
+      position: vector.Vector3(position.x, position.y, position.z),
+      eulerAngles: vector.Vector3(0, currentRotation, 0),
+    );
+    arkitController.add(node!);
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
       navigationBar: const CupertinoNavigationBar(
         middle: Text('AR Experiences'),
         previousPageTitle: 'Back',
+        backgroundColor: Color(0xFF003734),
+        brightness: Brightness.dark,
       ),
       child: SafeArea(
         child: Column(
           children: [
+            // Header Section
+            Container(
+              padding: const EdgeInsets.all(16),
+              color: const Color(0xFF003734),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    'Explore Sri Lankan Heritage',
+                    style: TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                      color: CupertinoColors.white,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Text(
+                    'Experience historical monuments in augmented reality',
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: CupertinoColors.white.withOpacity(0.7),
+                    ),
+                  ),
+                ],
+              ),
+            ),
             // AR Experience Cards
             Container(
               height: 200,
@@ -71,118 +156,128 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
                     experience: arExperiences[index],
                     isSelected: arExperiences[index].modelPath == selectedModel,
                     onTap: () {
-                      setState(() {
-                        selectedModel = arExperiences[index].modelPath;
-                        if (node != null) {
-                          arkitController.remove(node!.name);
-                          addUpdatedNode();
-                        }
-                      });
+                      if (!arExperiences[index].isComingSoon) {
+                        setState(() {
+                          selectedModel = arExperiences[index].modelPath;
+                          if (node != null) {
+                            arkitController.remove(node!.name);
+                            if (isPlaneDetected) {
+                              final position = vector.Vector3(0, 0, -1);
+                              node = ARKitReferenceNode(
+                                url: selectedModel!,
+                                scale: vector.Vector3.all(currentScale),
+                                position: position,
+                                eulerAngles:
+                                    vector.Vector3(0, currentRotation, 0),
+                              );
+                              arkitController.add(node!);
+                            }
+                          }
+                        });
+                      }
                     },
                   );
                 },
               ),
             ),
-            // Instructions
-            if (selectedModel == null)
-              Expanded(
-                child: Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      const Icon(
-                        CupertinoIcons.cube_box,
-                        size: 64,
-                        color: Color(0xFF6200EA),
-                      ),
-                      const SizedBox(height: 16),
-                      const Text(
-                        'Select a monument to view in AR',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFF6200EA),
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(
-                        'Experience Sri Lankan heritage in augmented reality',
-                        style: TextStyle(
-                          fontSize: 14,
-                          color: CupertinoColors.systemGrey.withOpacity(0.8),
-                        ),
-                      ),
-                    ],
+            // AR View
+            Expanded(
+              child: Stack(
+                children: [
+                  ARKitSceneView(
+                    onARKitViewCreated: onARKitViewCreated,
+                    planeDetection: ARPlaneDetection.horizontal,
+                    worldAlignment: ARWorldAlignment.gravity,
                   ),
-                ),
-              )
-            else
-              Expanded(
-                child: GestureDetector(
-                  onScaleUpdate: (ScaleUpdateDetails details) {
-                    setState(() {
-                      if (node != null) {
-                        currentScale = details.scale;
-                        currentRotation += details.rotation;
-                        arkitController.remove(node!.name);
-                        addUpdatedNode();
-                      }
-                    });
-                  },
-                  child: Stack(
-                    children: [
-                      ARKitSceneView(
-                        onARKitViewCreated: onARKitViewCreated,
-                      ),
-                      Positioned(
-                        bottom: 20,
-                        left: 0,
-                        right: 0,
-                        child: Center(
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 16,
-                              vertical: 8,
+                  if (!isPlaneDetected)
+                    Center(
+                      child: Container(
+                        padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          color: CupertinoColors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: CupertinoColors.white.withOpacity(0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              CupertinoIcons.viewfinder,
+                              color: CupertinoColors.white,
+                              size: 48,
                             ),
-                            decoration: BoxDecoration(
-                              color: CupertinoColors.black.withOpacity(0.7),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: const Text(
-                              'Pinch to zoom • Rotate with two fingers',
+                            const SizedBox(height: 16),
+                            const Text(
+                              'Move your device to detect a surface',
                               style: TextStyle(
                                 color: CupertinoColors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(height: 8),
+                            Text(
+                              'Point your camera at a flat surface',
+                              style: TextStyle(
+                                color: CupertinoColors.white.withOpacity(0.7),
                                 fontSize: 14,
                               ),
                             ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  if (isPlaneDetected && selectedModel != null)
+                    Positioned(
+                      bottom: 20,
+                      left: 0,
+                      right: 0,
+                      child: Center(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 20,
+                            vertical: 12,
+                          ),
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.black.withOpacity(0.7),
+                            borderRadius: BorderRadius.circular(25),
+                            border: Border.all(
+                              color: CupertinoColors.white.withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              const Icon(
+                                CupertinoIcons.hand_draw,
+                                color: CupertinoColors.white,
+                                size: 16,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text(
+                                'Tap to place • Pinch to zoom • Rotate with two fingers',
+                                style: TextStyle(
+                                  color: CupertinoColors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
                         ),
                       ),
-                    ],
-                  ),
-                ),
+                    ),
+                ],
               ),
+            ),
           ],
         ),
       ),
     );
-  }
-
-  void onARKitViewCreated(ARKitController controller) {
-    arkitController = controller;
-    if (selectedModel != null) {
-      addUpdatedNode();
-    }
-  }
-
-  void addUpdatedNode() {
-    node = ARKitReferenceNode(
-      url: selectedModel!,
-      scale: vector.Vector3.all(currentScale),
-      position: vector.Vector3(0, 0, -1),
-      eulerAngles: vector.Vector3(0, currentRotation, 0),
-    );
-    arkitController.add(node!);
   }
 }
 
@@ -191,12 +286,14 @@ class ARExperience {
   final String description;
   final String modelPath;
   final String thumbnail;
+  final bool isComingSoon;
 
   const ARExperience({
     required this.title,
     required this.description,
     required this.modelPath,
     required this.thumbnail,
+    this.isComingSoon = false,
   });
 }
 
@@ -222,55 +319,125 @@ class _ARExperienceCard extends StatelessWidget {
           color: CupertinoColors.white,
           borderRadius: BorderRadius.circular(16),
           border: isSelected
-              ? Border.all(color: const Color(0xFF6200EA), width: 2)
+              ? Border.all(color: const Color(0xFF003734), width: 2)
               : null,
           boxShadow: [
             BoxShadow(
-              color: CupertinoColors.systemGrey.withOpacity(0.08),
-              blurRadius: 8,
+              color: CupertinoColors.systemGrey.withOpacity(0.1),
+              blurRadius: 10,
               offset: const Offset(0, 4),
             ),
           ],
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Stack(
           children: [
-            ClipRRect(
-              borderRadius:
-                  const BorderRadius.vertical(top: Radius.circular(16)),
-              child: Image.asset(
-                experience.thumbnail,
-                height: 100,
-                width: double.infinity,
-                fit: BoxFit.cover,
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(12),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    experience.title,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: Color(0xFF003734),
-                    ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                ClipRRect(
+                  borderRadius:
+                      const BorderRadius.vertical(top: Radius.circular(16)),
+                  child: Stack(
+                    children: [
+                      Image.asset(
+                        experience.thumbnail,
+                        height: 100,
+                        width: double.infinity,
+                        fit: BoxFit.cover,
+                      ),
+                      if (!experience.isComingSoon)
+                        Positioned(
+                          top: 8,
+                          right: 8,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 8,
+                              vertical: 4,
+                            ),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFF003734).withOpacity(0.8),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: const Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  CupertinoIcons.cube_box_fill,
+                                  color: CupertinoColors.white,
+                                  size: 12,
+                                ),
+                                SizedBox(width: 4),
+                                Text(
+                                  'AR Ready',
+                                  style: TextStyle(
+                                    color: CupertinoColors.white,
+                                    fontSize: 10,
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
-                  Text(
-                    experience.description,
-                    style: TextStyle(
-                      fontSize: 12,
-                      color: CupertinoColors.systemGrey.withOpacity(0.8),
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        experience.title,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFF003734),
+                        ),
+                      ),
+                      const SizedBox(height: 4),
+                      Text(
+                        experience.description,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: CupertinoColors.systemGrey.withOpacity(0.8),
+                        ),
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ],
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
+            if (experience.isComingSoon)
+              Container(
+                decoration: BoxDecoration(
+                  color: CupertinoColors.black.withOpacity(0.5),
+                  borderRadius: BorderRadius.circular(16),
+                ),
+                child: Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      const Icon(
+                        CupertinoIcons.clock,
+                        color: CupertinoColors.white,
+                        size: 32,
+                      ),
+                      const SizedBox(height: 8),
+                      const Text(
+                        'Coming Soon',
+                        style: TextStyle(
+                          color: CupertinoColors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
           ],
         ),
       ),
