@@ -94,7 +94,7 @@ class _MainNavigationState extends State<MainNavigation> {
                           ),
                           SizedBox(height: 8),
                           Text(
-                            '"Bamunu" Mask',
+                            'Bamunu Mask',
                             style: TextStyle(
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
