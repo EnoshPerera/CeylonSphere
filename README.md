@@ -1,4 +1,4 @@
-# native_splash_screen
+# native_splash
 
 A new Flutter project.
 

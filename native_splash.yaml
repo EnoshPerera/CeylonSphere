@@ -1,0 +1,67 @@
+# flutter_native_splash:
+#   android: true
+#   ios: true
+#   web: false
+
+#   background_image: "assets/background.png"
+#   image: "assets/logo.png"
+#   branding: "assets/branding.png"
+
+#   background_image_dark: "assets/background_dark.png"
+#   image_dark: "assets/logo_dark.png"
+#   branding_dark: "assets/branding_dark.png"  
+
+#   android_12:
+#     color: "#d4e4ed"
+#     image: "assets/android_logo-png"
+#     image: "assets/android_branding.png"
+
+# flutter_native_splash:
+#   android: true
+#   ios: true
+#   web: false
+  
+#   color: "#d4e4ed"  # Background color of the splash screen
+#   image: "assets/logo.png"  # Splash screen image (main logo)
+#   background_image: "assets/android_branding.png"  # Custom branding image on the background
+  
+#   # Optional: Custom configuration for Android 12 (if needed)
+#   android_12:
+#     color: "#d4e4ed"  # Custom background color for Android 12
+#     image: "assets/android_logo.png"  # Custom branding image for Android 12
+  
+#flutter_native_splash:
+#  android: true
+#  ios: true
+#  web: false
+#
+#  # Light Mode Configuration
+#  color: "#d4e4ed"  # Background color for light mode
+#  image: assets/Logo-10.png  # Splash screen image for light mode
+#  background_image: assets/background.png  # Background image for light mode
+#
+#  # Dark Mode Configuration
+#  color_dark: "#303030"  # Background color for dark mode
+#  image_dark: assets/Logo-09.png  # Image for splash screen in dark mode
+#  background_image_dark: assets/background_dark.png  # Background image for dark mode
+
+flutter_native_splash:
+  android: true
+  ios: true
+  web: false
+
+  # Light Mode Configuration
+  color: "#d4e4ed"  # Background color for light mode
+  image: assets/Logo-10.png  # Splash screen image for light mode
+  background_image: assets/background.png  # Background image for light mode
+
+  # Dark Mode Configuration
+  color_dark: "#303030"  # Background color for dark mode
+  image_dark: assets/Logo-09.png  # Image for splash screen in dark mode
+  background_image_dark: assets/background_dark.png  # Background image for dark mode
+
+  # Android 12 Configuration
+  android_12:
+    color: "#d4e4ed"
+    image: assets/Logo-10.png
+

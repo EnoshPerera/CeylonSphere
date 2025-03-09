@@ -1,6 +1,6 @@
 {
-    "name": "native_splash_screen",
-    "short_name": "native_splash_screen",
+    "name": "native_splash",
+    "short_name": "native_splash",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
