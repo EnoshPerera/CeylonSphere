@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:arkit_plugin/arkit_plugin.dart';
 import 'package:flutter/material.dart';
 import 'package:vector_math/vector_math_64.dart' as vector;
+import 'elephant_3d_viewer.dart';
 
 class ARTempleScreen extends StatefulWidget {
   const ARTempleScreen({super.key});
@@ -25,6 +26,7 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
       modelPath: '',
       thumbnail: 'assets/Kandy.jpg',
       isComingSoon: true,
+      isARMode: true,
     ),
     ARExperience(
       title: 'Sigiriya Rock',
@@ -32,6 +34,7 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
       modelPath: '',
       thumbnail: 'assets/Sigiriya.jpg',
       isComingSoon: true,
+      isARMode: true,
     ),
     ARExperience(
       title: 'Jetavanaramaya',
@@ -39,6 +42,7 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
       modelPath: '',
       thumbnail: 'assets/Jetavanaramaya.jpg',
       isComingSoon: true,
+      isARMode: true,
     ),
     ARExperience(
       title: 'Ruwanwelisaya',
@@ -46,13 +50,15 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
       modelPath: '',
       thumbnail: 'assets/ruwanwelisaya.jpg',
       isComingSoon: true,
+      isARMode: true,
     ),
     ARExperience(
       title: 'Sri Lankan Elephant',
-      description: 'Experience the majestic Sri Lankan elephant in AR',
-      modelPath: 'elemodel.usdz',
+      description: 'View our majestic elephant in 3D',
+      modelPath: 'Adiya.glb',
       thumbnail: 'assets/elephant.jpg',
       isComingSoon: false,
+      isARMode: false,
     ),
   ];
 
@@ -105,6 +111,126 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
     arkitController.add(node!);
   }
 
+  void _show3DViewer(ARExperience experience) {
+    showCupertinoModalPopup(
+      context: context,
+      builder: (context) => Container(
+        height: MediaQuery.of(context).size.height * 0.8,
+        decoration: const BoxDecoration(
+          color: Color(0xFF003734),
+          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+        ),
+        child: Column(
+          children: [
+            Container(
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                border: Border(
+                  bottom: BorderSide(
+                    color: CupertinoColors.white.withOpacity(0.1),
+                  ),
+                ),
+              ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    experience.title,
+                    style: const TextStyle(
+                      color: CupertinoColors.white,
+                      fontSize: 18,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  CupertinoButton(
+                    padding: EdgeInsets.zero,
+                    child: const Icon(
+                      CupertinoIcons.xmark_circle_fill,
+                      color: CupertinoColors.white,
+                    ),
+                    onPressed: () => Navigator.pop(context),
+                  ),
+                ],
+              ),
+            ),
+            Expanded(
+              child: Stack(
+                children: [
+                  ARKitSceneView(
+                    onARKitViewCreated: (ARKitController controller) {
+                      final node = ARKitReferenceNode(
+                        url: experience.modelPath,
+                        scale: vector.Vector3.all(1.0),
+                        position: vector.Vector3(0, 0, -0.5),
+                        eulerAngles: vector.Vector3(0, 0, 0),
+                      );
+                      controller.add(node);
+
+                      // Add ambient light
+                      final light = ARKitNode(
+                        geometry: ARKitSphere(radius: 0.1),
+                        light: ARKitLight(
+                          type: ARKitLightType.ambient,
+                          intensity: 1000,
+                        ),
+                        position: vector.Vector3(0, 1, 0),
+                      );
+                      controller.add(light);
+                    },
+                    showFeaturePoints: false,
+                    showWorldOrigin: false,
+                    showStatistics: false,
+                  ),
+                  // Controls overlay
+                  Positioned(
+                    bottom: 20,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 20,
+                          vertical: 12,
+                        ),
+                        decoration: BoxDecoration(
+                          color: CupertinoColors.black.withOpacity(0.7),
+                          borderRadius: BorderRadius.circular(25),
+                          border: Border.all(
+                            color: CupertinoColors.white.withOpacity(0.2),
+                            width: 1,
+                          ),
+                        ),
+                        child: const Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              CupertinoIcons.hand_draw,
+                              color: CupertinoColors.white,
+                              size: 16,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'Pinch to zoom • Drag to rotate',
+                              style: TextStyle(
+                                color: CupertinoColors.white,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return CupertinoPageScaffold(
@@ -117,32 +243,32 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
       child: SafeArea(
         child: Column(
           children: [
-            // Header Section
-            Container(
-              padding: const EdgeInsets.all(16),
-              color: const Color(0xFF003734),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Explore Sri Lankan Heritage',
-                    style: TextStyle(
-                      fontSize: 24,
-                      fontWeight: FontWeight.bold,
-                      color: CupertinoColors.white,
-                    ),
-                  ),
-                  const SizedBox(height: 8),
-                  Text(
-                    'Experience historical monuments in augmented reality',
-                    style: TextStyle(
-                      fontSize: 14,
-                      color: CupertinoColors.white.withOpacity(0.7),
-                    ),
-                  ),
-                ],
-              ),
-            ),
+            // // Header Section
+            // Container(
+            //   padding: const EdgeInsets.all(16),
+            //   color: const Color(0xFF003734),
+            //   child: Column(
+            //     crossAxisAlignment: CrossAxisAlignment.start,
+            //     children: [
+            //       const Text(
+            //         'Explore Sri Lankan Heritage',
+            //         style: TextStyle(
+            //           fontSize: 24,
+            //           fontWeight: FontWeight.bold,
+            //           color: CupertinoColors.white,
+            //         ),
+            //       ),
+            //       const SizedBox(height: 8),
+            //       Text(
+            //         'Experience historical monuments in augmented reality',
+            //         style: TextStyle(
+            //           fontSize: 14,
+            //           color: CupertinoColors.white.withOpacity(0.7),
+            //         ),
+            //       ),
+            //     ],
+            //   ),
+            // ),
             // AR Experience Cards
             Container(
               height: 200,
@@ -157,23 +283,32 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
                     isSelected: arExperiences[index].modelPath == selectedModel,
                     onTap: () {
                       if (!arExperiences[index].isComingSoon) {
-                        setState(() {
-                          selectedModel = arExperiences[index].modelPath;
-                          if (node != null) {
-                            arkitController.remove(node!.name);
-                            if (isPlaneDetected) {
-                              final position = vector.Vector3(0, 0, -1);
-                              node = ARKitReferenceNode(
-                                url: selectedModel!,
-                                scale: vector.Vector3.all(currentScale),
-                                position: position,
-                                eulerAngles:
-                                    vector.Vector3(0, currentRotation, 0),
-                              );
-                              arkitController.add(node!);
+                        if (arExperiences[index].isARMode) {
+                          setState(() {
+                            selectedModel = arExperiences[index].modelPath;
+                            if (node != null) {
+                              arkitController.remove(node!.name);
+                              if (isPlaneDetected) {
+                                final position = vector.Vector3(0, 0, -1);
+                                node = ARKitReferenceNode(
+                                  url: selectedModel!,
+                                  scale: vector.Vector3.all(currentScale),
+                                  position: position,
+                                  eulerAngles:
+                                      vector.Vector3(0, currentRotation, 0),
+                                );
+                                arkitController.add(node!);
+                              }
                             }
-                          }
-                        });
+                          });
+                        } else {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => const Elephant3DViewer(),
+                            ),
+                          );
+                        }
                       }
                     },
                   );
@@ -287,6 +422,7 @@ class ARExperience {
   final String modelPath;
   final String thumbnail;
   final bool isComingSoon;
+  final bool isARMode;
 
   const ARExperience({
     required this.title,
@@ -294,6 +430,7 @@ class ARExperience {
     required this.modelPath,
     required this.thumbnail,
     this.isComingSoon = false,
+    this.isARMode = true,
   });
 }
 

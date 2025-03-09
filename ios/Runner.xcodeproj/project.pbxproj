@@ -14,6 +14,7 @@
 		7DF8FBFCC6B61DC375091542 /* Pods_Runner.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = E581E5778C75134DBE0E9DD3 /* Pods_Runner.framework */; };
 		842FE4B62D7B0ADF005D8630 /* elemodel.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 842FE4B52D7B0ADF005D8630 /* elemodel.usdz */; };
 		8444385F2D6BAF2200A399F5 /* AirForce.usdz in Resources */ = {isa = PBXBuildFile; fileRef = 8444385E2D6BAF2200A399F5 /* AirForce.usdz */; };
+		8470A4EC2D7D5E44000C4DED /* adiya.glb in Resources */ = {isa = PBXBuildFile; fileRef = 8470A4EB2D7D5E44000C4DED /* adiya.glb */; };
 		97C146FC1CF9000F007C117D /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FA1CF9000F007C117D /* Main.storyboard */; };
 		97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FD1CF9000F007C117D /* Assets.xcassets */; };
 		97C147011CF9000F007C117D /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 97C146FF1CF9000F007C117D /* LaunchScreen.storyboard */; };
@@ -57,6 +58,7 @@
 		7AFA3C8E1D35360C0083082E /* Release.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; name = Release.xcconfig; path = Flutter/Release.xcconfig; sourceTree = "<group>"; };
 		842FE4B52D7B0ADF005D8630 /* elemodel.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = elemodel.usdz; sourceTree = "<group>"; };
 		8444385E2D6BAF2200A399F5 /* AirForce.usdz */ = {isa = PBXFileReference; lastKnownFileType = file; path = AirForce.usdz; sourceTree = "<group>"; };
+		8470A4EB2D7D5E44000C4DED /* adiya.glb */ = {isa = PBXFileReference; lastKnownFileType = file; path = adiya.glb; sourceTree = "<group>"; };
 		8FE8521B3B032188F1F42977 /* Pods-Runner.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Runner.debug.xcconfig"; path = "Target Support Files/Pods-Runner/Pods-Runner.debug.xcconfig"; sourceTree = "<group>"; };
 		9740EEB21CF90195004384FC /* Debug.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Debug.xcconfig; path = Flutter/Debug.xcconfig; sourceTree = "<group>"; };
 		9740EEB31CF90195004384FC /* Generated.xcconfig */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.xcconfig; name = Generated.xcconfig; path = Flutter/Generated.xcconfig; sourceTree = "<group>"; };
@@ -143,6 +145,7 @@
 				61BFB80068F65A788A61D036 /* Frameworks */,
 				842FE4B52D7B0ADF005D8630 /* elemodel.usdz */,
 				8444385E2D6BAF2200A399F5 /* AirForce.usdz */,
+				8470A4EB2D7D5E44000C4DED /* adiya.glb */,
 			);
 			sourceTree = "<group>";
 		};
@@ -272,6 +275,7 @@
 				97C146FE1CF9000F007C117D /* Assets.xcassets in Resources */,
 				842FE4B62D7B0ADF005D8630 /* elemodel.usdz in Resources */,
 				97C146FC1CF9000F007C117D /* Main.storyboard in Resources */,
+				8470A4EC2D7D5E44000C4DED /* adiya.glb in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
