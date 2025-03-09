@@ -1,4 +1,4 @@
-name: gggg
+name: CeylonSphere
 description: "A new Flutter project."
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
 
@@ -23,6 +23,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter_dotenv: ^5.2.1
   url_launcher: ^6.0.20
+  model_viewer_plus: ^1.9.1
 
 dev_dependencies:
   flutter_test:
@@ -41,5 +42,8 @@ flutter:
     - assets/toyota-corolla.jpg
     - assets/Honda-Civic.jpeg
     - assets/Suzuki-Swift.jpg
+    - assets/robotglb.glb
+    - assets/app_island.glb
+    - assets/sl.glb
 
   uses-material-design: true
