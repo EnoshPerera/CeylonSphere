@@ -1,4 +1,4 @@
-name: gemini_chat_app
+name: CeylonSphere
 description: A Flutter chat application using Google's Gemini API.
 publish_to: 'none'
 version: 1.0.0+1
@@ -9,17 +9,18 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_gemini: ^2.0.1
-  image_picker: ^1.0.4
-  dash_chat_2: ^0.0.18
-  cupertino_icons: ^1.0.2
+  cupertino_icons: ^1.0.6
+  speech_to_text: ^6.6.1
+  flutter_tts: ^3.8.5
+  image_picker: ^1.0.7
+  dash_chat_2: ^0.0.20
+  http: ^1.2.0
+  flutter_markdown: ^0.6.20
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_lints: ^2.0.0
-  speech_to_text: ^6.6.0
-  flutter_tts: ^3.8.5
 
 flutter:
   uses-material-design: true

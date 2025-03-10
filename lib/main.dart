@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:ceylonsphere/app/theme/app_theme.dart';
-import 'package:ceylonsphere/screens/home/home_page.dart';
-import 'package:ceylonsphere/screens/voice_chatbot.dart';
+import 'package:flutter/cupertino.dart';
+import 'screens/voice_chatbot.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-const MyApp({super.key});
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -16,28 +15,51 @@ const MyApp({super.key});
       debugShowCheckedModeBanner: false,
       title: 'CeylonSphere',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        colorScheme: ColorScheme.fromSeed(
+          seedColor: const Color(0xFF1E5631),
+          primary: const Color(0xFF1E5631),
+          secondary: const Color(0xFF2E7D32),
+        ),
+        useMaterial3: true,
+        fontFamily: 'SF Pro Display',
+        scaffoldBackgroundColor: const Color(0xFFF7F7F8),
       ),
-      home: HomeScreen(), // ✅ Start from Home Screen
+      home: const HomeScreen(),
     );
   }
 }
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("CeylonSphere")),
+      appBar: AppBar(
+        title: const Text(
+          'CeylonSphere',
+          style: TextStyle(color: Color(0xFF1E5631)),
+        ),
+        centerTitle: true,
+      ),
       body: Center(
         child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: const Color(0xFF1E5631),
+            padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 16),
+          ),
           onPressed: () {
-            // ✅ Navigate to the chatbot screen
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => VoiceChatbot()),
+              MaterialPageRoute(
+                  builder: (context) =>
+                      const HomePage()), // Changed from VoiceChatBot
             );
           },
-          child: Text("Go to Voice Chatbot"),
+          child: const Text(
+            "Start Chatting",
+            style: TextStyle(color: Colors.white),
+          ),
         ),
       ),
     );
