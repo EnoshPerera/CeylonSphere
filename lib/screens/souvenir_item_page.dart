@@ -3,7 +3,37 @@ import 'package:flutter/cupertino.dart';
 import 'ar_camera_view.dart';
 
 class SouvenirItemPage extends StatelessWidget {
-  const SouvenirItemPage({super.key});
+  final String title;
+  final String content;
+  final String imagePath;
+
+  const SouvenirItemPage({
+    super.key,
+    required this.title,
+    required this.content,
+    required this.imagePath,
+  });
+
+  static List<Souvenir> getSouvenirs() {
+    return [
+      Souvenir(
+        name: 'Bamunu Mask',
+        imagePath: 'assets/bamunu_mask.jpg',
+        description:
+            "The Bamunu Mask is a striking and culturally significant traditional mask of Sri Lanka, representing the Bamuna (Brahmin) figure—a symbol of power, wisdom, and dominance in ancient society. Used primarily in ritual performances, folk dramas, and traditional Kolam dances, this mask portrays a stern and commanding expression, reflecting the influence of Brahmins in Sri Lankan history.",
+        rating: 4.8,
+        categories: ['Traditional Art', 'Cultural', 'Handcrafted'],
+      ),
+      Souvenir(
+        name: 'Naga Rassa Mask',
+        imagePath: 'assets/naga_rassa_mask.jpg',
+        description:
+            "The Naga Rassa Mask is a unique and mystical mask in Sri Lankan traditional folklore, representing the serpent spirit (Naga). In ancient beliefs, the Naga (divine serpent) is associated with protection, power, and water deities, often linked to rainfall, fertility, and prosperity. The mask is prominently used in ritual performances and masked dances, invoking the spiritual energy of the serpent to ward off evil and bring blessings.\n\nThe design of the Naga Rassa Mask is striking, often featuring multiple snake heads, wide eyes, and intricate patterns symbolizing the mystical and divine power of the Naga. Painted in bold colors like red, green, and gold, it captures the ferocity and grace of the serpent deity.",
+        rating: 4.7,
+        categories: ['Mythical', 'Cultural', 'Handcrafted'],
+      ),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +52,7 @@ class SouvenirItemPage extends StatelessWidget {
                 children: [
                   // Background Image
                   Image.asset(
-                    'assets/bamunu_mask.jpg',
+                    imagePath,
                     fit: BoxFit.cover,
                   ),
                   // Gradient Overlay
@@ -35,6 +65,50 @@ class SouvenirItemPage extends StatelessWidget {
                           Colors.transparent,
                           Colors.black.withOpacity(0.7),
                         ],
+                      ),
+                    ),
+                  ),
+                  // AR View Button
+                  Positioned(
+                    bottom: 20,
+                    right: 20,
+                    child: GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => ARCameraView(
+                              imagePath: title == 'Bamunu Mask'
+                                  ? 'assets/bamunu_mask_01.png'
+                                  : 'assets/naga_rassa_mask_01.png',
+                            ),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        padding: const EdgeInsets.all(12),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withOpacity(0.4),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Row(
+                          children: const [
+                            Icon(
+                              CupertinoIcons.cube_box_fill,
+                              color: Colors.black,
+                              size: 28,
+                            ),
+                            SizedBox(width: 8),
+                            Text(
+                              'AR View',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                     ),
                   ),
@@ -72,9 +146,9 @@ class SouvenirItemPage extends StatelessWidget {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                const Text(
-                                  'Bamunu Mask',
-                                  style: TextStyle(
+                                Text(
+                                  title,
+                                  style: const TextStyle(
                                     fontSize: 28,
                                     fontWeight: FontWeight.bold,
                                   ),
@@ -140,39 +214,7 @@ class SouvenirItemPage extends StatelessWidget {
 
                       const SizedBox(height: 24),
 
-                      // Quick Actions
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceAround,
-                        children: [
-                          _buildQuickAction(
-                            icon: CupertinoIcons.cube_box_fill,
-                            label: 'AR View',
-                            onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => const ARCameraView(),
-                                ),
-                              );
-                            },
-                          ),
-                          _buildQuickAction(
-                            icon: CupertinoIcons.photo_camera,
-                            label: 'Gallery',
-                            onTap: () {},
-                          ),
-                          _buildQuickAction(
-                            icon: CupertinoIcons.info_circle,
-                            label: 'Details',
-                            onTap: () {},
-                          ),
-                          _buildQuickAction(
-                            icon: CupertinoIcons.share,
-                            label: 'Share',
-                            onTap: () {},
-                          ),
-                        ],
-                      ),
+                      // Removed Quick Actions
                     ],
                   ),
                 ),
@@ -222,9 +264,9 @@ class SouvenirItemPage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: const Text(
-                          "The Bamunu Mask is a striking and culturally significant traditional mask of Sri Lanka, representing the Bamuna (Brahmin) figure—a symbol of power, wisdom, and dominance in ancient society. Used primarily in ritual performances, folk dramas, and traditional Kolam dances, this mask portrays a stern and commanding expression, reflecting the influence of Brahmins in Sri Lankan history.",
-                          style: TextStyle(
+                        child: Text(
+                          content,
+                          style: const TextStyle(
                             fontSize: 16,
                             color: Colors.black87,
                             height: 1.6,
@@ -320,36 +362,6 @@ class SouvenirItemPage extends StatelessWidget {
     );
   }
 
-  Widget _buildQuickAction({
-    required IconData icon,
-    required String label,
-    required VoidCallback onTap,
-  }) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Column(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              shape: BoxShape.circle,
-            ),
-            child: Icon(icon, color: Colors.grey[800]),
-          ),
-          const SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[800],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildCraftDetail({
     required IconData icon,
     required String title,
@@ -381,4 +393,20 @@ class SouvenirItemPage extends StatelessWidget {
       ],
     );
   }
+}
+
+class Souvenir {
+  final String name;
+  final String imagePath;
+  final String description;
+  final double rating;
+  final List<String> categories;
+
+  Souvenir({
+    required this.name,
+    required this.imagePath,
+    required this.description,
+    required this.rating,
+    required this.categories,
+  });
 }

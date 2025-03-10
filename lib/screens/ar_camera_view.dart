@@ -2,7 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:camera/camera.dart';
 
 class ARCameraView extends StatefulWidget {
-  const ARCameraView({super.key});
+  final String imagePath;
+
+  const ARCameraView({
+    super.key,
+    required this.imagePath,
+  });
 
   @override
   State<ARCameraView> createState() => _ARCameraViewState();
@@ -25,7 +30,7 @@ class _ARCameraViewState extends State<ARCameraView> {
     final sizeDiff = newSize - oldSize;
 
     setState(() {
-      // Adjust position to keep image centered
+      // Adjust position to keep image centered around its current position
       _position = Offset(
         _position.dx - sizeDiff / 2,
         _position.dy - sizeDiff / 2,
@@ -38,7 +43,7 @@ class _ARCameraViewState extends State<ARCameraView> {
   void initState() {
     super.initState();
     _initializeCamera();
-    // Initialize position to center
+    // Initialize position to center after build
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (mounted) {
         final size = MediaQuery.of(context).size;
@@ -108,7 +113,7 @@ class _ARCameraViewState extends State<ARCameraView> {
             },
           ),
 
-          // AR Model Viewer
+          // 3D Model Viewer with Gesture Detection
           if (_showModel)
             Positioned(
               left: _position.dx,
@@ -122,7 +127,7 @@ class _ARCameraViewState extends State<ARCameraView> {
                 child: Container(
                   color: Colors.transparent,
                   child: Image.asset(
-                    'assets/bamunu_mask_01.png',
+                    widget.imagePath,
                     fit: BoxFit.contain,
                     width: 200 * _scale,
                     height: 200 * _scale,
@@ -135,7 +140,7 @@ class _ARCameraViewState extends State<ARCameraView> {
           if (_showModel && _modelError)
             const Center(
               child: Text(
-                'Error loading the Image',
+                'Error loading 3D model',
                 style: TextStyle(
                   color: Colors.red,
                   fontSize: 18,
