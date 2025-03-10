@@ -166,8 +166,8 @@ class HomeScreen extends StatelessWidget {
                                               ),
                                             ),
                                             const _CategoryGridItem(
-                                              icon: CupertinoIcons.bed_double,
-                                              label: 'Hotels',
+                                              icon: Icons.chat, // Chatbot icon
+                                              label: 'Chatbot',
                                             ),
                                             const _CategoryGridItem(
                                               icon: CupertinoIcons.news,
