@@ -64,6 +64,11 @@ flutter:
     - assets/shop_image3.jpg
     - assets/shop_image4.avif
     - assets/shop_image5.jpg
+    - assets/item1_1.jpg
+    - assets/item1_2.jpg
+    - assets/item1_3.jpg
+    - assets/item1_4.jpg
+    - assets/item1_5.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
