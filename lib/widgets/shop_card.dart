@@ -26,8 +26,9 @@ class ShopCard extends StatelessWidget {
               borderRadius: const BorderRadius.vertical(
                 top: Radius.circular(12),
               ),
-              child: Image.network(
-                shop.imageUrl,
+
+              child: Image.asset(
+                shop.imagePath,
                 height: 150,
                 fit: BoxFit.cover,
                 errorBuilder: (context, error, stackTrace) {
@@ -41,6 +42,7 @@ class ShopCard extends StatelessWidget {
                 },
               ),
             ),
+
             Padding(
               padding: const EdgeInsets.all(12.0),
               child: Column(

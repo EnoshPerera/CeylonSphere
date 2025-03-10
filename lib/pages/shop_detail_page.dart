@@ -8,8 +8,6 @@ class ShopDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Filter items for this specific shop
-
     return Scaffold(
       appBar: AppBar(title: Text(shop.name), centerTitle: true, elevation: 0),
       body: Column(
@@ -21,7 +19,7 @@ class ShopDetailPage extends StatelessWidget {
             width: double.infinity,
             decoration: BoxDecoration(
               image: DecorationImage(
-                image: NetworkImage(shop.imageUrl),
+                image: AssetImage(shop.imagePath),
                 fit: BoxFit.cover,
               ),
             ),
