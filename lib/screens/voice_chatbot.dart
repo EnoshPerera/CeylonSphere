@@ -9,9 +9,9 @@ import 'dart:convert';
 import '../config/keys.dart';
 
 Future<String> sendGeminiRequest(String prompt) async {
-  const model = 'gemini-pro';
-  const apiUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$GEMINI_API_KEY';
+  const apiKey = 'AIzaSyAebUebsP1MT5bro2qSfO-DbA6CCCmWmng'; // Replace with your actual API key
+  const model = 'gemini-2.0-flash';
+  const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey';
 
   final headers = {
     'Content-Type': 'application/json',
@@ -26,6 +26,12 @@ Future<String> sendGeminiRequest(String prompt) async {
         ],
       },
     ],
+    'generationConfig': {
+        'temperature': 0.7,
+        'topK': 40,
+        'topP': 0.95,
+        'maxOutputTokens': 8192,
+      },
   });
 
   try {
