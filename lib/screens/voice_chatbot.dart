@@ -6,6 +6,51 @@ import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'dart:convert';
+import '../config/keys.dart';
+
+Future<String> sendGeminiRequest(String prompt) async {
+  const model = 'gemini-pro';
+  const apiUrl =
+      'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$GEMINI_API_KEY';
+
+  final headers = {
+    'Content-Type': 'application/json',
+  };
+
+  final body = jsonEncode({
+    'contents': [
+      {
+        'role': 'user',
+        'parts': [
+          {'text': prompt},
+        ],
+      },
+    ],
+  });
+
+  try {
+    print('Sending request to Gemini API...'); // Debug print
+    final response = await http.post(
+      Uri.parse(apiUrl),
+      headers: headers,
+      body: body,
+    );
+
+    print('Response status code: ${response.statusCode}'); // Debug print
+    print('Response body: ${response.body}'); // Debug print
+
+    if (response.statusCode == 200) {
+      final responseData = jsonDecode(response.body);
+      return responseData['candidates'][0]['content']['parts'][0]['text'];
+    } else {
+      throw Exception('API Error: ${response.statusCode} - ${response.body}');
+    }
+  } catch (e, stackTrace) {
+    print('Error details: $e'); // Debug print
+    print('Stack trace: $stackTrace'); // Debug print
+    return "Error: Unable to get response from AI. Please try again.";
+  }
+}
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -53,6 +98,20 @@ class _HomePageState extends State<HomePage> {
     await _flutterTts.setPitch(1.0);
   }
 
+  Future<void> _speak(String text) async {
+    if (!_isSpeaking) {
+      setState(() => _isSpeaking = true);
+      await _flutterTts.speak(text);
+    }
+  }
+
+  Future<void> _stopSpeaking() async {
+    if (_isSpeaking) {
+      await _flutterTts.stop();
+      setState(() => _isSpeaking = false);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,11 +126,18 @@ class _HomePageState extends State<HomePage> {
             child: DashChat(
               currentUser: currentUser,
               messages: messages,
-              onSend: (ChatMessage m) => handleSubmitted(m.text),
+              onSend: (ChatMessage message) {
+                handleSubmitted(message
+                    .text); // Wrap handleSubmitted to match expected type
+              },
               messageOptions: const MessageOptions(
                 showTime: true,
                 containerColor: Color(0xFF1E5631),
                 textColor: Colors.white,
+              ),
+              inputOptions: const InputOptions(
+                sendOnEnter: false,
+                inputDisabled: true,
               ),
             ),
           ),
@@ -84,6 +150,10 @@ class _HomePageState extends State<HomePage> {
   Widget _buildInputArea() {
     return Container(
       padding: const EdgeInsets.all(8.0),
+      decoration: const BoxDecoration(
+        color: Colors.white,
+        border: Border(top: BorderSide(color: Colors.grey)),
+      ),
       child: Row(
         children: [
           IconButton(
@@ -96,7 +166,7 @@ class _HomePageState extends State<HomePage> {
               controller: _textController,
               decoration: const InputDecoration(
                 hintText: 'Type a message...',
-                border: OutlineInputBorder(),
+                border: InputBorder.none,
               ),
               onSubmitted: handleSubmitted,
             ),
@@ -111,8 +181,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   void _toggleListening() async {
-    if (!_isListening) {
-      var available = await _speech.initialize();
+    if (_isListening) {
+      _speech.stop();
+      setState(() => _isListening = false);
+    } else {
+      bool available = await _speech.initialize();
       if (available) {
         setState(() => _isListening = true);
         _speech.listen(
@@ -127,15 +200,13 @@ class _HomePageState extends State<HomePage> {
           },
         );
       }
-    } else {
-      setState(() => _isListening = false);
-      _speech.stop();
     }
   }
 
   Future<void> handleSubmitted(String text) async {
     if (text.trim().isEmpty) return;
 
+    // Add user message
     setState(() {
       messages.insert(
         0,
@@ -149,21 +220,42 @@ class _HomePageState extends State<HomePage> {
       _isLoading = true;
     });
 
-    // Add your chatbot response logic here
-    // For now, let's echo the message
-    String response = "You said: $text";
+    try {
+      // Get response from Gemini API
+      final response = await sendGeminiRequest(text);
 
-    setState(() {
-      messages.insert(
-        0,
-        ChatMessage(
-          text: response,
-          user: botUser,
-          createdAt: DateTime.now(),
-        ),
-      );
-      _isLoading = false;
-    });
+      setState(() {
+        messages.insert(
+          0,
+          ChatMessage(
+            text: response,
+            user: botUser,
+            createdAt: DateTime.now(),
+          ),
+        );
+
+        // Optionally speak the response if it came from voice input
+        if (_isListening) {
+          _flutterTts.speak(response);
+        }
+      });
+    } catch (e) {
+      print('Error: $e'); // For debugging
+      setState(() {
+        messages.insert(
+          0,
+          ChatMessage(
+            text: "I encountered an error. Please try again.",
+            user: botUser,
+            createdAt: DateTime.now(),
+          ),
+        );
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
 
   @override
