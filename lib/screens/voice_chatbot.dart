@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:dash_chat_2/dash_chat_2.dart';
 import 'package:http/http.dart' as http;
-import 'package:flutter_markdown/flutter_markdown.dart';
 import 'dart:convert';
-import '../config/keys.dart';
 
 Future<String> sendGeminiRequest(String prompt) async {
-  const apiKey = 'AIzaSyAebUebsP1MT5bro2qSfO-DbA6CCCmWmng'; // Replace with your actual API key
+  const apiKey = 'AIzaSyAebUebsP1MT5bro2qSfO-DbA6CCCmWmng';
   const model = 'gemini-2.0-flash';
   const apiUrl = 'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey';
 
@@ -138,8 +135,8 @@ class _HomePageState extends State<HomePage> {
               },
               messageOptions: const MessageOptions(
                 showTime: true,
-                containerColor: Color(0xFF1E5631),
-                textColor: Colors.white,
+                containerColor: Color.fromARGB(255, 255, 255, 255),
+                textColor: Color.fromARGB(255, 0, 0, 0),
               ),
               inputOptions: const InputOptions(
                 sendOnEnter: false,
