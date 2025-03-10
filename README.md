@@ -1,6 +1,10 @@
+<<<<<<< HEAD
+A new Flutter project.
+=======
 # **CeylonSphere**
 
 **CeylonSphere** is a premium tourism application designed to enhance the travel experience in **Sri Lanka**. Built with **Flutter**, the app delivers a seamless and visually stunning interface for discovering attractions, booking accommodations, and exploring cultural highlights.
+>>>>>>> main
 
 
 

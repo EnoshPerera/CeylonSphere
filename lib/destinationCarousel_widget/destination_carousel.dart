@@ -1,8 +1,5 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '/destinations_screen.dart';
-
-//import 'destination_card.dart'; // Import DestinationInfo and SingleDestinationCard
 
 class DestinationCarousel extends StatefulWidget {
   const DestinationCarousel({Key? key}) : super(key: key);
