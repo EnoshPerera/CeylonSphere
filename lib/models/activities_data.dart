@@ -15,13 +15,14 @@ final List<Map<String, dynamic>> activityTypes = [
         'Pasikuda',
         'Kalpitiya',
         'Hikkaduwa',
-        'Tangalle'
+        'Tangalle',
       ],
       'activities': [
         'Sunbathing and swimming',
-        'Snorkeling and scuba diving ',
-        'Whale and dolphin watching ',
+        'Snorkeling and scuba diving',
+        'Whale and dolphin watching',
         'Jet skiing, kayaking, and windsurfing',
+        'Kite surfing',
       ],
     }
   },
@@ -98,6 +99,17 @@ final List<Map<String, dynamic>> activityTypes = [
       'activities': [
         'Enjoying beach parties and nightclubs',
         'Experiencing live music and cultural shows',
+      ],
+    }
+  },
+  {
+    'name': 'Kite Surfing',
+    'image': 'assets/KiteSurfing.jpg',
+    'icon': CupertinoIcons.waveform,
+    'details': {
+      'places': ['Kalpitiya', 'Mirissa', 'Unawatuna', 'Hikkaduwa'],
+      'activities': [
+        'KiteSurfing',
       ],
     }
   },

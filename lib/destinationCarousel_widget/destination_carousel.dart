@@ -17,16 +17,16 @@ class _DestinationCarouselState extends State<DestinationCarousel> {
 
   final List<DestinationInfo> _destinations = const [
     DestinationInfo(
-      imagePath: 'assets/Colombo.jpg',
-      title: 'Colombo Lotus Tower',
-      location: 'Colombo, Sri Lanka',
-      initialLikes: 14,
-    ),
-    DestinationInfo(
       imagePath: 'assets/Kandy.jpg',
       title: 'Kandy',
       location: 'Kandy, Sri Lanka',
       initialLikes: 8,
+    ),
+    DestinationInfo(
+      imagePath: 'assets/Colombo1.jpg',
+      title: 'Colombo Sri Lanka',
+      location: 'Colombo, Sri Lanka',
+      initialLikes: 14,
     ),
     DestinationInfo(
       imagePath: 'assets/Sigiriya.jpg',

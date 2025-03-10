@@ -284,10 +284,10 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
                     onTap: () {
                       if (!arExperiences[index].isComingSoon) {
                         if (arExperiences[index].isARMode) {
-          setState(() {
+                          setState(() {
                             selectedModel = arExperiences[index].modelPath;
-            if (node != null) {
-              arkitController.remove(node!.name);
+                            if (node != null) {
+                              arkitController.remove(node!.name);
                               if (isPlaneDetected) {
                                 final position = vector.Vector3(0, 0, -1);
                                 node = ARKitReferenceNode(
@@ -320,7 +320,7 @@ class _ARTempleScreenState extends State<ARTempleScreen> {
               child: Stack(
                 children: [
                   ARKitSceneView(
-          onARKitViewCreated: onARKitViewCreated,
+                    onARKitViewCreated: onARKitViewCreated,
                     planeDetection: ARPlaneDetection.horizontal,
                     worldAlignment: ARWorldAlignment.gravity,
                   ),
