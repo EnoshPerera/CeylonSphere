@@ -28,6 +28,8 @@ flutter:
   assets:
     - assets/
     - assets/beach.png
+    - assets/ella.png
+    - assets/fisherman.png
 
 flutter_native_splash:
   color: "#42a5f5"
