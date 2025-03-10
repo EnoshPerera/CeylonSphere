@@ -259,9 +259,9 @@ class HomeScreen extends StatelessWidget {
                             },
                           ),
                           const _CategoryItem(
-                            icon: CupertinoIcons.bed_double,
-                            label: 'Hotels',
-                            color: Color(0xFF2196F3),
+                            icon: CupertinoIcons.chat_bubble_2, // Chatbot icon
+                            label: 'Chatbot',
+                            color: Color(0xFF2196F3), // Keeping the same color
                           ),
                           const _CategoryItem(
                             icon: CupertinoIcons.news,
