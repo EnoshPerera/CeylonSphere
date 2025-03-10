@@ -30,6 +30,9 @@ flutter:
 
 flutter_native_splash:
   color: "#42a5f5"
-  image: "assets/beach.png"
+  background_image: "assets/beach.png"
   android: true
   ios: true
+  fullscreen: true
+  android_gravity: fill
+  ios_content_mode: scaleAspectFill
