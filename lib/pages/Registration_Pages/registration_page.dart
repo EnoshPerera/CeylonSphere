@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
 
 class RegistrationPage extends StatefulWidget {
@@ -15,6 +16,57 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool _showValidationErrors = false;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isLoading = false; // To show loading state during registration
+
+  final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  Future<void> _registerUser() async {
+    if (_formKey.currentState!.validate()) {
+      setState(() {
+        _isLoading = true;
+      });
+
+      try {
+        // Create user with email and password
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+          email: _emailController.text.trim(),
+          password: _passwordController.text.trim(),
+        );
+
+        // If registration is successful, show a success message
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text("Registration Successful")),
+        );
+
+        // Navigate to the login page or home page after registration
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => LoginPage()),
+        );
+      } on FirebaseAuthException catch (e) {
+        // Handle registration errors
+        String errorMessage = "Registration failed. Please try again.";
+        if (e.code == 'weak-password') {
+          errorMessage = "The password provided is too weak.";
+        } else if (e.code == 'email-already-in-use') {
+          errorMessage = "The account already exists for that email.";
+        }
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(errorMessage)),
+        );
+      } catch (e) {
+        // Handle other errors
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text("An error occurred. Please try again.")),
+        );
+      } finally {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -99,16 +151,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                       ),
                       const SizedBox(height: 30),
                       ElevatedButton(
-                        onPressed: () {
-                          setState(() {
-                            _showValidationErrors = true;
-                          });
-                          if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Registration Successful")),
-                            );
-                          }
-                        },
+                        onPressed: _isLoading ? null : _registerUser,
                         style: ElevatedButton.styleFrom(
                           backgroundColor: const Color(0xFF003734),
                           padding: const EdgeInsets.symmetric(horizontal: 50, vertical: 15),
@@ -116,7 +159,9 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             borderRadius: BorderRadius.circular(25),
                           ),
                         ),
-                        child: const Text(
+                        child: _isLoading
+                            ? const CircularProgressIndicator(color: Colors.white)
+                            : const Text(
                           "Sign Up",
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500, color: Colors.white),
                         ),

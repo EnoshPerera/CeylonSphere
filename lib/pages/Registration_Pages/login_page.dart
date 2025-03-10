@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'registration_page.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -12,6 +13,59 @@ class _LoginPageState extends State<LoginPage> {
   TextEditingController _passwordController = TextEditingController();
   bool _showValidationErrors = false;
   bool _obscurePassword = true;
+  bool _isLoading = false;
+  String _errorMessage = '';
+
+  Future<void> _signInWithEmailAndPassword() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      await FirebaseAuth.instance.signInWithEmailAndPassword(
+        email: _emailController.text.trim(),
+        password: _passwordController.text,
+      );
+
+      // If we get here, login was successful
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Login Successful")),
+      );
+
+      // You can navigate to the next screen here
+      // Navigator.pushReplacement(
+      //   context,
+      //   MaterialPageRoute(builder: (context) => HomePage()),
+      // );
+
+    } on FirebaseAuthException catch (e) {
+      // Handle specific Firebase Auth errors
+      setState(() {
+        if (e.code == 'user-not-found') {
+          _errorMessage = 'No user found with this email';
+        } else if (e.code == 'wrong-password') {
+          _errorMessage = 'Incorrect password';
+        } else if (e.code == 'invalid-email') {
+          _errorMessage = 'Invalid email format';
+        } else if (e.code == 'user-disabled') {
+          _errorMessage = 'This account has been disabled';
+        } else if (e.code == 'too-many-requests') {
+          _errorMessage = 'Too many attempts. Try again later';
+        } else {
+          _errorMessage = 'Login failed: ${e.message}';
+        }
+      });
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'An error occurred. Please try again.';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -39,6 +93,28 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                 ),
                 const SizedBox(height: 25),
+                if (_errorMessage.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.all(10),
+                    margin: const EdgeInsets.only(bottom: 16),
+                    decoration: BoxDecoration(
+                      color: Colors.red.shade50,
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(color: Colors.red.shade200),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.error_outline, color: Colors.red.shade700),
+                        const SizedBox(width: 10),
+                        Expanded(
+                          child: Text(
+                            _errorMessage,
+                            style: TextStyle(color: Colors.red.shade700),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 Form(
                   key: _formKey,
                   autovalidateMode: _showValidationErrors
@@ -71,15 +147,17 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       const SizedBox(height: 24),
-                      ElevatedButton(
+                      _isLoading
+                          ? const CircularProgressIndicator(
+                        valueColor: AlwaysStoppedAnimation<Color>(Color(0xFF003734)),
+                      )
+                          : ElevatedButton(
                         onPressed: () {
                           setState(() {
                             _showValidationErrors = true;
                           });
                           if (_formKey.currentState!.validate()) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(content: Text("Login Successful")),
-                            );
+                            _signInWithEmailAndPassword();
                           }
                         },
                         style: ElevatedButton.styleFrom(
@@ -156,6 +234,9 @@ class _LoginPageState extends State<LoginPage> {
         if (label == "Email" && !value.contains('@')) {
           return "Please enter a valid email";
         }
+        if (label == "Password" && value.length < 6) {
+          return "Password must be at least 6 characters";
+        }
         return null;
       },
     );
@@ -165,29 +246,48 @@ class _LoginPageState extends State<LoginPage> {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
-        _buildSocialButton('assets/google-logo.png'),
+        _buildSocialButton('assets/google-logo.png', _signInWithGoogle),
         const SizedBox(width: 30),
-        _buildSocialButton('assets/facebook-logo.png'),
+        _buildSocialButton('assets/facebook-logo.png', _signInWithFacebook),
       ],
     );
   }
 
-  Widget _buildSocialButton(String assetPath) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
+  Widget _buildSocialButton(String assetPath, VoidCallback onTap) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(12),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.grey.withOpacity(0.2),
+              spreadRadius: 1,
+              blurRadius: 4,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Image.asset(assetPath, height: 30),
       ),
-      child: Image.asset(assetPath, height: 30),
     );
+  }
+
+  Future<void> _signInWithGoogle() async {
+    // Implement Google Sign-In here
+    // This requires additional firebase_auth_oauth package
+    setState(() {
+      _errorMessage = 'Google sign-in not implemented yet.';
+    });
+  }
+
+  Future<void> _signInWithFacebook() async {
+    // Implement Facebook Sign-In here
+    // This requires additional firebase_auth_oauth package
+    setState(() {
+      _errorMessage = 'Facebook sign-in not implemented yet.';
+    });
   }
 }
