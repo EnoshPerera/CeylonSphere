@@ -1,7 +1,7 @@
-import 'package:ceylonsphere/screens/voice_chatbot.dart';
 import 'package:flutter/material.dart';
-import 'package:your_app_name/app/theme/app_theme.dart';
-import 'package:your_app_name/screens/home/home_page.dart';
+import 'package:ceylonsphere/app/theme/app_theme.dart';
+import 'package:ceylonsphere/screens/home/home_page.dart';
+import 'package:ceylonsphere/screens/voice_chatbot.dart';
 
 void main() {
   runApp(const MyApp());
