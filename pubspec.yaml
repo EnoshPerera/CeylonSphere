@@ -33,18 +33,19 @@ dev_dependencies:
 
 flutter:
   assets:
-    - assets/facebook-logo.png
-    - assets/firstscreen.jpg
-    - assets/google-logo.png
-    - assets/logo.png
-    - assets/Logo-10.png
-    - assets/Logo-12.png
-    - assets/logo-14.png
-    - assets/toyota-corolla.jpg
-    - assets/Honda-Civic.jpeg
-    - assets/Suzuki-Swift.jpg
-    - assets/robotglb.glb
-    - assets/app_island.glb
+    - assets/
+#    - assets/facebook-logo.png
+#    - assets/firstscreen.jpg
+#    - assets/google-logo.png
+#    - assets/logo.png
+#    - assets/Logo-10.png
+#    - assets/Logo-12.png
+#    - assets/logo-14.png
+#    - assets/toyota-corolla.jpg
+#    - assets/Honda-Civic.jpeg
+#    - assets/Suzuki-Swift.jpg
+#    - assets/robotglb.glb
+#    - assets/app_island.glb
 
 
   uses-material-design: true

@@ -1,3 +1,4 @@
+import 'package:CeylonSphere/pages/Home_Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'registration_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -23,7 +24,7 @@ class _LoginPageState extends State<LoginPage> {
     });
 
     try {
-      await FirebaseAuth.instance.signInWithEmailAndPassword(
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithEmailAndPassword(
         email: _emailController.text.trim(),
         password: _passwordController.text,
       );
@@ -33,11 +34,15 @@ class _LoginPageState extends State<LoginPage> {
         const SnackBar(content: Text("Login Successful")),
       );
 
-      // You can navigate to the next screen here
-      // Navigator.pushReplacement(
-      //   context,
-      //   MaterialPageRoute(builder: (context) => HomePage()),
-      // );
+      // Navigate to the home page after successful login
+      if (userCredential.user != null) {
+        // Use pushReplacement to replace the login page in the navigation stack
+        // This prevents the user from going back to the login page with the back button
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => TravelApp()),
+        );
+      }
 
     } on FirebaseAuthException catch (e) {
       // Handle specific Firebase Auth errors

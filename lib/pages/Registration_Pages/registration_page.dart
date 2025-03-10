@@ -1,3 +1,4 @@
+import 'package:CeylonSphere/pages/Home_Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
@@ -38,10 +39,10 @@ class _RegistrationPageState extends State<RegistrationPage> {
           const SnackBar(content: Text("Registration Successful")),
         );
 
-        // Navigate to the login page or home page after registration
+        // Navigate to the home page after registration
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => LoginPage()),
+          MaterialPageRoute(builder: (context) => TravelApp()),
         );
       } on FirebaseAuthException catch (e) {
         // Handle registration errors

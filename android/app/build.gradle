@@ -3,28 +3,12 @@ plugins {
     id "kotlin-android"
     // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
     id "dev.flutter.flutter-gradle-plugin"
-    id 'com.google.gms.google-services' version '4.3.15' apply false
-
-}
-
-dependencies {
-    // Import the Firebase BoM
-    implementation platform('com.google.firebase:firebase-bom:33.10.0')
-
-
-    // TODO: Add the dependencies for Firebase products you want to use
-    // When using the BoM, don't specify versions in Firebase dependencies
-    implementation 'com.google.firebase:firebase-analytics'
-
-
-    // Add the dependencies for any other desired Firebase products
-    // https://firebase.google.com/docs/android/setup#available-libraries
 }
 
 android {
-    namespace = "com.example.CeylonSphere"
-    compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
+    compileSdk = flutter.compileSdkVersion // Set by Flutter (e.g., 33)
+    ndkVersion = flutter.ndkVersion // Set by Flutter (e.g., "25.1.8937393")
+    namespace "com.example.CeylonSphere" // Replace with your app's package name
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
@@ -36,14 +20,11 @@ android {
     }
 
     defaultConfig {
-        // TODO: Specify your own unique Application ID (https://developer.android.com/studio/build/application-id.html).
-        applicationId = "com.example.CeylonShpere"
-        // You can update the following values to match your application needs.
-        // For more information, see: https://flutter.dev/to/review-gradle-config.
+        applicationId "com.example.CeylonSphere" // Replace with your app's package name
         minSdk = 23
-        targetSdk = flutter.targetSdkVersion
-        versionCode = flutter.versionCode
-        versionName = flutter.versionName
+        targetSdk = flutter.targetSdkVersion // Set by Flutter (e.g., 33)
+        versionCode = flutter.versionCode // Set in pubspec.yaml or local.properties
+        versionName = flutter.versionName // Set in pubspec.yaml or local.properties
     }
 
     buildTypes {
@@ -57,4 +38,10 @@ android {
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Add Kotlin standard library
+    implementation platform('com.google.firebase:firebase-bom:32.3.1') // Add Firebase BoM
+    implementation 'com.google.firebase:firebase-analytics' // Add Firebase Analytics (optional)
 }

@@ -9,10 +9,10 @@ import 'transport_final_page.dart';
 
 
 void main() {
-  runApp(TravelBookingApp());
+  runApp(TransportScreen());
 }
 
-class TravelBookingApp extends StatelessWidget {
+class TransportScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -233,7 +233,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
           ),
           if (!_isLocationSelectionOpen)
             Positioned(
-              bottom: 20,
+              bottom: 100,
               left: 15,
               right: 15,
               child: ElevatedButton(
