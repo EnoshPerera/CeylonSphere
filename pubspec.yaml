@@ -61,7 +61,6 @@ flutter:
 
   assets:
 
-    - assets/
     - assets/sigiriya.jpg
     - assets/ambuluwawa.webp
     - assets/galle_fort.jpg
@@ -69,7 +68,6 @@ flutter:
     - assets/nine_arch_bridge.webp
     - assets/ruwanwelisaya.jpg
     - assets/bamunu_mask.jpg
-    - assets/models/
 
   # To add assets to your application, add an assets section, like this:
   # assets:
