@@ -158,16 +158,21 @@ class HomeScreen extends StatelessWidget {
                                             _CategoryGridItem(
                                               icon: CupertinoIcons.map,
                                               label: 'Places',
-                                              onTap: () => Navigator.push(
-                                                context,
-                                                CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                      GoogleMapScreen(),
-                                                ),
-                                              ),
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close the modal first
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        GoogleMapScreen(),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.chat, // Chatbot icon
+                                              icon:
+                                                  CupertinoIcons.chat_bubble_2,
                                               label: 'Chatbot',
                                             ),
                                             const _CategoryGridItem(
@@ -202,13 +207,17 @@ class HomeScreen extends StatelessWidget {
                                               icon:
                                                   CupertinoIcons.chat_bubble_2,
                                               label: 'Travel Assistant',
-                                              onTap: () => Navigator.push(
-                                                context,
-                                                CupertinoPageRoute(
-                                                  builder: (context) =>
-                                                      const TravelChatbotScreen(),
-                                                ),
-                                              ),
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close modal before navigating
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const TravelChatbotScreen(),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ],
                                         ),
@@ -332,7 +341,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
-
 
 class PromoBanner extends StatelessWidget {
   final String title;
