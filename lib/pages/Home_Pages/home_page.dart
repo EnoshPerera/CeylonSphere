@@ -211,13 +211,13 @@ class HomeScreen extends StatelessWidget {
                                               onTap: () {
                                                 Navigator.pop(
                                                     context); // Close modal before navigating
-                                                Navigator.push(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        const TravelChatbotScreen(),
-                                                  ),
-                                                );
+                                                // Navigator.push(
+                                                //   context,
+                                                //   CupertinoPageRoute(
+                                                //     builder: (context) =>
+                                                //         const TravelChatbotScreen(),
+                                                //   ),
+                                                // );
                                               },
                                             ),
                                           ],
