@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../models/destination.dart';
+import '../models/destinations2.dart';
 
 class DestinationDetailPage extends StatefulWidget {
   final String destinationName;

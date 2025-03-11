@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'destinations_detail_page.dart';
-import '../models/destination.dart';
+import '../models/destinations2.dart';
 
 class DestinationsListPage extends StatefulWidget {
   const DestinationsListPage({super.key});
