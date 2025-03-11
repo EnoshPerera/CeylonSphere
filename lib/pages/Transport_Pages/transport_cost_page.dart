@@ -22,7 +22,9 @@ class TransportCostPage extends StatefulWidget {
     required this.plannedDays,
     required this.pickupLocation,
     required this.dropoffLocation,
-    required this.stopLocations, required DateTime pickupDate, required TimeOfDay pickupTime,
+    required this.stopLocations,
+    required DateTime pickupDate,
+    required TimeOfDay pickupTime,
   }) : super(key: key);
 
   @override
@@ -108,8 +110,11 @@ class _TransportCostPageState extends State<TransportCostPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Cost Details',style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            textAlign: TextAlign.center),
+        title: Text(
+          'Cost Details',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
       ),
       body: _isProcessing
           ? _buildProcessingView()
@@ -157,6 +162,7 @@ class _TransportCostPageState extends State<TransportCostPage> {
           _buildConfirmButton(),
           SizedBox(height: 16),
           _buildHomeButton(),
+          SizedBox(height: 100), // Add extra space at the bottom for navigation bar
         ],
       ),
     );
@@ -464,4 +470,3 @@ class _TransportCostPageState extends State<TransportCostPage> {
     );
   }
 }
-

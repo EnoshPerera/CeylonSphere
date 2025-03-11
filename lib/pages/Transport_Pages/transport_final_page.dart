@@ -164,7 +164,7 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
             ),
             SizedBox(height: 16),
             Text('Planned Trip Duration', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-            SizedBox(height: 8),
+            SizedBox(height: 20),
             Row(
               children: [
                 Expanded(
@@ -186,31 +186,43 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
               ],
             ),
             SizedBox(height: 24),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.teal,
-                minimumSize: Size(double.infinity, 50),
-              ),
-              onPressed: selectedVehicle != null ? () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => TripSummaryPage(
-                      vehicleType: widget.vehicleType,
-                      vehicleModel: selectedVehicle!, // pass vehicleModel
-                      passengerCount: widget.passengerCount,
-                      distance: widget.distance,
-                      duration: widget.duration,
-                      plannedDays: plannedDays, // pass plannedDays
-                      pickupLocation: widget.pickupLocation,
-                      dropoffLocation: widget.dropoffLocation,
-                      stopLocations: widget.stopLocations,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.end, // Push button to the bottom
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(bottom: 100), // 100 pixels from bottom
+                  child: ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.teal,
+                      minimumSize: Size(double.infinity, 50),
+                    ),
+                    onPressed: selectedVehicle == null ? null : () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => TripSummaryPage(
+                            vehicleType: widget.vehicleType,
+                            vehicleModel: selectedVehicle!, // pass vehicleModel
+                            passengerCount: widget.passengerCount,
+                            distance: widget.distance,
+                            duration: widget.duration,
+                            plannedDays: plannedDays, // pass plannedDays
+                            pickupLocation: widget.pickupLocation,
+                            dropoffLocation: widget.dropoffLocation,
+                            stopLocations: widget.stopLocations,
+                          ),
+                        ),
+                      );
+                    },
+                    child: Text(
+                      'Proceed to Summary',
+                      style: TextStyle(fontSize: 16, color: Colors.white),
                     ),
                   ),
-                );
-              } : null,
-              child: Text('Proceed to Summary', style: TextStyle(fontSize: 16, color: Colors.white)),
-            ),
+                ),
+              ],
+            )
+
           ],
         ),
       ),
