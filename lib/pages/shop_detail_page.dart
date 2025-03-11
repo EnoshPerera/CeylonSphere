@@ -6,7 +6,7 @@ import '../widgets/item_card.dart';
 class ShopDetailPage extends StatelessWidget {
   final Shop shop;
 
-  const ShopDetailPage({Key? key, required this.shop}) : super(key: key);
+  const ShopDetailPage({super.key, required this.shop});
 
   @override
   Widget build(BuildContext context) {

@@ -4,7 +4,7 @@ import '../model/item.dart';
 class ItemDetailPage extends StatelessWidget {
   final Item item;
 
-  const ItemDetailPage({Key? key, required this.item}) : super(key: key);
+  const ItemDetailPage({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
