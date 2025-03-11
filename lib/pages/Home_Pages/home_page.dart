@@ -1,3 +1,4 @@
+import 'package:CeylonSphere/pages/Home_Pages/adventure_deals.dart';
 import 'package:CeylonSphere/pages/Transport_Pages/transport.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -315,24 +316,31 @@ class HomeScreen extends StatelessWidget {
                 title: 'Adventure Deal',
                 subtitle: '30% OFF',
                 color: Colors.orangeAccent,
-                onTap: () {},
+                onTap: () {
+                  // Navigate to AdventureDealsPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AdventureDealsPage()),
+                  );
+                },
               ),
 
               //Promo Banner
-              // PromoBanner(
-              //   title: 'AR Experience',
-              //   subtitle: 'Explore temples in Augmented Reality',
-              //   color: const Color.fromARGB(
-              //       255, 0, 102, 255), // Deep purple for tech feel
-              //   // onTap: () {
-              //   //   Navigator.push(
-              //   //     context,
-              //   //     CupertinoPageRoute(
-              //   //       builder: (context) => ARTempleScreen(),
-              //   //     ),
-              //   //   );
-              //   // },
-              // ),
+              PromoBanner(
+                title: 'AR Experience',
+                subtitle: 'Explore temples in Augmented Reality',
+                color: const Color.fromARGB(
+                    255, 0, 102, 255), // Deep purple for tech feel
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => ARTempleScreen(),
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 10),
             ],
           ),
