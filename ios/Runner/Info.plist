@@ -5,6 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
+<<<<<<< HEAD
 	<string>Ceylonsphere</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
@@ -14,6 +15,17 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>ceylonsphere</string>
+=======
+	<string>Flutter Test 22</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.ceylonsphere.app</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>flutter_test_22</string>
+>>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
 	<key>CFBundlePackageType</key>
 	<string>APPL</string>
 	<key>CFBundleShortVersionString</key>
@@ -28,6 +40,37 @@
 	<string>LaunchScreen</string>
 	<key>UIMainStoryboardFile</key>
 	<string>Main</string>
+<<<<<<< HEAD
+=======
+
+	<key>GMSPlacesAPIKey</key>
+	<string>AIzaSyBZOOBQ6ME-TXNbD8I2EIF1uOva65zU70s</string>
+
+	<key>GMSPlacesAPIKey</key>
+	<string>YOUR_GOOGLE_MAPS_API_KEY</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show nearby places</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to show nearby places</string>
+
+
+	
+
+	<!-- 📌 Camera Permission (if needed) -->
+	<key>NSCameraUsageDescription</key>
+	<string>We need access to your camera for AR functionality.</string>
+
+	<!-- 📌 Location Permissions -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>We need your location to show the map</string>
+
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>We need your location to provide better features</string>
+
+	<!-- Other Settings -->
+	<key>UIRequiresFullScreen</key>
+	<true/>
+>>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
 		<string>UIInterfaceOrientationPortrait</string>
