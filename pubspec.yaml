@@ -68,6 +68,10 @@ flutter:
     - assets/nine_arch_bridge.webp
     - assets/ruwanwelisaya.jpg
     - assets/bamunu_mask.jpg
+    - assets/bamunu_mask_01.png
+    - assets/naga_rassa_mask.jpg
+    - assets/naga_rassa_mask_01.png
+    - assets/elephant.jpg
 
   # To add assets to your application, add an assets section, like this:
   # assets:
