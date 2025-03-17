@@ -4,10 +4,7 @@
    <FileRef
       location = "group:Runner.xcodeproj">
    </FileRef>
-<<<<<<< HEAD
-=======
    <FileRef
       location = "group:Pods/Pods.xcodeproj">
    </FileRef>
->>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
 </Workspace>

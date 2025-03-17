@@ -96,13 +96,6 @@ BEGIN
             VALUE "LegalCopyright", "Copyright (C) 2025 com.example. All rights reserved." "\0"
             VALUE "OriginalFilename", "native_splash.exe" "\0"
             VALUE "ProductName", "native_splash" "\0"
-            VALUE "CompanyName", "com.fluttermapp" "\0"
-            VALUE "FileDescription", "flutter_test_22" "\0"
-            VALUE "FileVersion", VERSION_AS_STRING "\0"
-            VALUE "InternalName", "flutter_test_22" "\0"
-            VALUE "LegalCopyright", "Copyright (C) 2025 com.fluttermapp. All rights reserved." "\0"
-            VALUE "OriginalFilename", "flutter_test_22.exe" "\0"
-            VALUE "ProductName", "flutter_test_22" "\0"
             VALUE "ProductVersion", VERSION_AS_STRING "\0"
         END
     END
