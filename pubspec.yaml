@@ -30,6 +30,9 @@ dependencies:
   dash_chat_2: ^0.0.21
   image_picker: ^1.0.4
   flutter_gemini: ^2.0.1
+  flutter_stripe: ^11.4.0
+  dio: ^5.8.0+1
+
 
 dev_dependencies:
   flutter_test:
