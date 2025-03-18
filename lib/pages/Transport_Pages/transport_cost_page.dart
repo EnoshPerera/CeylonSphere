@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
+import '../../Payment_Pages/payement_screen.dart';
+
 class TransportCostPage extends StatefulWidget {
   final String vehicleType;
   final String vehicleModel;
@@ -420,26 +422,42 @@ class _TransportCostPageState extends State<TransportCostPage> {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      onPressed: () {
-        // Show confirmation dialog
-        showDialog(
-          context: context,
-          builder: (BuildContext context) {
-            return AlertDialog(
-              title: Text('Booking Confirmed'),
-              content: Text('Your booking has been confirmed. You will receive a confirmation email shortly.'),
-              actions: [
-                TextButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                    Navigator.of(context).popUntil((route) => route.isFirst);
-                  },
-                  child: Text('OK'),
-                ),
-              ],
-            );
-          },
+      onPressed: () async {
+        // Calculate half of the total cost
+        double halfTotalCostUSD = _totalCostUSD / 2;
+
+        // Navigate to the payment screen or show a payment dialog
+        bool paymentSuccess = await Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => PaymentScreen(
+              amount: halfTotalCostUSD,
+              currency: 'USD',
+              bookingReference: _bookingReference,
+            ),
+          ),
         );
+
+        // If payment is successful, show confirmation dialog
+        if (paymentSuccess == true) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                title: Text('Booking Confirmed'),
+                content: Text('Your booking has been confirmed. You will receive a confirmation email shortly.'),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).popUntil((route) => route.isFirst);
+                    },
+                    child: Text('OK'),
+                  ),
+                ],
+              );
+            },
+          );
+        }
       },
       child: Text(
         'Complete Booking',

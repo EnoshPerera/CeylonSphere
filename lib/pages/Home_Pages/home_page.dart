@@ -1,3 +1,4 @@
+import 'package:CeylonSphere/chatbot/chatbot.dart';
 import 'package:CeylonSphere/pages/Transport_Pages/transport.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -170,10 +171,21 @@ class HomeScreen extends StatelessWidget {
                                                 );
                                               },
                                             ),
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon:
                                                   CupertinoIcons.chat_bubble_2,
                                               label: 'Chatbot',
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close the modal first
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        MyApp(),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                             const _CategoryGridItem(
                                               icon: CupertinoIcons.news,
@@ -214,7 +226,7 @@ class HomeScreen extends StatelessWidget {
                                                   context,
                                                   CupertinoPageRoute(
                                                     builder: (context) =>
-                                                        const TravelChatbotScreen(),
+                                                        const MyApp(),
                                                   ),
                                                 );
                                               },
@@ -268,10 +280,18 @@ class HomeScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          const _CategoryItem(
+                          _CategoryItem(
                             icon: CupertinoIcons.chat_bubble_2, // Chatbot icon
                             label: 'Chatbot',
-                            color: Color(0xFF2196F3), // Keeping the same color
+                            color: Color(0xFF2196F3),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => MyApp(),
+                                ),
+                              );
+                            }, // Keeping the same color
                           ),
                           const _CategoryItem(
                             icon: CupertinoIcons.news,

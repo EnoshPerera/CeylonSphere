@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' as polyline;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
+import '../../Payment_Pages/consts.dart';
 import 'vehicle_selection_page.dart';
 import 'transport_final_page.dart';
 
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings are initialized
+  Stripe.publishableKey = stripePublishableKey; // Initialize Stripe with the publishable key
   runApp(TransportScreen());
 }
 
