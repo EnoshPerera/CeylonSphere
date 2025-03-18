@@ -1,17 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
-import 'ar_camera_view.dart';
+import 'package:model_viewer_plus/model_viewer_plus.dart';
 
 class SouvenirItemPage extends StatelessWidget {
   final String title;
   final String content;
   final String imagePath;
+  final String? modelPath; // Path to the 3D model file (.glb)
 
   const SouvenirItemPage({
     super.key,
     required this.title,
     required this.content,
     required this.imagePath,
+    this.modelPath, // Optional for backward compatibility
   });
 
   static List<Souvenir> getSouvenirs() {
@@ -19,16 +21,18 @@ class SouvenirItemPage extends StatelessWidget {
       Souvenir(
         name: 'Bamunu Mask',
         imagePath: 'assets/bamunu_mask.jpg',
+        modelPath: 'assets/bamunu_mask_01.glb',
         description:
-            "The Bamunu Mask is a striking and culturally significant traditional mask of Sri Lanka, representing the Bamuna (Brahmin) figure—a symbol of power, wisdom, and dominance in ancient society. Used primarily in ritual performances, folk dramas, and traditional Kolam dances, this mask portrays a stern and commanding expression, reflecting the influence of Brahmins in Sri Lankan history.",
+        "The Bamunu Mask is a striking and culturally significant traditional mask of Sri Lanka, representing the Bamuna (Brahmin) figure—a symbol of power, wisdom, and dominance in ancient society. Used primarily in ritual performances, folk dramas, and traditional Kolam dances, this mask portrays a stern and commanding expression, reflecting the influence of Brahmins in Sri Lankan history.",
         rating: 4.8,
         categories: ['Traditional Art', 'Cultural', 'Handcrafted'],
       ),
       Souvenir(
         name: 'Naga Rassa Mask',
         imagePath: 'assets/naga_rassa_mask.jpg',
+        modelPath: 'assets/naga_rassa_mask_01.glb',
         description:
-            "The Naga Rassa Mask is a unique and mystical mask in Sri Lankan traditional folklore, representing the serpent spirit (Naga). In ancient beliefs, the Naga (divine serpent) is associated with protection, power, and water deities, often linked to rainfall, fertility, and prosperity. The mask is prominently used in ritual performances and masked dances, invoking the spiritual energy of the serpent to ward off evil and bring blessings.\n\nThe design of the Naga Rassa Mask is striking, often featuring multiple snake heads, wide eyes, and intricate patterns symbolizing the mystical and divine power of the Naga. Painted in bold colors like red, green, and gold, it captures the ferocity and grace of the serpent deity.",
+        "The Naga Rassa Mask is a unique and mystical mask in Sri Lankan traditional folklore, representing the serpent spirit (Naga). In ancient beliefs, the Naga (divine serpent) is associated with protection, power, and water deities, often linked to rainfall, fertility, and prosperity. The mask is prominently used in ritual performances and masked dances, invoking the spiritual energy of the serpent to ward off evil and bring blessings.\n\nThe design of the Naga Rassa Mask is striking, often featuring multiple snake heads, wide eyes, and intricate patterns symbolizing the mystical and divine power of the Naga. Painted in bold colors like red, green, and gold, it captures the ferocity and grace of the serpent deity.",
         rating: 4.7,
         categories: ['Mythical', 'Cultural', 'Handcrafted'],
       ),
@@ -40,7 +44,7 @@ class SouvenirItemPage extends StatelessWidget {
     return Scaffold(
       body: CustomScrollView(
         slivers: [
-          // Collapsing App Bar with Image
+          // Collapsing App Bar with 3D Model or Image
           SliverAppBar(
             expandedHeight: 300,
             pinned: true,
@@ -50,68 +54,28 @@ class SouvenirItemPage extends StatelessWidget {
               background: Stack(
                 fit: StackFit.expand,
                 children: [
-                  // Background Image
-                  Image.asset(
-                    imagePath,
-                    fit: BoxFit.cover,
-                  ),
-                  // Gradient Overlay
-                  DecoratedBox(
-                    decoration: BoxDecoration(
-                      gradient: LinearGradient(
-                        begin: Alignment.topCenter,
-                        end: Alignment.bottomCenter,
-                        colors: [
-                          Colors.transparent,
-                          Colors.black.withOpacity(0.7),
-                        ],
-                      ),
+                  // 3D Model or Image based on availability
+                  if (modelPath != null)
+                    _build3DModelViewer()
+                  else
+                    Image.asset(
+                      imagePath,
+                      fit: BoxFit.cover,
                     ),
-                  ),
-                  // AR View Button
-                  Positioned(
-                    bottom: 20,
-                    right: 20,
-                    child: GestureDetector(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => ARCameraView(
-                              imagePath: title == 'Bamunu Mask'
-                                  ? 'assets/bamunu_mask_01.png'
-                                  : 'assets/naga_rassa_mask_01.png',
-                            ),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        padding: const EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white.withOpacity(0.4),
-                          borderRadius: BorderRadius.circular(30),
-                        ),
-                        child: Row(
-                          children: const [
-                            Icon(
-                              CupertinoIcons.cube_box_fill,
-                              color: Colors.black,
-                              size: 28,
-                            ),
-                            SizedBox(width: 8),
-                            Text(
-                              'AR View',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
+                  // Gradient Overlay (only for image)
+                  if (modelPath == null)
+                    DecoratedBox(
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          begin: Alignment.topCenter,
+                          end: Alignment.bottomCenter,
+                          colors: [
+                            Colors.transparent,
+                            Colors.black.withOpacity(0.7),
                           ],
                         ),
                       ),
                     ),
-                  ),
                 ],
               ),
             ),
@@ -213,8 +177,6 @@ class SouvenirItemPage extends StatelessWidget {
                       ),
 
                       const SizedBox(height: 24),
-
-                      // Removed Quick Actions
                     ],
                   ),
                 ),
@@ -345,6 +307,27 @@ class SouvenirItemPage extends StatelessWidget {
     );
   }
 
+  // 3D model viewer for GLB files
+  Widget _build3DModelViewer() {
+    return SizedBox(
+      height: 300,
+      child: ModelViewer(
+        src: modelPath!,
+        alt: "A 3D model of $title",
+        autoRotate: true,
+        cameraControls: true,
+        disableZoom: false,
+        ar: false, // Disable AR
+        arModes: const [], // No AR modes
+        autoPlay: true,
+        backgroundColor: const Color.fromARGB(255, 230, 230, 230),
+        // Disable all AR-related feature
+        disableTap: false,
+        disablePan: false,
+      ),
+    );
+  }
+
   Widget _buildCategory(String label) {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
@@ -398,6 +381,7 @@ class SouvenirItemPage extends StatelessWidget {
 class Souvenir {
   final String name;
   final String imagePath;
+  final String? modelPath; // Path to 3D model
   final String description;
   final double rating;
   final List<String> categories;
@@ -405,8 +389,10 @@ class Souvenir {
   Souvenir({
     required this.name,
     required this.imagePath,
+    this.modelPath, // Optional 3D model path
     required this.description,
     required this.rating,
     required this.categories,
   });
 }
+

@@ -32,6 +32,7 @@ dependencies:
 
 
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -40,6 +41,8 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/bamunu_mask_01.glb
+    - assets/naga_rassa_mask_01.glb
 #    - assets/facebook-logo.png
 #    - assets/firstscreen.jpg
 #    - assets/google-logo.png
@@ -52,6 +55,8 @@ flutter:
 #    - assets/Suzuki-Swift.jpg
 #    - assets/robotglb.glb
 #    - assets/app_island.glb
+#    - assets/bamunu_mask_01.glb
+
 
 
   uses-material-design: true

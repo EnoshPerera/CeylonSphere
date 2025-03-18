@@ -51,7 +51,7 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
             padding: const EdgeInsets.all(16),
             sliver: SliverList(
               delegate: SliverChildBuilderDelegate(
-                (context, index) {
+                    (context, index) {
                   if (index == 0) {
                     return const Padding(
                       padding: EdgeInsets.only(bottom: 16),
@@ -76,6 +76,7 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
                               title: souvenir.name,
                               content: souvenir.description,
                               imagePath: souvenir.imagePath,
+                              modelPath: souvenir.modelPath, // Pass the model path
                             ),
                           ),
                         );
@@ -117,6 +118,39 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
                                       ),
                                     ),
                                   ),
+                                  // 3D model indicator
+                                  if (souvenir.modelPath != null)
+                                    Positioned(
+                                      top: 10,
+                                      right: 10,
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          horizontal: 8,
+                                          vertical: 4,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: Colors.black.withOpacity(0.6),
+                                          borderRadius: BorderRadius.circular(12),
+                                        ),
+                                        child: Row(
+                                          children: const [
+                                            Icon(
+                                              Icons.view_in_ar,
+                                              color: Colors.white,
+                                              size: 16,
+                                            ),
+                                            SizedBox(width: 4),
+                                            Text(
+                                              '3D',
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
                                 ],
                               ),
                             ),
@@ -132,7 +166,7 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
                                   Wrap(
                                     spacing: 8,
                                     children:
-                                        souvenir.categories.map((category) {
+                                    souvenir.categories.map((category) {
                                       return Container(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 12,
@@ -141,7 +175,7 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.2),
                                           borderRadius:
-                                              BorderRadius.circular(20),
+                                          BorderRadius.circular(20),
                                         ),
                                         child: Text(
                                           category,
@@ -157,7 +191,7 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
                                   // Name and Rating
                                   Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                     children: [
                                       Expanded(
                                         child: Text(
@@ -177,7 +211,7 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.2),
                                           borderRadius:
-                                              BorderRadius.circular(12),
+                                          BorderRadius.circular(12),
                                         ),
                                         child: Row(
                                           children: [
@@ -235,3 +269,4 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
     );
   }
 }
+
