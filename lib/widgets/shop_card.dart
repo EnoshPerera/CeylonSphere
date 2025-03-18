@@ -41,8 +41,8 @@ class ShopCard extends StatelessWidget {
                   top: Radius.circular(16),
                 ),
               ),
-              // This is a placeholder for your shop image
-              // You'll replace this with your actual image
+
+              // This is a placeholder for shop image
               child: const Center(
                 child: Icon(Icons.store, size: 50, color: Colors.grey),
               ),

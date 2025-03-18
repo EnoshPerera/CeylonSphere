@@ -24,7 +24,7 @@ final List<Item> sampleItems = [
   Item(
     id: 1,
     name: 'Wooden Sculpture',
-    imagePath: 'assets/images/item1.jpg', // Placeholder for your image
+    imagePath: 'assets/images/item1.jpg',
     price: 45.99,
     description:
         'Hand-carved wooden sculpture made from sustainable local wood.',
@@ -32,28 +32,28 @@ final List<Item> sampleItems = [
   Item(
     id: 2,
     name: 'Woven Basket',
-    imagePath: 'assets/images/item2.jpg', // Placeholder for your image
+    imagePath: 'assets/images/item2.jpg',
     price: 29.99,
     description: 'Traditional woven basket perfect for storage or decoration.',
   ),
   Item(
     id: 3,
     name: 'Ceramic Vase',
-    imagePath: 'assets/images/item3.jpg', // Placeholder for your image
+    imagePath: 'assets/images/item3.jpg',
     price: 34.50,
     description: 'Handmade ceramic vase with unique glazing pattern.',
   ),
   Item(
     id: 4,
     name: 'Embroidered Pillow',
-    imagePath: 'assets/images/item4.jpg', // Placeholder for your image
+    imagePath: 'assets/images/item4.jpg',
     price: 27.99,
     description: 'Beautifully embroidered pillow with traditional patterns.',
   ),
   Item(
     id: 5,
     name: 'Handmade Candles',
-    imagePath: 'assets/images/item5.jpg', // Placeholder for your image
+    imagePath: 'assets/images/item5.jpg',
     price: 19.99,
     description: 'Set of 3 scented candles made with natural wax.',
   ),
@@ -208,8 +208,8 @@ class ShopDetailPage extends StatelessWidget {
                 top: Radius.circular(12),
               ),
             ),
-            // This is a placeholder for your item image
-            // You'll replace this with your actual image
+
+            // This is a placeholder for item image
             child: const Center(
               child: Icon(Icons.image, size: 40, color: Colors.grey),
             ),

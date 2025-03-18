@@ -38,8 +38,8 @@ class CategoryCard extends StatelessWidget {
                 color: Colors.grey.shade200,
                 borderRadius: BorderRadius.circular(10),
               ),
-              // This is a placeholder for your category icon
-              // You'll replace this with your actual image
+
+              // This is a placeholder for category icon
               child: const Icon(Icons.image_not_supported, color: Colors.grey),
             ),
             const SizedBox(height: 8),
