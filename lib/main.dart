@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'pages/shop_page.dart';
 
+// This is just an example of how to integrate the shop page
+// You mentioned you already have main.dart, so this is just for reference
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

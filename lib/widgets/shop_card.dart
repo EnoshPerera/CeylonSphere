@@ -5,7 +5,7 @@ import '../pages/shop_detail_page.dart';
 class ShopCard extends StatelessWidget {
   final Shop shop;
 
-  const ShopCard({super.key, required this.shop});
+  const ShopCard({Key? key, required this.shop}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -16,51 +16,75 @@ class ShopCard extends StatelessWidget {
           MaterialPageRoute(builder: (context) => ShopDetailPage(shop: shop)),
         );
       },
-      child: Card(
-        elevation: 4,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            ClipRRect(
-              borderRadius: const BorderRadius.vertical(
-                top: Radius.circular(12),
+            // Shop image placeholder
+            Container(
+              height: 150,
+              decoration: BoxDecoration(
+                color: Colors.grey.shade200,
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
               ),
-
-              child: Image.asset(
-                shop.imagePath,
-                height: 150,
-                fit: BoxFit.cover,
-                errorBuilder: (context, error, stackTrace) {
-                  return Container(
-                    height: 150,
-                    color: Colors.grey[300],
-                    child: const Center(
-                      child: Icon(Icons.error, color: Colors.grey),
-                    ),
-                  );
-                },
+              // This is a placeholder for your shop image
+              // You'll replace this with your actual image
+              child: const Center(
+                child: Icon(Icons.store, size: 50, color: Colors.grey),
               ),
             ),
-
             Padding(
-              padding: const EdgeInsets.all(12.0),
+              padding: const EdgeInsets.all(12),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    shop.name,
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                    maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Text(
+                          shop.name,
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.bold,
+                          ),
+                          maxLines: 1,
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Row(
+                        children: [
+                          const Icon(Icons.star, color: Colors.amber, size: 16),
+                          const SizedBox(width: 4),
+                          Text(
+                            shop.rating.toString(),
+                            style: const TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
                   ),
-                  const SizedBox(height: 4),
+                  const SizedBox(height: 8),
                   Text(
                     shop.description,
-                    style: TextStyle(fontSize: 14, color: Colors.grey[700]),
+                    style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                   ),
@@ -68,14 +92,17 @@ class ShopCard extends StatelessWidget {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      const Text(
-                        '5 items',
-                        style: TextStyle(fontSize: 14, color: Colors.blue),
+                      Text(
+                        '${shop.itemCount} items',
+                        style: TextStyle(
+                          fontSize: 14,
+                          color: Colors.blue.shade700,
+                        ),
                       ),
-                      const Icon(
+                      Icon(
                         Icons.arrow_forward,
                         size: 16,
-                        color: Colors.blue,
+                        color: Colors.blue.shade700,
                       ),
                     ],
                   ),
