@@ -5,7 +5,7 @@ import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart' as polyline;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
-import '../../Payment_Pages/consts.dart';
+import '../Payment_Pages/consts.dart';
 import 'vehicle_selection_page.dart';
 import 'transport_final_page.dart';
 
