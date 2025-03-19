@@ -27,7 +27,7 @@ class StripeService {
       await stripe.Stripe.instance.initPaymentSheet(
         paymentSheetParameters: stripe.SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntentClientSecret,
-          merchantDisplayName: 'Your Store Name',
+          merchantDisplayName: 'Ceylon Sphere',
           // Customize appearance or enable Google/Apple Pay here
         ),
       );

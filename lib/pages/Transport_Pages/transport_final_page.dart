@@ -12,6 +12,9 @@ class AvailableVehiclesPage extends StatefulWidget {
   final String pickupLocation;
   final String dropoffLocation;
   final List<String> stopLocations;
+  final Function(
+          String vehicleType, double amount, String paymentId, String userId)
+      onPaymentSuccess;
 
   const AvailableVehiclesPage({
     Key? key,
@@ -21,7 +24,10 @@ class AvailableVehiclesPage extends StatefulWidget {
     required this.duration,
     required this.pickupLocation,
     required this.dropoffLocation,
-    required this.stopLocations, required String vehicleModel, required int plannedDays,
+    required this.stopLocations,
+    required this.onPaymentSuccess,
+    required int plannedDays,
+    required String vehicleModel,
   }) : super(key: key);
 
   @override
@@ -34,13 +40,33 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
 
   final Map<String, List<VehicleDetails>> vehicleOptions = {
     "Car": [
-      VehicleDetails(brand: "Toyota", model: "Corolla", imageUrl: "assets/toyota-corolla.jpg", details: "5 seats, air-conditioned, fuel-efficient"),
-      VehicleDetails(brand: "Honda", model: "Civic", imageUrl: "assets/Honda-Civic.jpeg", details: "5 seats, air-conditioned, comfortable ride"),
-      VehicleDetails(brand: "Suzuki", model: "Swift", imageUrl: "assets/Suzuki-Swift.jpg", details: "5 seats, air-conditioned, compact"),
+      VehicleDetails(
+          brand: "Toyota",
+          model: "Corolla",
+          imageUrl: "assets/toyota-corolla.jpg",
+          details: "5 seats, air-conditioned, fuel-efficient"),
+      VehicleDetails(
+          brand: "Honda",
+          model: "Civic",
+          imageUrl: "assets/Honda-Civic.jpeg",
+          details: "5 seats, air-conditioned, comfortable ride"),
+      VehicleDetails(
+          brand: "Suzuki",
+          model: "Swift",
+          imageUrl: "assets/Suzuki-Swift.jpg",
+          details: "5 seats, air-conditioned, compact"),
     ],
     "Van": [
-      VehicleDetails(brand: "Toyota", model: "HiAce", imageUrl: "assets/toyota-hiace.jpg", details: "8 seats, air-conditioned, spacious"),
-      VehicleDetails(brand: "Nissan", model: "Urvan", imageUrl: "assets/nissan-urvan.jpg", details: "8 seats, air-conditioned, comfortable"),
+      VehicleDetails(
+          brand: "Toyota",
+          model: "HiAce",
+          imageUrl: "assets/toyota-hiace.jpg",
+          details: "8 seats, air-conditioned, spacious"),
+      VehicleDetails(
+          brand: "Nissan",
+          model: "Urvan",
+          imageUrl: "assets/nissan-urvan.jpg",
+          details: "8 seats, air-conditioned, comfortable"),
     ],
   };
 
@@ -65,7 +91,8 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
           child: Stack(
             children: [
               GestureDetector(
-                onTap: () => Navigator.of(context).pop(), // Dismiss on tapping outside
+                onTap: () =>
+                    Navigator.of(context).pop(), // Dismiss on tapping outside
                 child: AnimatedContainer(
                   duration: Duration(milliseconds: 300),
                   curve: Curves.easeInOut,
@@ -104,16 +131,19 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Available ${widget.vehicleType}s', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-          textAlign: TextAlign.center,),
-
+        title: Text(
+          'Available ${widget.vehicleType}s',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+          textAlign: TextAlign.center,
+        ),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text('Select an Air-Conditioned ${widget.vehicleType}', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Select an Air-Conditioned ${widget.vehicleType}',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 16),
             Expanded(
               child: ListView.builder(
@@ -124,24 +154,29 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
                     margin: EdgeInsets.only(bottom: 16),
                     child: ListTile(
                       leading: GestureDetector(
-                        onTap: () => _showImagePopup(context, vehicle.imageUrl), // Show image popup on tap
+                        onTap: () => _showImagePopup(context,
+                            vehicle.imageUrl), // Show image popup on tap
                         child: SizedBox(
-                          width: 100,  // Set the width of the image
-                          height: 60,  // Set the height of the image
+                          width: 100, // Set the width of the image
+                          height: 60, // Set the height of the image
                           child: ClipRRect(
-                            borderRadius: BorderRadius.circular(12), // Rounded corners
+                            borderRadius:
+                                BorderRadius.circular(12), // Rounded corners
                             child: Container(
                               decoration: BoxDecoration(
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.grey.withOpacity(0.3), // Shadow color
-                                    spreadRadius: 2, // Spread radius of the shadow
+                                    color: Colors.grey
+                                        .withOpacity(0.3), // Shadow color
+                                    spreadRadius:
+                                        2, // Spread radius of the shadow
                                     blurRadius: 4, // Blur radius of the shadow
                                     offset: Offset(0, 3), // Shadow position
                                   ),
                                 ],
                               ),
-                              child: Image.asset(vehicle.imageUrl, fit: BoxFit.cover),  // Constrained image
+                              child: Image.asset(vehicle.imageUrl,
+                                  fit: BoxFit.cover), // Constrained image
                             ),
                           ),
                         ),
@@ -163,7 +198,8 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
               ),
             ),
             SizedBox(height: 16),
-            Text('Planned Trip Duration', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+            Text('Planned Trip Duration',
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
             SizedBox(height: 20),
             Row(
               children: [
@@ -187,33 +223,39 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
             ),
             SizedBox(height: 24),
             Column(
-              mainAxisAlignment: MainAxisAlignment.end, // Push button to the bottom
+              mainAxisAlignment:
+                  MainAxisAlignment.end, // Push button to the bottom
               children: [
                 Padding(
-                  padding: EdgeInsets.only(bottom: 100), // 100 pixels from bottom
+                  padding:
+                      EdgeInsets.only(bottom: 100), // 100 pixels from bottom
                   child: ElevatedButton(
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.teal,
                       minimumSize: Size(double.infinity, 50),
                     ),
-                    onPressed: selectedVehicle == null ? null : () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => TripSummaryPage(
-                            vehicleType: widget.vehicleType,
-                            vehicleModel: selectedVehicle!, // pass vehicleModel
-                            passengerCount: widget.passengerCount,
-                            distance: widget.distance,
-                            duration: widget.duration,
-                            plannedDays: plannedDays, // pass plannedDays
-                            pickupLocation: widget.pickupLocation,
-                            dropoffLocation: widget.dropoffLocation,
-                            stopLocations: widget.stopLocations,
-                          ),
-                        ),
-                      );
-                    },
+                    onPressed: selectedVehicle == null
+                        ? null
+                        : () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => TripSummaryPage(
+                                  vehicleType: widget.vehicleType,
+                                  vehicleModel:
+                                      selectedVehicle!, // pass vehicleModel
+                                  passengerCount: widget.passengerCount,
+                                  distance: widget.distance,
+                                  duration: widget.duration,
+                                  plannedDays: plannedDays, // pass plannedDays
+                                  pickupLocation: widget.pickupLocation,
+                                  dropoffLocation: widget.dropoffLocation,
+                                  stopLocations: widget.stopLocations,
+                                  onPaymentSuccess: widget.onPaymentSuccess,
+                                ),
+                              ),
+                            );
+                          },
                     child: Text(
                       'Proceed to Summary',
                       style: TextStyle(fontSize: 16, color: Colors.white),
@@ -222,7 +264,6 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
                 ),
               ],
             )
-
           ],
         ),
       ),
@@ -254,6 +295,9 @@ class TripSummaryPage extends StatefulWidget {
   final String pickupLocation;
   final String dropoffLocation;
   final List<String> stopLocations;
+  final Function(
+          String vehicleType, double amount, String paymentId, String userId)
+      onPaymentSuccess;
 
   const TripSummaryPage({
     Key? key,
@@ -266,6 +310,7 @@ class TripSummaryPage extends StatefulWidget {
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.stopLocations,
+    required this.onPaymentSuccess,
   }) : super(key: key);
 
   @override
@@ -356,7 +401,8 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
     return Scaffold(
       backgroundColor: Color(0xFFF5F5F5),
       appBar: AppBar(
-        title: Text('Trip Ticket', style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        title: Text('Trip Ticket',
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
             textAlign: TextAlign.center),
         elevation: 0,
       ),
@@ -431,7 +477,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               (constraints.constrainWidth() / 15).floor(),
-                                  (index) => SizedBox(
+                              (index) => SizedBox(
                                 width: 5,
                                 height: 1,
                                 child: DecoratedBox(
@@ -554,7 +600,8 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                     InkWell(
                       onTap: () => _selectDate(context),
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey.shade300),
                           borderRadius: BorderRadius.circular(8),
@@ -584,7 +631,8 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                     InkWell(
                       onTap: () => _selectTime(context),
                       child: Container(
-                        padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                        padding:
+                            EdgeInsets.symmetric(vertical: 12, horizontal: 16),
                         decoration: BoxDecoration(
                           border: Border.all(color: Colors.grey.shade300),
                           borderRadius: BorderRadius.circular(8),
@@ -615,9 +663,14 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                       spacing: isSmallScreen ? 10 : 20,
                       runSpacing: 15,
                       children: [
-                        _buildDetailColumn('VEHICLE', '${widget.vehicleType}\n${widget.vehicleModel}', isSmallScreen),
-                        _buildDetailColumn('PASSENGERS', widget.passengerCount.toString(), isSmallScreen),
-                        _buildDetailColumn('DURATION', widget.duration, isSmallScreen),
+                        _buildDetailColumn(
+                            'VEHICLE',
+                            '${widget.vehicleType}\n${widget.vehicleModel}',
+                            isSmallScreen),
+                        _buildDetailColumn('PASSENGERS',
+                            widget.passengerCount.toString(), isSmallScreen),
+                        _buildDetailColumn(
+                            'DURATION', widget.duration, isSmallScreen),
                       ],
                     ),
 
@@ -627,9 +680,12 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                       spacing: isSmallScreen ? 10 : 20,
                       runSpacing: 15,
                       children: [
-                        _buildDetailColumn('DISTANCE', widget.distance, isSmallScreen),
-                        _buildDetailColumn('DAYS', widget.plannedDays.toString(), isSmallScreen),
-                        _buildDetailColumn('TYPE', 'Air-Conditioned', isSmallScreen),
+                        _buildDetailColumn(
+                            'DISTANCE', widget.distance, isSmallScreen),
+                        _buildDetailColumn('DAYS',
+                            widget.plannedDays.toString(), isSmallScreen),
+                        _buildDetailColumn(
+                            'TYPE', 'Air-Conditioned', isSmallScreen),
                       ],
                     ),
 
@@ -650,21 +706,24 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                             ),
                           ),
                           SizedBox(height: 8),
-                          ...widget.stopLocations.map((stop) => Padding(
-                            padding: const EdgeInsets.only(bottom: 4.0),
-                            child: Row(
-                              children: [
-                                Icon(Icons.location_on, size: 16, color: Colors.teal),
-                                SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    stop,
-                                    style: TextStyle(fontSize: 14),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )).toList(),
+                          ...widget.stopLocations
+                              .map((stop) => Padding(
+                                    padding: const EdgeInsets.only(bottom: 4.0),
+                                    child: Row(
+                                      children: [
+                                        Icon(Icons.location_on,
+                                            size: 16, color: Colors.teal),
+                                        SizedBox(width: 8),
+                                        Expanded(
+                                          child: Text(
+                                            stop,
+                                            style: TextStyle(fontSize: 14),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ))
+                              .toList(),
                         ],
                       ),
                     ],
@@ -698,7 +757,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: List.generate(
                               (constraints.constrainWidth() / 15).floor(),
-                                  (index) => SizedBox(
+                              (index) => SizedBox(
                                 width: 5,
                                 height: 1,
                                 child: DecoratedBox(
@@ -771,7 +830,10 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                 },
                 child: Text(
                   'Confirm Booking',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.w600, color: Colors.white),
+                  style: TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white),
                 ),
               ),
             ],
@@ -807,4 +869,3 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
     );
   }
 }
-
