@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_stripe/flutter_stripe.dart';
 import 'dart:async';
+import 'Payment_Pages/consts.dart';
 import 'Registration_Pages/firstscreen.dart';
 import 'package:flutter/cupertino.dart'; // For iOS-style loading indicator
 import 'package:firebase_core/firebase_core.dart';
@@ -9,11 +11,26 @@ void main() async {
   // Ensure Flutter is initialized
   WidgetsFlutterBinding.ensureInitialized();
 
-  // Initialize Firebase
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+  try {
+    // Initialize Firebase
+    await Firebase.initializeApp(
+      options: DefaultFirebaseOptions.currentPlatform,
+    );
+    print('Firebase initialized successfully');
+  } catch (e) {
+    print('Failed to initialize Firebase: $e');
+  }
 
+  try {
+    // Set Stripe publishable key
+    Stripe.publishableKey = stripePublishableKey; // Replace with your key
+    await Stripe.instance.applySettings(); // Initialize Stripe
+    print('Stripe initialized successfully');
+  } catch (e) {
+    print('Failed to initialize Stripe: $e');
+  }
+
+  // Run the app
   runApp(const MyApp());
 }
 

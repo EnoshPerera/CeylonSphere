@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart'; // Firestore package
 import 'dart:math';
 
 import '../Payment_Pages/payment_screen.dart'; // Ensure this import path is correct
@@ -13,6 +14,8 @@ class TransportCostPage extends StatefulWidget {
   final String pickupLocation;
   final String dropoffLocation;
   final List<String> stopLocations;
+  final DateTime pickupDate;
+  final TimeOfDay pickupTime;
 
   const TransportCostPage({
     Key? key,
@@ -25,8 +28,8 @@ class TransportCostPage extends StatefulWidget {
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.stopLocations,
-    required DateTime pickupDate,
-    required TimeOfDay pickupTime,
+    required this.pickupDate,
+    required this.pickupTime,
   }) : super(key: key);
 
   @override
@@ -106,6 +109,39 @@ class _TransportCostPageState extends State<TransportCostPage> {
       ref += random.nextInt(10).toString();
     }
     _bookingReference = ref;
+  }
+
+  // Save trip details to Firestore
+  Future<void> _saveTripDetails() async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      final tripDetails = {
+        'bookingReference': _bookingReference,
+        'vehicleType': widget.vehicleType,
+        'vehicleModel': widget.vehicleModel,
+        'passengerCount': widget.passengerCount,
+        'distance': widget.distance,
+        'duration': widget.duration,
+        'plannedDays': widget.plannedDays,
+        'pickupLocation': widget.pickupLocation,
+        'dropoffLocation': widget.dropoffLocation,
+        'stopLocations': widget.stopLocations,
+        'pickupDate': widget.pickupDate.toIso8601String(),
+        'pickupTime': widget.pickupTime.format(context),
+        'totalCostLKR': _totalCostLKR,
+        'totalCostUSD': _totalCostUSD,
+        'ratePerKm': _ratePerKm,
+        'dailyRate': _dailyRate,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await firestore.collection('trips').doc(_bookingReference).set(tripDetails);
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to save trip details: $e')),
+      );
+    }
   }
 
   @override
@@ -422,7 +458,10 @@ class _TransportCostPageState extends State<TransportCostPage> {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      onPressed: () {
+      onPressed: () async {
+        // Save trip details to Firestore
+        await _saveTripDetails();
+
         // Calculate half of the total cost
         double halfTotalCostUSD = _totalCostUSD / 2;
 

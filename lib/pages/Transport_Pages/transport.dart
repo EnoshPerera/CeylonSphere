@@ -1,18 +1,24 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
-import 'package:flutter_polyline_points/flutter_polyline_points.dart' as polyline;
+import 'package:flutter_polyline_points/flutter_polyline_points.dart'
+    as polyline;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../Payment_Pages/consts.dart';
 import 'vehicle_selection_page.dart';
 import 'transport_final_page.dart';
-
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 void main() async {
-  WidgetsFlutterBinding.ensureInitialized(); // Ensure Flutter bindings are initialized
-  Stripe.publishableKey = stripePublishableKey; // Initialize Stripe with the publishable key
+  WidgetsFlutterBinding
+      .ensureInitialized();
+  Stripe.publishableKey =
+      stripePublishableKey; // Initialize Stripe with the publishable key
+
+
   runApp(TransportScreen());
 }
 
@@ -33,7 +39,8 @@ class BookingHomePage extends StatefulWidget {
 }
 
 class _BookingHomePageState extends State<BookingHomePage> {
-  final _places = GoogleMapsPlaces(apiKey: 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA');
+  final _places =
+      GoogleMapsPlaces(apiKey: 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA');
   final String _apiKey = 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA';
   GoogleMapController? _mapController;
   Set<Marker> _markers = {};
@@ -51,7 +58,9 @@ class _BookingHomePageState extends State<BookingHomePage> {
 
   bool _isLocationSelectionOpen = false;
 
-  Future<void> _updateMapWithSelectedPlace(String placeId, String placeName, String type, [int? stopIndex]) async {
+  Future<void> _updateMapWithSelectedPlace(
+      String placeId, String placeName, String type,
+      [int? stopIndex]) async {
     final details = await _places.getDetailsByPlaceId(placeId);
     if (details.result != null) {
       final location = details.result!.geometry!.location;
@@ -79,7 +88,8 @@ class _BookingHomePageState extends State<BookingHomePage> {
             } else {
               _selectedLocations.add(latLng);
             }
-            _markers.removeWhere((marker) => marker.markerId.value == 'stop_$stopIndex');
+            _markers.removeWhere(
+                (marker) => marker.markerId.value == 'stop_$stopIndex');
             _markers.add(Marker(
               markerId: MarkerId('stop_$stopIndex'),
               position: latLng,
@@ -126,21 +136,23 @@ class _BookingHomePageState extends State<BookingHomePage> {
     for (int i = 0; i < _selectedLocations.length - 1; i++) {
       var result = await polylinePoints.getRouteBetweenCoordinates(
         _apiKey,
-        polyline.PointLatLng(_selectedLocations[i].latitude, _selectedLocations[i].longitude),
-        polyline.PointLatLng(_selectedLocations[i + 1].latitude, _selectedLocations[i + 1].longitude),
+        polyline.PointLatLng(
+            _selectedLocations[i].latitude, _selectedLocations[i].longitude),
+        polyline.PointLatLng(_selectedLocations[i + 1].latitude,
+            _selectedLocations[i + 1].longitude),
       );
 
       if (result.points.isNotEmpty) {
-        routeCoords.addAll(result.points.map((e) => LatLng(e.latitude, e.longitude)));
+        routeCoords
+            .addAll(result.points.map((e) => LatLng(e.latitude, e.longitude)));
       }
 
       try {
         final response = await http.get(Uri.parse(
             'https://maps.googleapis.com/maps/api/directions/json?'
-                'origin=${_selectedLocations[i].latitude},${_selectedLocations[i].longitude}'
-                '&destination=${_selectedLocations[i + 1].latitude},${_selectedLocations[i + 1].longitude}'
-                '&key=$_apiKey'
-        ));
+            'origin=${_selectedLocations[i].latitude},${_selectedLocations[i].longitude}'
+            '&destination=${_selectedLocations[i + 1].latitude},${_selectedLocations[i + 1].longitude}'
+            '&key=$_apiKey'));
 
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
@@ -202,7 +214,8 @@ class _BookingHomePageState extends State<BookingHomePage> {
       _markers.removeWhere((marker) => marker.markerId.value == 'stop_$index');
 
       for (int i = index; i < stopLocations.length; i++) {
-        _markers.removeWhere((marker) => marker.markerId.value == 'stop_${i+1}');
+        _markers
+            .removeWhere((marker) => marker.markerId.value == 'stop_${i + 1}');
         if (i + 1 < _selectedLocations.length - 1) {
           _markers.add(Marker(
             markerId: MarkerId('stop_$i'),
@@ -230,7 +243,8 @@ class _BookingHomePageState extends State<BookingHomePage> {
       body: Stack(
         children: [
           GoogleMap(
-            initialCameraPosition: CameraPosition(target: LatLng(7.8731, 80.7718), zoom: 7),
+            initialCameraPosition:
+                CameraPosition(target: LatLng(7.8731, 80.7718), zoom: 7),
             onMapCreated: (controller) => _mapController = controller,
             markers: _markers,
             polylines: Set<Polyline>.of(polylines.values),
@@ -246,7 +260,8 @@ class _BookingHomePageState extends State<BookingHomePage> {
                   padding: EdgeInsets.symmetric(vertical: 15),
                 ),
                 onPressed: _toggleLocationSelection,
-                child: Text('Book Your Trip', style: TextStyle(fontSize: 16, color: Colors.white)),
+                child: Text('Book Your Trip',
+                    style: TextStyle(fontSize: 16, color: Colors.white)),
               ),
             ),
           if (_isLocationSelectionOpen)
@@ -282,7 +297,9 @@ class _BookingHomePageState extends State<BookingHomePage> {
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
                               Text('Where do you want to go?',
-                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                                  style: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold)),
                               IconButton(
                                 icon: Icon(Icons.close),
                                 onPressed: _toggleLocationSelection,
@@ -294,7 +311,9 @@ class _BookingHomePageState extends State<BookingHomePage> {
                             hint: 'Pickup Location',
                             places: _places,
                             initialValue: pickupLocation,
-                            onPlaceSelected: (placeId, name) => _updateMapWithSelectedPlace(placeId, name, 'pickup'),
+                            onPlaceSelected: (placeId, name) =>
+                                _updateMapWithSelectedPlace(
+                                    placeId, name, 'pickup'),
                           ),
                           SizedBox(height: 10),
                           ...List.generate(stopLocations.length, (index) {
@@ -308,10 +327,11 @@ class _BookingHomePageState extends State<BookingHomePage> {
                                       places: _places,
                                       initialValue: stopLocations[index].name,
                                       onPlaceSelected: (placeId, name) =>
-                                          _updateMapWithSelectedPlace(placeId, name, 'stop', index),
+                                          _updateMapWithSelectedPlace(
+                                              placeId, name, 'stop', index),
                                     ),
                                   ),
-                               ],
+                                ],
                               ),
                             );
                           }),
@@ -323,7 +343,8 @@ class _BookingHomePageState extends State<BookingHomePage> {
                               style: TextButton.styleFrom(
                                 backgroundColor: Colors.teal,
                                 foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                                padding: EdgeInsets.symmetric(
+                                    horizontal: 20, vertical: 10),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(8),
                                 ),
@@ -335,18 +356,23 @@ class _BookingHomePageState extends State<BookingHomePage> {
                             hint: 'Drop-off Location',
                             places: _places,
                             initialValue: dropoffLocation,
-                            onPlaceSelected: (placeId, name) => _updateMapWithSelectedPlace(placeId, name, 'dropoff'),
+                            onPlaceSelected: (placeId, name) =>
+                                _updateMapWithSelectedPlace(
+                                    placeId, name, 'dropoff'),
                           ),
                           SizedBox(height: 10),
                           if (isCalculatingRoute)
                             Padding(
-                              padding: const EdgeInsets.symmetric(vertical: 10.0),
+                              padding:
+                                  const EdgeInsets.symmetric(vertical: 10.0),
                               child: Center(
                                 child: Column(
                                   children: [
-                                    CircularProgressIndicator(color: Colors.teal),
+                                    CircularProgressIndicator(
+                                        color: Colors.teal),
                                     SizedBox(height: 8),
-                                    Text('Calculating route...', style: TextStyle(color: Colors.teal)),
+                                    Text('Calculating route...',
+                                        style: TextStyle(color: Colors.teal)),
                                   ],
                                 ),
                               ),
@@ -357,25 +383,38 @@ class _BookingHomePageState extends State<BookingHomePage> {
                               decoration: BoxDecoration(
                                 color: Colors.teal.withOpacity(0.1),
                                 borderRadius: BorderRadius.circular(8),
-                                border: Border.all(color: Colors.teal.withOpacity(0.3)),
+                                border: Border.all(
+                                    color: Colors.teal.withOpacity(0.3)),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceAround,
                                 children: [
                                   Column(
                                     children: [
                                       Icon(Icons.route, color: Colors.teal),
                                       SizedBox(height: 4),
-                                      Text(tripDistance!, style: TextStyle(fontWeight: FontWeight.bold)),
-                                      Text('Distance', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                                      Text(tripDistance!,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      Text('Distance',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey[600])),
                                     ],
                                   ),
                                   Column(
                                     children: [
-                                      Icon(Icons.access_time, color: Colors.teal),
+                                      Icon(Icons.access_time,
+                                          color: Colors.teal),
                                       SizedBox(height: 4),
-                                      Text(tripDuration!, style: TextStyle(fontWeight: FontWeight.bold)),
-                                      Text('Duration', style: TextStyle(fontSize: 12, color: Colors.grey[600])),
+                                      Text(tripDuration!,
+                                          style: TextStyle(
+                                              fontWeight: FontWeight.bold)),
+                                      Text('Duration',
+                                          style: TextStyle(
+                                              fontSize: 12,
+                                              color: Colors.grey[600])),
                                     ],
                                   ),
                                 ],
@@ -389,7 +428,8 @@ class _BookingHomePageState extends State<BookingHomePage> {
                               foregroundColor: Colors.white,
                             ),
                             onPressed: () {
-                              if (pickupLocation != null && dropoffLocation != null) {
+                              if (pickupLocation != null &&
+                                  dropoffLocation != null) {
                                 _toggleLocationSelection(); // Close the location panel
 
                                 // Prepare stop location names
@@ -408,16 +448,33 @@ class _BookingHomePageState extends State<BookingHomePage> {
                                       stopLocations: stopNames,
                                       distance: tripDistance ?? 'Unknown',
                                       duration: tripDuration ?? 'Unknown',
+                                      onPaymentSuccess: (String vehicleType,
+                                          double amount,
+                                          String paymentId,
+                                          String userId) async {
+                                        await saveTransportDetails(
+                                          pickupLocation: pickupLocation!,
+                                          dropoffLocation: dropoffLocation!,
+                                          stopLocations: stopNames,
+                                          distance: tripDistance ?? 'Unknown',
+                                          duration: tripDuration ?? 'Unknown',
+                                          vehicleType: vehicleType,
+                                          totalAmount: amount,
+                                          paymentId: paymentId,
+                                          userId: userId,
+                                        );
+                                      },
                                     ),
                                   ),
                                 );
                               } else {
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                    SnackBar(content: Text('Please select pickup and dropoff locations'))
-                                );
+                                ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                                    content: Text(
+                                        'Please select pickup and dropoff locations')));
                               }
                             },
-                            child: Text('Confirm Route', style: TextStyle(fontSize: 16)),
+                            child: Text('Confirm Route',
+                                style: TextStyle(fontSize: 16)),
                           ),
                         ],
                       ),
@@ -527,16 +584,17 @@ class _LocationInputFieldState extends State<LocationInputField> {
               ),
               suffixIcon: _isSearching
                   ? Container(
-                width: 20,
-                height: 20,
-                padding: EdgeInsets.all(8),
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: Colors.teal,
-                ),
-              )
+                      width: 20,
+                      height: 20,
+                      padding: EdgeInsets.all(8),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2,
+                        color: Colors.teal,
+                      ),
+                    )
                   : Icon(Icons.location_on, color: Colors.teal),
-              contentPadding: EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              contentPadding:
+                  EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               floatingLabelBehavior: FloatingLabelBehavior.never,
               hintStyle: TextStyle(color: Colors.grey[400]),
             ),
@@ -572,7 +630,8 @@ class _LocationInputFieldState extends State<LocationInputField> {
               itemBuilder: (context, index) {
                 final place = _searchResults[index];
                 return ListTile(
-                  title: Text(place.name, style: TextStyle(fontWeight: FontWeight.w500)),
+                  title: Text(place.name,
+                      style: TextStyle(fontWeight: FontWeight.w500)),
                   subtitle: Text(
                     place.formattedAddress ?? '',
                     overflow: TextOverflow.ellipsis,
@@ -597,5 +656,36 @@ class _LocationInputFieldState extends State<LocationInputField> {
   void dispose() {
     _controller.dispose();
     super.dispose();
+  }
+}
+
+Future<void> saveTransportDetails({
+  required String pickupLocation,
+  required String dropoffLocation,
+  required List<String> stopLocations,
+  required String distance,
+  required String duration,
+  required String vehicleType,
+  required double totalAmount,
+  required String paymentId,
+  required String userId,
+}) async {
+  try {
+    await FirebaseFirestore.instance.collection('transport_bookings').add({
+      'userId': userId,
+      'pickupLocation': pickupLocation,
+      'dropoffLocation': dropoffLocation,
+      'stopLocations': stopLocations,
+      'distance': distance,
+      'duration': duration,
+      'vehicleType': vehicleType,
+      'totalAmount': totalAmount,
+      'paymentId': paymentId,
+      'status': 'completed',
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  } catch (e) {
+    print('Error saving transport details: $e');
+    throw e;
   }
 }
