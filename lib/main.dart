@@ -1,3 +1,6 @@
+import 'package:ceylonsphere/pages/Registration_Pages/splash_screen.dart';
+import 'package:ceylonsphere/splash_screen/onboarding_screen.dart';
+import 'package:ceylonsphere/splash_screen/splash_home.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'dart:async';
@@ -105,7 +108,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     // Navigate to first screen after delay
     Timer(const Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => WelcomeScreen()),
+        MaterialPageRoute(builder: (context) => OnboardingScreen()),
       );
     });
   }
