@@ -6,14 +6,14 @@ class SouvenirItemPage extends StatelessWidget {
   final String title;
   final String content;
   final String imagePath;
-  final String? modelPath; // Path to the 3D model file (.glb)
+  final String? modelPath;
 
   const SouvenirItemPage({
     super.key,
     required this.title,
     required this.content,
     required this.imagePath,
-    this.modelPath, // Optional for backward compatibility
+    this.modelPath,
   });
 
   static List<Souvenir> getSouvenirs() {
@@ -34,6 +34,24 @@ class SouvenirItemPage extends StatelessWidget {
         description:
         "The Naga Rassa Mask is a unique and mystical mask in Sri Lankan traditional folklore, representing the serpent spirit (Naga). In ancient beliefs, the Naga (divine serpent) is associated with protection, power, and water deities, often linked to rainfall, fertility, and prosperity. The mask is prominently used in ritual performances and masked dances, invoking the spiritual energy of the serpent to ward off evil and bring blessings.\n\nThe design of the Naga Rassa Mask is striking, often featuring multiple snake heads, wide eyes, and intricate patterns symbolizing the mystical and divine power of the Naga. Painted in bold colors like red, green, and gold, it captures the ferocity and grace of the serpent deity.",
         rating: 4.7,
+        categories: ['Mythical', 'Cultural', 'Handcrafted'],
+      ),
+      Souvenir(
+        name: 'Sitting Turban Man Playing Musical Instruments',
+        imagePath: 'assets/sitting_man.webp',
+        modelPath: 'assets/sitting_man1.glb',
+        description:
+        "This handcrafted wooden sculpture features a seated man wearing a traditional turban, playing various musical instruments, symbolizing Sri Lanka’s deep-rooted musical heritage. Expertly carved from high-quality wood, the piece showcases intricate detailing and fine craftsmanship, making it an elegant addition to home decor, cultural exhibitions, or as a unique collectible. With a timeless aesthetic and a connection to tradition, this artwork captures the essence of music and artistry in Sri Lankan culture.",
+        rating: 4.5,
+        categories: ['Mythical', 'Cultural', 'Handcrafted'],
+      ),
+      Souvenir(
+        name: 'Elephant Sculpture',
+        imagePath: 'assets/elephant_sculpture.jpg',
+        modelPath: 'assets/elephant_sculpture1.glb',
+        description:
+        "The Sri Lankan Traditional Elephant Sculpture is a beautifully handcrafted piece symbolizing strength, wisdom, and cultural heritage. Carved from high-quality wood, these sculptures often feature intricate designs inspired by the majestic elephants of Sri Lanka, especially those seen in temple processions. Perfect for home decor, cultural exhibitions, or as a meaningful souvenir, this elegant sculpture reflects the country’s deep artistic traditions and reverence for elephants.",
+        rating: 4.9,
         categories: ['Mythical', 'Cultural', 'Handcrafted'],
       ),
     ];

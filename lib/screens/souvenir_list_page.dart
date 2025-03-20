@@ -76,7 +76,7 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
                               title: souvenir.name,
                               content: souvenir.description,
                               imagePath: souvenir.imagePath,
-                              modelPath: souvenir.modelPath, // Pass the model path
+                              modelPath: souvenir.modelPath,
                             ),
                           ),
                         );
