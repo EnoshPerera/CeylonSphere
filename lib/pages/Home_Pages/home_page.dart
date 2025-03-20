@@ -1,5 +1,8 @@
+import 'package:ceylonsphere/chatbot/chatbot.dart';
+import 'package:ceylonsphere/pages/Transport_Pages/transport.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import '../../screens/destinations_list_page.dart';
 import '../Profile_Pages/profile_screen.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
@@ -9,7 +12,26 @@ import '../../destinationCarousel_widget/destination_carousel.dart';
 import 'ar_temple_screen.dart';
 import '../Transport_Pages/transport.dart';
 import '../../chatbot/travel_chatbot_screen.dart';
-import '../../screens/destinations_list_page.dart';
+
+void main() {
+  runApp(const TravelApp());
+}
+
+class TravelApp extends StatelessWidget {
+  const TravelApp({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return CupertinoApp(
+      title: 'CeylonSphere',
+      theme: CupertinoThemeData(
+        brightness: Brightness.light,
+        primaryColor: CupertinoColors.activeGreen,
+      ),
+      home: const MainPage(),
+    );
+  }
+}
 
 class MainPage extends StatefulWidget {
   const MainPage({super.key});
@@ -19,49 +41,35 @@ class MainPage extends StatefulWidget {
 }
 
 class _MainPageState extends State<MainPage> {
-  int _currentIndex = 0;
-
   @override
   Widget build(BuildContext context) {
-    // Using Material's Scaffold instead of CupertinoTabScaffold
-    return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: [
-          const HomeScreen(),
-          const DestinationsListPage(),
-          TransportScreen(),
-          const ProfileScreen(),
-        ],
-      ),
-      bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        onTap: (index) {
-          setState(() {
-            _currentIndex = index;
-          });
-        },
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Theme.of(context).primaryColor,
+    return CupertinoTabScaffold(
+      tabBar: CupertinoTabBar(
         items: const [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: 'Home',
-          ),
+              icon: Icon(CupertinoIcons.home), label: 'Home'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.map),
-            label: 'Destinations',
-          ),
+              icon: Icon(CupertinoIcons.map), label: 'Destinations'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.directions_car),
-            label: 'Transport',
-          ),
+              icon: Icon(CupertinoIcons.car), label: 'Transport'),
           BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            label: 'Profile',
-          ),
+              icon: Icon(CupertinoIcons.person), label: 'Profile'),
         ],
       ),
+      tabBuilder: (context, index) {
+        switch (index) {
+          case 0:
+            return const HomeScreen();
+          case 1:
+            return const DestinationsListPage();
+          case 2:
+            return TransportScreen();
+          case 3:
+            return const ProfileScreen();
+          default:
+            return const HomeScreen();
+        }
+      },
     );
   }
 }
@@ -71,23 +79,33 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('CeylonSphere'),
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF003734),
-        elevation: 0,
+    return CupertinoPageScaffold(
+      navigationBar: const CupertinoNavigationBar(
+        middle: Text('CeylonSphere'),
       ),
-      body: SafeArea(
+      child: SafeArea(
         child: SingleChildScrollView(
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              // Padding(
+              //   padding: const EdgeInsets.all(16.0),
+              //   child: Center(
+              //     child: ClipRRect(
+              //       borderRadius: BorderRadius.circular(15),
+              //       child: Image.asset(
+              //         'assets/vr_tourism.png',
+              //         height: 130,
+              //         width: 650,
+              //         fit: BoxFit.cover,
+              //       ),
+              //     ),
+              //   ),
+              // ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 decoration: BoxDecoration(
-                  color: Colors.grey[100],
+                  color: CupertinoColors.systemGrey6.withOpacity(0.5),
                   borderRadius: BorderRadius.circular(20),
                 ),
                 child: Column(
@@ -109,19 +127,20 @@ class HomeScreen extends StatelessWidget {
                           GestureDetector(
                             onTap: () {
                               // Show all categories
-                              showModalBottomSheet(
+                              showCupertinoModalPopup(
                                 context: context,
-                                isScrollControlled: true,
-                                shape: const RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.vertical(
-                                    top: Radius.circular(20),
-                                  ),
-                                ),
                                 builder: (context) => Container(
                                   height: 500,
                                   padding: const EdgeInsets.all(20),
+                                  decoration: const BoxDecoration(
+                                    color: CupertinoColors.systemBackground,
+                                    borderRadius: BorderRadius.vertical(
+                                      top: Radius.circular(20),
+                                    ),
+                                  ),
                                   child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       const Text(
                                         'All Categories',
@@ -139,59 +158,76 @@ class HomeScreen extends StatelessWidget {
                                           crossAxisSpacing: 20,
                                           children: [
                                             _CategoryGridItem(
-                                              icon: Icons.map,
+                                              icon: CupertinoIcons.map,
                                               label: 'Places',
                                               onTap: () {
-                                                Navigator.pop(context); // Close the modal first
+                                                Navigator.pop(
+                                                    context); // Close the modal first
                                                 Navigator.push(
                                                   context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => GoogleMapScreen(),
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        GoogleMapScreen(),
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                            _CategoryGridItem(
+                                              icon:
+                                                  CupertinoIcons.chat_bubble_2,
+                                              label: 'Chatbot',
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close the modal first
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        MyApp(),
                                                   ),
                                                 );
                                               },
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.chat_bubble,
-                                              label: 'Chatbot',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: Icons.restaurant,
+                                              icon: CupertinoIcons.news,
                                               label: 'Restaurants',
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.shopping_bag,
+                                              icon: CupertinoIcons.bag,
                                               label: 'Shopping',
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.event,
+                                              icon: CupertinoIcons.tickets,
                                               label: 'Events',
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.directions_car,
+                                              icon: CupertinoIcons.car_detailed,
                                               label: 'Transport',
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.camera_alt,
+                                              icon: CupertinoIcons.camera,
                                               label: 'Photography',
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.card_giftcard,
+                                              icon: CupertinoIcons.gift,
                                               label: 'Souvenirs',
                                             ),
                                             const _CategoryGridItem(
-                                              icon: Icons.shopping_cart,
+                                              icon: CupertinoIcons.cart,
                                               label: 'Markets',
                                             ),
                                             _CategoryGridItem(
-                                              icon: Icons.chat,
+                                              icon:
+                                                  CupertinoIcons.chat_bubble_2,
                                               label: 'Travel Assistant',
                                               onTap: () {
-                                                Navigator.pop(context); // Close modal before navigating
+                                                Navigator.pop(
+                                                    context); // Close modal before navigating
                                                 Navigator.push(
                                                   context,
-                                                  MaterialPageRoute(
-                                                    builder: (context) => const TravelChatbotScreen(),
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const MyApp(),
                                                   ),
                                                 );
                                               },
@@ -205,18 +241,18 @@ class HomeScreen extends StatelessWidget {
                               );
                             },
                             child: Row(
-                              children: [
+                              children: const [
                                 Text(
                                   'View All',
                                   style: TextStyle(
-                                    color: Theme.of(context).primaryColor,
+                                    color: CupertinoColors.activeGreen,
                                     fontWeight: FontWeight.w600,
                                   ),
                                 ),
-                                const SizedBox(width: 4),
+                                SizedBox(width: 4),
                                 Icon(
-                                  Icons.chevron_right,
-                                  color: Theme.of(context).primaryColor,
+                                  CupertinoIcons.chevron_right,
+                                  color: CupertinoColors.activeGreen,
                                   size: 16,
                                 ),
                               ],
@@ -233,35 +269,43 @@ class HomeScreen extends StatelessWidget {
                         padding: const EdgeInsets.symmetric(horizontal: 16.0),
                         children: [
                           _CategoryItem(
-                            icon: Icons.map,
+                            icon: CupertinoIcons.map,
                             label: 'Places',
                             color: const Color(0xFF4CAF50),
                             onTap: () {
                               Navigator.push(
                                 context,
-                                MaterialPageRoute(
+                                CupertinoPageRoute(
                                   builder: (context) => GoogleMapScreen(),
                                 ),
                               );
                             },
                           ),
-                          const _CategoryItem(
-                            icon: Icons.chat_bubble, // Chatbot icon
+                          _CategoryItem(
+                            icon: CupertinoIcons.chat_bubble_2, // Chatbot icon
                             label: 'Chatbot',
-                            color: Color(0xFF2196F3), // Keeping the same color
+                            color: Color(0xFF2196F3),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => MyApp(),
+                                ),
+                              );
+                            }, // Keeping the same color
                           ),
                           const _CategoryItem(
-                            icon: Icons.restaurant,
+                            icon: CupertinoIcons.news,
                             label: 'Restaurants',
                             color: Color(0xFFF44336),
                           ),
                           const _CategoryItem(
-                            icon: Icons.shopping_bag,
+                            icon: CupertinoIcons.bag,
                             label: 'Shopping',
                             color: Color(0xFF9C27B0),
                           ),
                           const _CategoryItem(
-                            icon: Icons.event_note,
+                            icon: CupertinoIcons.tickets,
                             label: 'Events',
                             color: Color(0xFFFF9800),
                           ),
@@ -278,11 +322,11 @@ class HomeScreen extends StatelessWidget {
               PromoBanner(
                 title: 'Explore Activities',
                 subtitle: 'Discover top adventure & cultural tours',
-                color: const Color(0xFF003734),
+                color: Color(0xFF003734),
                 onTap: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
+                    CupertinoPageRoute(
                         builder: (context) => ExploreActivitiesScreen()),
                   );
                 },
@@ -295,6 +339,21 @@ class HomeScreen extends StatelessWidget {
                 onTap: () {},
               ),
 
+              //Promo Banner
+              // PromoBanner(
+              //   title: 'AR Experience',
+              //   subtitle: 'Explore temples in Augmented Reality',
+              //   color: const Color.fromARGB(
+              //       255, 0, 102, 255), // Deep purple for tech feel
+              //   // onTap: () {
+              //   //   Navigator.push(
+              //   //     context,
+              //   //     CupertinoPageRoute(
+              //   //       builder: (context) => ARTempleScreen(),
+              //   //     ),
+              //   //   );
+              //   // },
+              // ),
               const SizedBox(height: 10),
             ],
           ),
@@ -410,7 +469,7 @@ class PromoBanner extends StatelessWidget {
                               ),
                               const SizedBox(width: 4),
                               const Icon(
-                                Icons.arrow_forward,
+                                CupertinoIcons.arrow_right,
                                 color: Colors.white,
                                 size: 14,
                               ),
@@ -451,11 +510,11 @@ class _CategoryItem extends StatelessWidget {
         width: 85,
         margin: const EdgeInsets.only(right: 12),
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: CupertinoColors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
+              color: CupertinoColors.systemGrey.withOpacity(0.08),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -506,11 +565,11 @@ class _CategoryGridItem extends StatelessWidget {
       onTap: onTap,
       child: Container(
         decoration: BoxDecoration(
-          color: Colors.white,
+          color: CupertinoColors.white,
           borderRadius: BorderRadius.circular(16),
           boxShadow: [
             BoxShadow(
-              color: Colors.grey.withOpacity(0.08),
+              color: CupertinoColors.systemGrey.withOpacity(0.08),
               blurRadius: 8,
               offset: const Offset(0, 4),
             ),
@@ -609,7 +668,8 @@ class _DestinationCardState extends State<DestinationCard> {
         children: [
           Expanded(
             child: ClipRRect(
-              borderRadius: const BorderRadius.vertical(top: Radius.circular(15)),
+              borderRadius:
+                  const BorderRadius.vertical(top: Radius.circular(15)),
               child: Image.asset(
                 widget.imagePath,
                 fit: BoxFit.cover,

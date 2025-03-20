@@ -1,4 +1,4 @@
-import 'package:CeylonSphere/pages/Home_Pages/home_page.dart';
+import 'package:ceylonsphere/pages/Home_Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';

@@ -7,6 +7,9 @@ class VehicleSelectionPage extends StatefulWidget {
   final List<String> stopLocations;
   final String distance;
   final String duration;
+  final Function(
+          String vehicleType, double amount, String paymentId, String userId)
+      onPaymentSuccess;
 
   const VehicleSelectionPage({
     Key? key,
@@ -15,6 +18,7 @@ class VehicleSelectionPage extends StatefulWidget {
     required this.stopLocations,
     required this.distance,
     required this.duration,
+    required this.onPaymentSuccess,
   }) : super(key: key);
 
   @override
@@ -27,10 +31,26 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
   String? selectedVehicle;
 
   final List<VehicleOption> vehicleOptions = [
-    VehicleOption(name: "Car", icon: Icons.directions_car, maxPassengers: 4, description: "Comfortable for small groups"),
-    VehicleOption(name: "Van", icon: Icons.airport_shuttle, maxPassengers: 8, description: "Perfect for medium groups"),
-    VehicleOption(name: "Mini Bus", icon: Icons.directions_bus, maxPassengers: 16, description: "Ideal for larger groups"),
-    VehicleOption(name: "Bus", icon: Icons.directions_bus, maxPassengers: 40, description: "Best for very large groups"),
+    VehicleOption(
+        name: "Car",
+        icon: Icons.directions_car,
+        maxPassengers: 4,
+        description: "Comfortable for small groups"),
+    VehicleOption(
+        name: "Van",
+        icon: Icons.airport_shuttle,
+        maxPassengers: 8,
+        description: "Perfect for medium groups"),
+    VehicleOption(
+        name: "Mini Bus",
+        icon: Icons.directions_bus,
+        maxPassengers: 16,
+        description: "Ideal for larger groups"),
+    VehicleOption(
+        name: "Bus",
+        icon: Icons.directions_bus,
+        maxPassengers: 40,
+        description: "Best for very large groups"),
   ];
 
   void updateRecommendedVehicle(int count) {
@@ -61,7 +81,8 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Select Vehicle', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+          title: Text('Select Vehicle',
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
           centerTitle: true,
         ),
         body: SingleChildScrollView(
@@ -103,7 +124,8 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Trip Summary', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          Text('Trip Summary',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
           SizedBox(height: 8),
           Text('From: ${widget.pickupLocation}'),
           if (widget.stopLocations.isNotEmpty) ...[
@@ -133,7 +155,8 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Number of Passengers', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('Number of Passengers',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 8),
         TextField(
           keyboardType: TextInputType.number,
@@ -163,13 +186,16 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
       ),
       child: Row(
         children: [
-          Icon(getVehicleIcon(recommendedVehicle), size: 48, color: Colors.teal),
+          Icon(getVehicleIcon(recommendedVehicle),
+              size: 48, color: Colors.teal),
           SizedBox(width: 16),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text(recommendedVehicle, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              Text('Best for $passengerCount ${passengerCount == 1 ? "passenger" : "passengers"}'),
+              Text(recommendedVehicle,
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Text(
+                  'Best for $passengerCount ${passengerCount == 1 ? "passenger" : "passengers"}'),
             ],
           ),
         ],
@@ -181,7 +207,8 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Available Vehicles', style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+        Text('Available Vehicles',
+            style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
         SizedBox(height: 8),
         Column(
           children: vehicleOptions.map((vehicle) {
@@ -191,12 +218,19 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
             return Card(
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(8),
-                side: BorderSide(color: isSelected ? Colors.teal : Colors.transparent, width: 2),
+                side: BorderSide(
+                    color: isSelected ? Colors.teal : Colors.transparent,
+                    width: 2),
               ),
               child: ListTile(
-                leading: Icon(vehicle.icon, size: 40, color: isSelected ? Colors.teal : Colors.grey[600]),
-                title: Text(vehicle.name, style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-                subtitle: Text('${vehicle.description} - Up to ${vehicle.maxPassengers} passengers'),
+                leading: Icon(vehicle.icon,
+                    size: 40,
+                    color: isSelected ? Colors.teal : Colors.grey[600]),
+                title: Text(vehicle.name,
+                    style:
+                        TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+                subtitle: Text(
+                    '${vehicle.description} - Up to ${vehicle.maxPassengers} passengers'),
                 trailing: Radio<String>(
                   value: vehicle.name,
                   groupValue: selectedVehicle,
@@ -214,7 +248,8 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
 
   Widget _buildConfirmButton() {
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(backgroundColor: Colors.teal, minimumSize: Size(double.infinity, 50)),
+      style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.teal, minimumSize: Size(double.infinity, 50)),
       onPressed: () {
         Navigator.push(
           context,
@@ -229,20 +264,26 @@ class _VehicleSelectionPageState extends State<VehicleSelectionPage> {
               stopLocations: widget.stopLocations,
               vehicleModel: "",
               plannedDays: 1,
+              onPaymentSuccess: widget.onPaymentSuccess,
             ),
           ),
         );
       },
-      child: Text('Confirm Vehicle', style: TextStyle(fontSize: 16, color: Colors.white)),
+      child: Text('Confirm Vehicle',
+          style: TextStyle(fontSize: 16, color: Colors.white)),
     );
   }
 
   IconData getVehicleIcon(String vehicle) {
     switch (vehicle) {
-      case 'Van': return Icons.airport_shuttle;
-      case 'Mini Bus': return Icons.directions_bus;
-      case 'Bus': return Icons.directions_bus;
-      default: return Icons.directions_car;
+      case 'Van':
+        return Icons.airport_shuttle;
+      case 'Mini Bus':
+        return Icons.directions_bus;
+      case 'Bus':
+        return Icons.directions_bus;
+      default:
+        return Icons.directions_car;
     }
   }
 }
@@ -253,5 +294,9 @@ class VehicleOption {
   final int maxPassengers;
   final String description;
 
-  VehicleOption({required this.name, required this.icon, required this.maxPassengers, required this.description});
+  VehicleOption(
+      {required this.name,
+      required this.icon,
+      required this.maxPassengers,
+      required this.description});
 }
