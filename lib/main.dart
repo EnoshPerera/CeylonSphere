@@ -1,6 +1,6 @@
-import 'package:ceylonsphere/pages/Registration_Pages/splash_screen.dart';
+
 import 'package:ceylonsphere/splash_screen/onboarding_screen.dart';
-import 'package:ceylonsphere/splash_screen/splash_home.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'dart:async';
