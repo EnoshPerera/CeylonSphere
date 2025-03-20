@@ -1,4 +1,4 @@
-import 'package:ceylonsphere/Splash_Screen/splash_home.dart';
+import 'package:ceylonsphere/splash_screen/splash_home.dart';
 import 'package:flutter/material.dart';
 
 void main() {
