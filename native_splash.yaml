@@ -1,0 +1,23 @@
+flutter_native_splash:
+  color: "#42a5f5"
+  background_image: "assets/beach.png"
+  android: true
+  ios: true
+  web: false
+  fullscreen: true
+  android_gravity: fill
+  ios_content_mode: scaleAspectFill
+  
+  android_12:
+    image: "assets/beach.png"
+    icon_background_color: "#42a5f5"
+    image_fit: contain
+
+  # Image scaling configuration
+  image_fit: "cover"  # Makes the image cover the entire screen
+  position: "center"  # Centers the image on the screen
+
+  # Optional: Dark mode configuration (if you want to support dark mode)
+  color_dark: "#000000"
+  background_image_dark: "assets/beach.png"
+  image_dark: null

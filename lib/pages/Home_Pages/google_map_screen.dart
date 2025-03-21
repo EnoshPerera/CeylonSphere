@@ -17,7 +17,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
   late GoogleMapController mapController;
   final LatLng _initialPosition =
       const LatLng(6.9271, 79.8612); // Colombo, Sri Lanka
-  Set<Marker> _markers = {};
+  final Set<Marker> _markers = {};
   double _radiusInMeters = 5000; // Default: 5km
   String _selectedPlaceType = 'tourist_attraction';
   String apiKey = "AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA";
@@ -511,7 +511,7 @@ class _GoogleMapScreenState extends State<GoogleMapScreen> {
             top: 120,
             left: 20,
             right: 20,
-            child: Container(
+            child: SizedBox(
               height: 100,
               child: ListView(
                 scrollDirection: Axis.horizontal,

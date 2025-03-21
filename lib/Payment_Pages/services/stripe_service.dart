@@ -7,7 +7,7 @@ class StripeService {
   StripeService._(); // Private constructor
   static final StripeService instance = StripeService._();
 
-  Future<Map<String, dynamic>> makePayment({
+  Future<void> makePayment({
     required double amount,
     required String currency,
   }) async {
@@ -27,7 +27,8 @@ class StripeService {
       await stripe.Stripe.instance.initPaymentSheet(
         paymentSheetParameters: stripe.SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntentClientSecret,
-          merchantDisplayName: 'Ceylon Sphere',
+          merchantDisplayName: 'Your Store Name',
+          // Customize appearance or enable Google/Apple Pay here
         ),
       );
 
@@ -37,15 +38,7 @@ class StripeService {
       print('Confirming payment...');
       await stripe.Stripe.instance.confirmPaymentSheetPayment();
 
-      print('Getting payment intent status...');
-      final paymentIntent = await stripe.Stripe.instance
-          .retrievePaymentIntent(paymentIntentClientSecret);
-
-      return {
-        'success': paymentIntent.status == 'succeeded',
-        'status': paymentIntent.status,
-        'paymentIntentId': paymentIntent.id,
-      };
+      print('Payment successful!');
     } on stripe.StripeException catch (e) {
       print('Stripe Error: ${e.error.localizedMessage}');
       rethrow;

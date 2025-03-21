@@ -11,10 +11,10 @@ class PopupOverlay extends StatelessWidget {
   final VoidCallback? onDismiss;
 
   const PopupOverlay({
-    Key? key,
+    super.key,
     required this.child,
     this.onDismiss,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +65,8 @@ Future<bool?> showPaymentPopup(
     barrierDismissible: false,
     barrierColor: Colors.transparent,
     builder: (context) => PopupOverlay(
-      onDismiss: barrierDismissible ? () => Navigator.of(context).pop(false) : null,
+      onDismiss:
+      barrierDismissible ? () => Navigator.of(context).pop(false) : null,
       child: PaymentDialog(
         amount: amount,
         currency: currency,
@@ -75,234 +76,92 @@ Future<bool?> showPaymentPopup(
   );
 }
 
-enum PaymentState {
-  initial,
-  processing,
-  success,
-  failure
-}
-
 class PaymentDialog extends StatefulWidget {
   final double amount;
   final String currency;
   final String bookingReference;
 
   const PaymentDialog({
-    Key? key,
+    super.key,
     required this.amount,
     required this.currency,
     required this.bookingReference,
-  }) : super(key: key);
+  });
 
   @override
   _PaymentDialogState createState() => _PaymentDialogState();
 }
 
-class _PaymentDialogState extends State<PaymentDialog> with SingleTickerProviderStateMixin {
-  PaymentState _paymentState = PaymentState.initial;
-  String _errorMessage = '';
-  Timer? _autoCloseTimer;
-  late AnimationController _animationController;
-  late Animation<double> _scaleAnimation;
-
-  @override
-  void initState() {
-    super.initState();
-    _animationController = AnimationController(
-      vsync: this,
-      duration: Duration(milliseconds: 200),
-    );
-    _scaleAnimation = CurvedAnimation(
-      parent: _animationController,
-      curve: Curves.easeOutBack,
-    );
-    _animationController.forward();
-  }
-
-  @override
-  void dispose() {
-    _autoCloseTimer?.cancel();
-    _animationController.dispose();
-    super.dispose();
-  }
-
-  void _closeWithAnimation(bool result) {
-    _animationController.reverse().then((_) {
-      if (mounted) {
-        Navigator.of(context).pop(result);
-      }
-    });
-  }
-
-  Future<void> _handlePayment() async {
-    // Guard against multiple taps
-    if (_paymentState == PaymentState.processing) return;
-
-    setState(() {
-      _paymentState = PaymentState.processing;
-    });
-
-    try {
-      print("Starting payment process...");
-
-      // Step 1: Process payment with Stripe service
-      print("Calling StripeService.makePayment...");
-      await StripeService.instance.makePayment(
-        amount: widget.amount,
-        currency: widget.currency,
-      );
-
-      print("Payment completed successfully with Stripe");
-
-      // Step 2: Save payment details to backend (Firestore or your backend)
-      print("Saving payment details to backend...");
-      await _savePaymentToBackend(widget.bookingReference, widget.amount, widget.currency);
-
-      print("Payment details saved to backend");
-
-      // Step 3: Update UI to success state
-      if (!mounted) {
-        print("Widget is not mounted. Cannot update state.");
-        return;
-      }
-
-      print("Updating UI to success state...");
-      setState(() {
-        _paymentState = PaymentState.success;
-      });
-
-      print("UI updated to success state");
-
-      // Step 4: Auto-close after success
-      _autoCloseTimer = Timer(Duration(milliseconds: 1800), () {
-        if (mounted) {
-          _closeWithAnimation(true);
-        }
-      });
-
-      print("Auto-close timer started");
-    } catch (e) {
-      print("Payment failed with error: $e");
-
-      if (!mounted) {
-        print("Widget is not mounted. Cannot update state.");
-        return;
-      }
-
-      print("Updating UI to failure state...");
-      setState(() {
-        _paymentState = PaymentState.failure;
-        _errorMessage = e.toString();
-      });
-
-      print("UI updated to failure state");
-    }
-  }
-
-// Save payment details to backend (Firestore or your backend)
-  Future<void> _savePaymentToBackend(String bookingReference, double amount, String currency) async {
-    try {
-      final firestore = FirebaseFirestore.instance;
-
-      final paymentDetails = {
-        'bookingReference': bookingReference,
-        'amount': amount,
-        'currency': currency,
-        'status': 'completed',
-        'timestamp': FieldValue.serverTimestamp(),
-      };
-
-      await firestore.collection('payments').doc(bookingReference).set(paymentDetails);
-
-      print("Payment details saved to backend");
-    } catch (e) {
-      print("Failed to save payment details to backend: $e");
-      throw Exception("Failed to save payment details to backend");
-    }
-  }
-
+class _PaymentDialogState extends State<PaymentDialog> {
   @override
   Widget build(BuildContext context) {
-    return ScaleTransition(
-      scale: _scaleAnimation,
-      child: Material(
-        type: MaterialType.transparency,
-        child: Container(
-          width: MediaQuery.of(context).size.width * 0.9,
-          constraints: BoxConstraints(maxWidth: 400),
-          padding: EdgeInsets.all(24.0),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(24.0),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withOpacity(0.3),
-                blurRadius: 30.0,
-                spreadRadius: 1.0,
-                offset: Offset(0, 10),
-              ),
-            ],
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+    return Material(
+      type: MaterialType.transparency,
+      child: Container(
+        width: MediaQuery.of(context).size.width * 0.9,
+        constraints: BoxConstraints(maxWidth: 400),
+        padding: EdgeInsets.all(24.0),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(24.0),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.3),
+              blurRadius: 30.0,
+              spreadRadius: 1.0,
+              offset: Offset(0, 10),
+            ),
+          ],
+        ),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Payment Details',
+                  style: TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.teal.shade800,
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: Colors.grey),
+                  padding: EdgeInsets.zero,
+                  constraints: BoxConstraints(),
+                  splashRadius: 24,
+                  onPressed: () => Navigator.of(context).pop(false),
+                ),
+              ],
+            ),
+            SizedBox(height: 16),
+            _buildInfoRow('Booking Reference', widget.bookingReference),
+            SizedBox(height: 12),
+            _buildInfoRow(
+                'Amount to Pay', '\$${widget.amount.toStringAsFixed(2)}'),
+            SizedBox(height: 24),
+            _buildPayButton(),
+            SizedBox(height: 16),
+            Center(
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
                 children: [
+                  Icon(Icons.lock, size: 16, color: Colors.grey.shade700),
+                  SizedBox(width: 6),
                   Text(
-                    'Payment Details',
+                    'Secured by Stripe',
                     style: TextStyle(
-                      fontSize: 22,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.teal.shade800,
+                      color: Colors.grey.shade700,
+                      fontSize: 12,
                     ),
                   ),
-                  if (_paymentState != PaymentState.processing)
-                    IconButton(
-                      icon: Icon(Icons.close, color: Colors.grey),
-                      padding: EdgeInsets.zero,
-                      constraints: BoxConstraints(),
-                      splashRadius: 24,
-                      onPressed: () => _closeWithAnimation(false),
-                    ),
                 ],
               ),
-              SizedBox(height: 16),
-              _buildInfoRow('Booking Reference', widget.bookingReference),
-              SizedBox(height: 12),
-              _buildInfoRow('Amount to Pay', '\$${widget.amount.toStringAsFixed(2)}'),
-              SizedBox(height: 24),
-
-              // Payment Action Button or Status
-              if (_paymentState == PaymentState.initial)
-                _buildPayButton(),
-              if (_paymentState == PaymentState.processing)
-                _buildProcessingState(),
-              if (_paymentState == PaymentState.success)
-                _buildSuccessState(),
-              if (_paymentState == PaymentState.failure)
-                _buildFailureState(),
-
-              SizedBox(height: 16),
-              Center(
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Icon(Icons.lock, size: 16, color: Colors.grey.shade700),
-                    SizedBox(width: 6),
-                    Text(
-                      'Secured by Stripe',
-                      style: TextStyle(
-                        color: Colors.grey.shade700,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
@@ -330,122 +189,56 @@ class _PaymentDialogState extends State<PaymentDialog> with SingleTickerProvider
     );
   }
 
-  Widget _buildProcessingState() {
-    return Container(
-      height: 56,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(16),
-      ),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            SizedBox(
-              width: 20,
-              height: 20,
-              child: CircularProgressIndicator(
-                strokeWidth: 2,
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.grey.shade700),
-              ),
-            ),
-            SizedBox(width: 12),
-            Text(
-              'Processing...',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey.shade700,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+  Future<void> _handlePayment() async {
+    try {
+
+      // Close the popup dialog after 5 seconds
+      Navigator.of(context).pop();
+
+      // Step 1: Process payment with Stripe service
+      final paymentResult = await StripeService.instance.makePayment(
+        amount: widget.amount,
+        currency: widget.currency,
+      );
+
+      // Step 2: Save payment details to backend (Firestore or your backend)
+      await _savePaymentToBackend(
+          widget.bookingReference,
+          widget.amount,
+          widget.currency,
+          paymentResult['paymentIntentId'],
+          paymentResult['status']);
+
+      // Step 3: Navigate to the map page after successful payment
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    } catch (e) {
+      // If payment fails, navigate to the map page
+      Navigator.of(context).popUntil((route) => route.isFirst);
+    }
   }
 
-  Widget _buildSuccessState() {
-    return Container(
-      height: 56,
-      width: double.infinity,
-      decoration: BoxDecoration(
-        color: Colors.green.shade50,
-        borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: Colors.green.shade200),
-      ),
-      child: Center(
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.check_circle, color: Colors.green),
-            SizedBox(width: 12),
-            Text(
-              'Payment Successful',
-              style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.bold,
-                color: Colors.green.shade800,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  // Save payment details to backend (Firestore or your backend)
+  Future<void> _savePaymentToBackend(String bookingReference, double amount,
+      String currency, String paymentIntentId, String status) async {
+    try {
+      final firestore = FirebaseFirestore.instance;
 
-  Widget _buildFailureState() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Container(
-          height: 56,
-          width: double.infinity,
-          decoration: BoxDecoration(
-            color: Colors.red.shade50,
-            borderRadius: BorderRadius.circular(16),
-            border: Border.all(color: Colors.red.shade200),
-          ),
-          child: Center(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.error, color: Colors.red),
-                SizedBox(width: 12),
-                Text(
-                  'Payment Failed',
-                  style: TextStyle(
-                    fontSize: 16,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.red.shade800,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ),
-        if (_errorMessage.isNotEmpty)
-          Padding(
-            padding: const EdgeInsets.only(top: 8.0),
-            child: Text(
-              _errorMessage,
-              style: TextStyle(color: Colors.red.shade800, fontSize: 14),
-            ),
-          ),
-        SizedBox(height: 16),
-        ElevatedButton(
-          onPressed: _handlePayment,
-          style: ElevatedButton.styleFrom(
-            minimumSize: Size(double.infinity, 48),
-            backgroundColor: Colors.grey.shade200,
-            foregroundColor: Colors.black87,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(16),
-            ),
-          ),
-          child: Text('Try Again'),
-        ),
-      ],
-    );
+      final paymentDetails = {
+        'bookingReference': bookingReference,
+        'amount': amount,
+        'currency': currency,
+        'status': status,
+        'paymentIntentId': paymentIntentId,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await firestore
+          .collection('payments')
+          .doc(bookingReference)
+          .set(paymentDetails);
+    } catch (e) {
+      throw Exception("Failed to save payment details to backend");
+    }
   }
 
   Widget _buildInfoRow(String label, String value) {

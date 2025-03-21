@@ -1,5 +1,5 @@
-import 'package:CeylonSphere/chatbot/chatbot.dart';
-import 'package:CeylonSphere/pages/Transport_Pages/transport.dart';
+import 'package:ceylonsphere/chatbot/chatbot.dart';
+import 'package:ceylonsphere/pages/Transport_Pages/transport.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../Profile_Pages/profile_screen.dart';
@@ -614,12 +614,12 @@ class DestinationCard extends StatefulWidget {
   final int initialLikes;
 
   const DestinationCard({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.title,
     required this.location,
     required this.initialLikes,
-  }) : super(key: key);
+  });
 
   @override
   State<DestinationCard> createState() => _DestinationCardState();

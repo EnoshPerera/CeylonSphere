@@ -18,7 +18,7 @@ class TransportCostPage extends StatefulWidget {
   final TimeOfDay pickupTime;
 
   const TransportCostPage({
-    Key? key,
+    super.key,
     required this.vehicleType,
     required this.vehicleModel,
     required this.passengerCount,
@@ -30,7 +30,7 @@ class TransportCostPage extends StatefulWidget {
     required this.stopLocations,
     required this.pickupDate,
     required this.pickupTime,
-  }) : super(key: key);
+  });
 
   @override
   _TransportCostPageState createState() => _TransportCostPageState();
@@ -44,6 +44,8 @@ class _TransportCostPageState extends State<TransportCostPage> {
   late double _dailyRate;
   late String _bookingReference;
   bool _isProcessing = true;
+  bool _isPaymentFailed = false;
+  bool _isPaymentCompleted = false; // Track payment completion
 
   @override
   void initState() {
@@ -136,7 +138,10 @@ class _TransportCostPageState extends State<TransportCostPage> {
         'timestamp': FieldValue.serverTimestamp(),
       };
 
-      await firestore.collection('trips').doc(_bookingReference).set(tripDetails);
+      await firestore
+          .collection('trips')
+          .doc(_bookingReference)
+          .set(tripDetails);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Failed to save trip details: $e')),
@@ -154,9 +159,7 @@ class _TransportCostPageState extends State<TransportCostPage> {
           textAlign: TextAlign.center,
         ),
       ),
-      body: _isProcessing
-          ? _buildProcessingView()
-          : _buildCostDetailsView(),
+      body: _isProcessing ? _buildProcessingView() : _buildCostDetailsView(),
     );
   }
 
@@ -197,9 +200,9 @@ class _TransportCostPageState extends State<TransportCostPage> {
           SizedBox(height: 24),
           _buildTermsAndConditionsCard(),
           SizedBox(height: 24),
-          _buildConfirmButton(),
+          if (!_isPaymentCompleted) _buildConfirmButton(), // Hide after payment
           SizedBox(height: 16),
-          _buildHomeButton(),
+          _buildHomeButton(), // Always show the "Back to Home" button
           SizedBox(height: 100), // Add extra space at the bottom for navigation bar
         ],
       ),
@@ -274,8 +277,7 @@ class _TransportCostPageState extends State<TransportCostPage> {
             icon: Icon(Icons.copy, color: Colors.teal),
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text('Reference copied to clipboard!'))
-              );
+                  SnackBar(content: Text('Reference copied to clipboard!')));
             },
           ),
         ],
@@ -301,14 +303,22 @@ class _TransportCostPageState extends State<TransportCostPage> {
             ),
             SizedBox(height: 16),
             _buildCostRow('Distance', widget.distance),
-            _buildCostRow('Rate per km', '${_ratePerKm.toStringAsFixed(2)} LKR'),
-            _buildCostRow('Base Cost', '${(_distanceValue * _ratePerKm).toStringAsFixed(2)} LKR'),
-            _buildCostRow('Cost per Day', '${_dailyRate.toStringAsFixed(2)} LKR'),
+            _buildCostRow(
+                'Rate per km', '${_ratePerKm.toStringAsFixed(2)} LKR'),
+            _buildCostRow('Base Cost',
+                '${(_distanceValue * _ratePerKm).toStringAsFixed(2)} LKR'),
+            _buildCostRow(
+                'Cost per Day', '${_dailyRate.toStringAsFixed(2)} LKR'),
             _buildCostRow('Number of Days', '${widget.plannedDays}'),
-            _buildCostRow('Total Cost per Day', '${(_dailyRate * widget.plannedDays).toStringAsFixed(2)} LKR'),
+            _buildCostRow('Total Cost per Day',
+                '${(_dailyRate * widget.plannedDays).toStringAsFixed(2)} LKR'),
             Divider(thickness: 1.5),
-            _buildCostRow('Total Cost (LKR)', '${_totalCostLKR.toStringAsFixed(2)} LKR', isTotal: true),
-            _buildCostRow('Total Cost (USD)', '\$${_totalCostUSD.toStringAsFixed(2)}', isTotal: true),
+            _buildCostRow(
+                'Total Cost (LKR)', '${_totalCostLKR.toStringAsFixed(2)} LKR',
+                isTotal: true),
+            _buildCostRow(
+                'Total Cost (USD)', '\$${_totalCostUSD.toStringAsFixed(2)}',
+                isTotal: true),
           ],
         ),
       ),
@@ -359,14 +369,15 @@ class _TransportCostPageState extends State<TransportCostPage> {
               ),
             ),
             SizedBox(height: 16),
-            _buildDetailRow('Vehicle', '${widget.vehicleType} - ${widget.vehicleModel}'),
+            _buildDetailRow(
+                'Vehicle', '${widget.vehicleType} - ${widget.vehicleModel}'),
             _buildDetailRow('Passengers', '${widget.passengerCount}'),
-            _buildDetailRow('Duration', '${widget.duration}'),
+            _buildDetailRow('Duration', widget.duration),
             _buildDetailRow('Planned Days', '${widget.plannedDays}'),
-            _buildDetailRow('Pickup', '${widget.pickupLocation}'),
+            _buildDetailRow('Pickup', widget.pickupLocation),
             if (widget.stopLocations.isNotEmpty)
-              _buildDetailRow('Stops', '${widget.stopLocations.join(", ")}'),
-            _buildDetailRow('Dropoff', '${widget.dropoffLocation}'),
+              _buildDetailRow('Stops', widget.stopLocations.join(", ")),
+            _buildDetailRow('Dropoff', widget.dropoffLocation),
           ],
         ),
       ),
@@ -390,9 +401,12 @@ class _TransportCostPageState extends State<TransportCostPage> {
               ),
             ),
             SizedBox(height: 16),
-            _buildTermItem('Additional kilometers will be charged at the rate of ${_ratePerKm.toStringAsFixed(2)} LKR per km.'),
-            _buildTermItem('Additional days will be charged at the rate of ${_dailyRate.toStringAsFixed(2)} LKR per day.'),
-            _buildTermItem('Fuel is included in the price. Tolls and parking fees are not included and will be charged separately.'),
+            _buildTermItem(
+                'Additional kilometers will be charged at the rate of ${_ratePerKm.toStringAsFixed(2)} LKR per km.'),
+            _buildTermItem(
+                'Additional days will be charged at the rate of ${_dailyRate.toStringAsFixed(2)} LKR per day.'),
+            _buildTermItem(
+                'Fuel is included in the price. Tolls and parking fees are not included and will be charged separately.'),
             _buildTermItem('A 50% deposit is required to confirm the booking.'),
           ],
         ),
@@ -459,35 +473,40 @@ class _TransportCostPageState extends State<TransportCostPage> {
         ),
       ),
       onPressed: () async {
-        // Save trip details to Firestore
-        await _saveTripDetails();
+        try {
+          // Save trip details to Firestore
+          await _saveTripDetails();
 
-        // Calculate half of the total cost
-        double halfTotalCostUSD = _totalCostUSD / 2;
+          // Calculate half of the total cost
+          double halfTotalCostUSD = _totalCostUSD / 2;
 
-        // Show the payment popup
-        bool? paymentSuccess = await showPaymentPopup(
-          context,
-          amount: halfTotalCostUSD,
-          currency: 'USD',
-          bookingReference: _bookingReference,
-        );
-
-        // Handle the payment result
-        if (paymentSuccess == true) {
-          // Payment was successful
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Payment successful! Booking confirmed.')),
+          // Show the Stripe payment sheet
+          bool? paymentSuccess = await showPaymentPopup(
+            context,
+            amount: halfTotalCostUSD,
+            currency: 'USD',
+            bookingReference: _bookingReference,
           );
-        } else {
-          // Payment failed or was cancelled
+
+          // Update the state to indicate payment completion
+          if (mounted) {
+            setState(() {
+              _isPaymentCompleted = true; // Hide the "Complete Booking" button
+            });
+          }
+        } catch (e) {
+          // If an error occurs, navigate back to the map screen
+          Navigator.of(context).popUntil((route) => route.isFirst);
           ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Payment failed or was cancelled.')),
+            SnackBar(
+              content: Text('An error occurred. Please try again.'),
+              backgroundColor: Colors.red,
+            ),
           );
         }
       },
       child: Text(
-        'Complete Booking',
+        _isPaymentFailed ? 'Try Again' : 'Complete Booking',
         style: TextStyle(fontSize: 16, color: Colors.white),
       ),
     );
