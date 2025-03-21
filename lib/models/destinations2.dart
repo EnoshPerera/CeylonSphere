@@ -13,9 +13,9 @@ class Destination {
     required this.country,
     required this.imagePath,
     required this.description,
+    required this.galleryImages,
     this.rating = 4.5,
     this.categories = const ['Historical', 'Cultural'],
-    this.galleryImages = const [],
     this.nearbyServices = const {},
   });
 }
