@@ -2,14 +2,15 @@ import 'package:flutter/material.dart';
 import '../pages/Registration_Pages/popup_page.dart'; // Import the WelcomePopup
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final int initialPage; // Add initialPage parameter
+  const OnboardingScreen({super.key, this.initialPage = 0});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController();
+  late PageController _pageController;
   int _currentPage = 0;
   final int _numPages = 3;
 
@@ -20,20 +21,28 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       'description': 'Unveiling the beauty of Sri Lanka. Dive into its vibrant culture, breathtaking landscapes, and rich heritage.',
     },
     {
-      'image': 'assets/ella.png',
+      'image': 'assets/fisherman.png',
       'title': 'Discover Paradise',
       'description': 'Journey through mist-covered mountains, historic railways, and verdant tea plantations.',
     },
     {
-      'image': 'assets/fisherman.png',
+      'image': 'assets/ella.png',
       'title': 'Experience Culture',
       'description': 'Immerse yourself in ancient traditions and connect with the warm hospitality of the island.',
     },
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _pageController = PageController(initialPage: widget.initialPage); // Set initial page
+    _currentPage = widget.initialPage;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: null, // Hide the app bar
       body: PageView.builder(
         controller: _pageController,
         onPageChanged: (int page) {
@@ -109,7 +118,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             curve: Curves.ease,
                           );
                         } else {
-                          // Show the welcome popup instead of navigating to HomeScreen
+                          // Show the welcome popup when "Get Started" is pressed
                           WelcomePopup.show(context);
                         }
                       },

@@ -64,18 +64,6 @@ class WelcomePopup {
                   ),
                 ),
                 const SizedBox(height: 10),
-                TextButton(
-                  onPressed: () {
-                    Navigator.pop(context); // Close the dialog
-                  },
-                  child: const Text(
-                    "Stay logged out",
-                    style: TextStyle(
-                      decoration: TextDecoration.underline,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
               ],
             ),
           ],
