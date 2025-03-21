@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import 'screens/profile_screen.dart';
-import 'screens/edit_profile_screen.dart';
-import 'screens/privacy_policy_screen.dart';  // Import PrivacyPolicyScreen
-import 'screens/terms_and_conditions_screen.dart';  // Import TermsAndConditionsScreen
+import 'User_Profile_Page/profile_screen.dart';
+import 'User_Profile_Page/edit_profile_screen.dart';
+import 'User_Profile_Page/privacy_policy_screen.dart';  // Import PrivacyPolicyScreen
+import 'User_Profile_Page/terms_and_conditions_screen.dart';  // Import TermsAndConditionsScreen
 
 class AppRoutes {
   static Map<String, WidgetBuilder> routes = {
