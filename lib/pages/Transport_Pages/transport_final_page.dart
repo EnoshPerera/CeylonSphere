@@ -17,7 +17,7 @@ class AvailableVehiclesPage extends StatefulWidget {
       onPaymentSuccess;
 
   const AvailableVehiclesPage({
-    Key? key,
+    super.key,
     required this.vehicleType,
     required this.passengerCount,
     required this.distance,
@@ -28,7 +28,7 @@ class AvailableVehiclesPage extends StatefulWidget {
     required this.onPaymentSuccess,
     required int plannedDays,
     required String vehicleModel,
-  }) : super(key: key);
+  });
 
   @override
   _AvailableVehiclesPageState createState() => _AvailableVehiclesPageState();
@@ -300,7 +300,7 @@ class TripSummaryPage extends StatefulWidget {
       onPaymentSuccess;
 
   const TripSummaryPage({
-    Key? key,
+    super.key,
     required this.vehicleType,
     required this.vehicleModel,
     required this.passengerCount,
@@ -311,7 +311,7 @@ class TripSummaryPage extends StatefulWidget {
     required this.dropoffLocation,
     required this.stopLocations,
     required this.onPaymentSuccess,
-  }) : super(key: key);
+  });
 
   @override
   _TripSummaryPageState createState() => _TripSummaryPageState();
@@ -723,7 +723,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
                                       ],
                                     ),
                                   ))
-                              .toList(),
+                              ,
                         ],
                       ),
                     ],
@@ -800,40 +800,43 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
               SizedBox(height: 24),
 
               // Confirm Button
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.teal,
-                  minimumSize: Size(double.infinity, 50),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => TransportCostPage(
-                        vehicleType: widget.vehicleType,
-                        vehicleModel: widget.vehicleModel,
-                        passengerCount: widget.passengerCount,
-                        distance: widget.distance,
-                        duration: widget.duration,
-                        plannedDays: widget.plannedDays,
-                        pickupLocation: widget.pickupLocation,
-                        dropoffLocation: widget.dropoffLocation,
-                        stopLocations: widget.stopLocations,
-                        pickupDate: pickupDate,
-                        pickupTime: pickupTime,
-                      ),
+              Padding(
+                padding: EdgeInsets.only(bottom: 100), // Adjust padding here
+                child: ElevatedButton(
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: Colors.teal,
+                    minimumSize: Size(double.infinity, 50),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
                     ),
-                  );
-                },
-                child: Text(
-                  'Confirm Booking',
-                  style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white),
+                  ),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => TransportCostPage(
+                          vehicleType: widget.vehicleType,
+                          vehicleModel: widget.vehicleModel,
+                          passengerCount: widget.passengerCount,
+                          distance: widget.distance,
+                          duration: widget.duration,
+                          plannedDays: widget.plannedDays,
+                          pickupLocation: widget.pickupLocation,
+                          dropoffLocation: widget.dropoffLocation,
+                          stopLocations: widget.stopLocations,
+                          pickupDate: pickupDate,
+                          pickupTime: pickupTime,
+                        ),
+                      ),
+                    );
+                  },
+                  child: Text(
+                    'Confirm Booking',
+                    style: TextStyle(
+                        fontSize: 18,
+                        fontWeight: FontWeight.w600,
+                        color: Colors.white),
+                  ),
                 ),
               ),
             ],
@@ -844,7 +847,7 @@ class _TripSummaryPageState extends State<TripSummaryPage> {
   }
 
   Widget _buildDetailColumn(String label, String value, bool isSmallScreen) {
-    return Container(
+    return SizedBox(
       width: isSmallScreen ? 90 : 100,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

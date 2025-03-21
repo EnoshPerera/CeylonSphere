@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
-import 'consts.dart'; // Ensure you have the Stripe keys here
+// Ensure you have the Stripe keys here
 import 'services/stripe_service.dart'; // Use the StripeService class from earlier
 
 class PaymentScreen extends StatefulWidget {

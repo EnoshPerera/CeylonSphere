@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'splash.dart';
 import '../pages/Registration_Pages/popup_page.dart'; // Import the WelcomePopup
 
 class OnboardingScreen extends StatefulWidget {

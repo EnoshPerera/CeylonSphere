@@ -440,6 +440,7 @@ class _HomePageState extends State<HomePage> {
             // Image picker button
             CupertinoButton(
               padding: EdgeInsets.zero,
+              onPressed: _isTyping ? null : sendMediaMessage,
               child: Icon(
                 CupertinoIcons.photo,
                 color: _isTyping
@@ -447,20 +448,10 @@ class _HomePageState extends State<HomePage> {
                     : const Color(0xFF1E5631),
                 size: 28,
               ),
-              onPressed: _isTyping ? null : sendMediaMessage,
             ),
             // Voice input button
             CupertinoButton(
               padding: EdgeInsets.zero,
-              child: Icon(
-                _isListening ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
-                color: _isListening
-                    ? CupertinoColors.systemRed
-                    : (_isTyping
-                    ? CupertinoColors.systemGrey4
-                    : const Color(0xFF1E5631)),
-                size: 28,
-              ),
               onPressed: _isTyping
                   ? null
                   : () {
@@ -470,6 +461,15 @@ class _HomePageState extends State<HomePage> {
                   _startListening();
                 }
               },
+              child: Icon(
+                _isListening ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
+                color: _isListening
+                    ? CupertinoColors.systemRed
+                    : (_isTyping
+                    ? CupertinoColors.systemGrey4
+                    : const Color(0xFF1E5631)),
+                size: 28,
+              ),
             ),
             const SizedBox(width: 8),
             Expanded(
