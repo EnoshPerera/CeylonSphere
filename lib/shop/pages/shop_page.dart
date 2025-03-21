@@ -5,7 +5,7 @@ import '../widgets/category_card.dart';
 import '../widgets/shop_card.dart';
 
 class ShopPage extends StatefulWidget {
-  const ShopPage({Key? key}) : super(key: key);
+  const ShopPage({super.key});
 
   @override
   State<ShopPage> createState() => _ShopPageState();
@@ -83,7 +83,7 @@ class _ShopPageState extends State<ShopPage> {
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.blue,
+                color: Color.fromARGB(255, 25, 114, 82),
               ),
             ),
           ),
@@ -94,13 +94,18 @@ class _ShopPageState extends State<ShopPage> {
             child: Container(
               padding: const EdgeInsets.all(16),
               decoration: BoxDecoration(
-                color: Colors.blue.shade50,
+                color: Colors.green.shade50,
                 borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: Colors.blue.shade100),
+                border: Border.all(
+                  color: const Color.fromARGB(255, 2, 222, 148),
+                ),
               ),
               child: Text(
                 selectedCategory.description,
-                style: TextStyle(fontSize: 14, color: Colors.blue.shade900),
+                style: TextStyle(
+                  fontSize: 14,
+                  color: const Color.fromARGB(255, 0, 55, 52),
+                ),
               ),
             ),
           ),

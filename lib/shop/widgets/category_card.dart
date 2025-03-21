@@ -7,11 +7,11 @@ class CategoryCard extends StatelessWidget {
   final VoidCallback onTap;
 
   const CategoryCard({
-    Key? key,
+    super.key,
     required this.category,
     required this.isSelected,
     required this.onTap,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,12 +19,18 @@ class CategoryCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         width: 100,
-        margin: const EdgeInsets.only(right: 12),
+        margin: const EdgeInsets.only(right: 32),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.blue.shade50 : Colors.white,
+          color:
+              isSelected
+                  ? const Color.fromARGB(255, 27, 149, 104)
+                  : const Color.fromARGB(255, 255, 255, 255),
           borderRadius: BorderRadius.circular(12),
           border: Border.all(
-            color: isSelected ? Colors.blue : Colors.grey.shade300,
+            color:
+                isSelected
+                    ? const Color.fromARGB(255, 28, 93, 69)
+                    : Colors.grey.shade300,
             width: 2,
           ),
         ),
@@ -35,12 +41,25 @@ class CategoryCard extends StatelessWidget {
               width: 50,
               height: 50,
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: const Color.fromARGB(255, 255, 255, 255),
                 borderRadius: BorderRadius.circular(10),
               ),
-
-              // This is a placeholder for category icon
-              child: const Icon(Icons.image_not_supported, color: Colors.grey),
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(10),
+                child: Image.asset(
+                  category.imagePath,
+                  width: 50,
+                  height: 50,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    print('Error loading image: $error');
+                    return const Icon(
+                      Icons.image_not_supported,
+                      color: Color.fromARGB(255, 217, 92, 92),
+                    );
+                  },
+                ),
+              ),
             ),
             const SizedBox(height: 8),
             Padding(

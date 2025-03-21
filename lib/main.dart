@@ -1,16 +1,17 @@
 import 'package:flutter/material.dart';
-import 'pages/shop_page.dart';
+import 'shop/pages/shop_page.dart';
 
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'Handcraft & Souvenir Shop',
       theme: ThemeData(
         primarySwatch: Colors.blue,

@@ -5,7 +5,7 @@ import '../pages/shop_detail_page.dart';
 class ShopCard extends StatelessWidget {
   final Shop shop;
 
-  const ShopCard({Key? key, required this.shop}) : super(key: key);
+  const ShopCard({super.key, required this.shop});
 
   @override
   Widget build(BuildContext context) {
@@ -41,10 +41,22 @@ class ShopCard extends StatelessWidget {
                   top: Radius.circular(16),
                 ),
               ),
-
-              // This is a placeholder for shop image
-              child: const Center(
-                child: Icon(Icons.store, size: 50, color: Colors.grey),
+              child: ClipRRect(
+                borderRadius: const BorderRadius.vertical(
+                  top: Radius.circular(16),
+                ),
+                child: Image.asset(
+                  shop.imagePath,
+                  width: double.infinity,
+                  height: 150,
+                  fit: BoxFit.cover,
+                  errorBuilder: (context, error, stackTrace) {
+                    print('Error loading shop image: $error');
+                    return const Center(
+                      child: Icon(Icons.store, size: 50, color: Colors.grey),
+                    );
+                  },
+                ),
               ),
             ),
             Padding(
@@ -93,16 +105,18 @@ class ShopCard extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Text(
-                        '${shop.itemCount} items',
+                        shop.location,
                         style: TextStyle(
-                          fontSize: 14,
-                          color: Colors.blue.shade700,
+                          fontSize: 12,
+                          color: Colors.grey.shade600,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                       Icon(
                         Icons.arrow_forward,
                         size: 16,
-                        color: Colors.blue.shade700,
+                        color: const Color.fromARGB(255, 25, 210, 118),
                       ),
                     ],
                   ),
