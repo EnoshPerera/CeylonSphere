@@ -279,10 +279,6 @@ class SouvenirItemPage3 extends StatelessWidget {
                         ),
                         child: Column(
                           children: [
-                            _buildCraftDetail(
-                              icon: CupertinoIcons.paintbrush_fill,
-                              title: 'Hand-carved from Kaduru wood',
-                            ),
                             const SizedBox(height: 12),
                             _buildCraftDetail(
                               icon: CupertinoIcons.color_filter,

@@ -23,14 +23,14 @@ class _SouvenirListPageState extends State<SouvenirListPage3> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 120,
+            expandedHeight: 180,
             floating: true,
             pinned: true,
             elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                padding: const EdgeInsets.fromLTRB(16, 60, 16, 0),
+                padding: const EdgeInsets.fromLTRB(16, 120, 16, 0),
                 child: TextField(
                   controller: _searchController,
                   onChanged: (value) => setState(() => _searchQuery = value),

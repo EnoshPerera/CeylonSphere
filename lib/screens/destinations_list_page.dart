@@ -12,11 +12,12 @@ class DestinationsListPage extends StatefulWidget {
 class _DestinationsListPageState extends State<DestinationsListPage> {
   final TextEditingController _searchController = TextEditingController();
   String _searchQuery = '';
-  
+
   @override
   Widget build(BuildContext context) {
     final destinations = DestinationsData.getDestinations()
-        .where((d) => d.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+        .where((d) =>
+            d.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
             d.country.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
 
@@ -24,14 +25,14 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
       body: CustomScrollView(
         slivers: [
           SliverAppBar(
-            expandedHeight: 120,
+            expandedHeight: 180,
             floating: true,
             pinned: true,
             elevation: 0,
             backgroundColor: Theme.of(context).scaffoldBackgroundColor,
             flexibleSpace: FlexibleSpaceBar(
               background: Container(
-                padding: const EdgeInsets.fromLTRB(16, 60, 16, 0),
+                padding: const EdgeInsets.fromLTRB(16, 120, 16, 0),
                 child: TextField(
                   controller: _searchController,
                   onChanged: (value) => setState(() => _searchQuery = value),
@@ -134,7 +135,8 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
                                   // Categories
                                   Wrap(
                                     spacing: 8,
-                                    children: destination.categories.map((category) {
+                                    children:
+                                        destination.categories.map((category) {
                                       return Container(
                                         padding: const EdgeInsets.symmetric(
                                           horizontal: 12,
@@ -142,7 +144,8 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.2),
-                                          borderRadius: BorderRadius.circular(20),
+                                          borderRadius:
+                                              BorderRadius.circular(20),
                                         ),
                                         child: Text(
                                           category,
@@ -177,7 +180,8 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
                                         ),
                                         decoration: BoxDecoration(
                                           color: Colors.white.withOpacity(0.2),
-                                          borderRadius: BorderRadius.circular(12),
+                                          borderRadius:
+                                              BorderRadius.circular(12),
                                         ),
                                         child: Row(
                                           children: [
