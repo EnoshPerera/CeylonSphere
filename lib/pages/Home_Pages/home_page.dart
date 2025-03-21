@@ -614,12 +614,12 @@ class DestinationCard extends StatefulWidget {
   final int initialLikes;
 
   const DestinationCard({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.title,
     required this.location,
     required this.initialLikes,
-  }) : super(key: key);
+  });
 
   @override
   State<DestinationCard> createState() => _DestinationCardState();

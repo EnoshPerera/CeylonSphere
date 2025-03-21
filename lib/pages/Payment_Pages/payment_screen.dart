@@ -10,10 +10,10 @@ class PopupOverlay extends StatelessWidget {
   final VoidCallback? onDismiss;
 
   const PopupOverlay({
-    Key? key,
+    super.key,
     required this.child,
     this.onDismiss,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -87,11 +87,11 @@ class PaymentDialog extends StatefulWidget {
   final String bookingReference;
 
   const PaymentDialog({
-    Key? key,
+    super.key,
     required this.amount,
     required this.currency,
     required this.bookingReference,
-  }) : super(key: key);
+  });
 
   @override
   _PaymentDialogState createState() => _PaymentDialogState();

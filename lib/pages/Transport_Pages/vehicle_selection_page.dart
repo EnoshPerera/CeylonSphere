@@ -12,14 +12,14 @@ class VehicleSelectionPage extends StatefulWidget {
       onPaymentSuccess;
 
   const VehicleSelectionPage({
-    Key? key,
+    super.key,
     required this.pickupLocation,
     required this.dropoffLocation,
     required this.stopLocations,
     required this.distance,
     required this.duration,
     required this.onPaymentSuccess,
-  }) : super(key: key);
+  });
 
   @override
   _VehicleSelectionPageState createState() => _VehicleSelectionPageState();

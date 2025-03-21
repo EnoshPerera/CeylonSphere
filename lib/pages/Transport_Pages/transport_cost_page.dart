@@ -18,7 +18,7 @@ class TransportCostPage extends StatefulWidget {
   final TimeOfDay pickupTime;
 
   const TransportCostPage({
-    Key? key,
+    super.key,
     required this.vehicleType,
     required this.vehicleModel,
     required this.passengerCount,
@@ -30,7 +30,7 @@ class TransportCostPage extends StatefulWidget {
     required this.stopLocations,
     required this.pickupDate,
     required this.pickupTime,
-  }) : super(key: key);
+  });
 
   @override
   _TransportCostPageState createState() => _TransportCostPageState();
@@ -361,12 +361,12 @@ class _TransportCostPageState extends State<TransportCostPage> {
             SizedBox(height: 16),
             _buildDetailRow('Vehicle', '${widget.vehicleType} - ${widget.vehicleModel}'),
             _buildDetailRow('Passengers', '${widget.passengerCount}'),
-            _buildDetailRow('Duration', '${widget.duration}'),
+            _buildDetailRow('Duration', widget.duration),
             _buildDetailRow('Planned Days', '${widget.plannedDays}'),
-            _buildDetailRow('Pickup', '${widget.pickupLocation}'),
+            _buildDetailRow('Pickup', widget.pickupLocation),
             if (widget.stopLocations.isNotEmpty)
-              _buildDetailRow('Stops', '${widget.stopLocations.join(", ")}'),
-            _buildDetailRow('Dropoff', '${widget.dropoffLocation}'),
+              _buildDetailRow('Stops', widget.stopLocations.join(", ")),
+            _buildDetailRow('Dropoff', widget.dropoffLocation),
           ],
         ),
       ),

@@ -23,6 +23,8 @@ void main() async {
 }
 
 class TransportScreen extends StatelessWidget {
+  const TransportScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -34,6 +36,8 @@ class TransportScreen extends StatelessWidget {
 }
 
 class BookingHomePage extends StatefulWidget {
+  const BookingHomePage({super.key});
+
   @override
   _BookingHomePageState createState() => _BookingHomePageState();
 }
@@ -43,8 +47,8 @@ class _BookingHomePageState extends State<BookingHomePage> {
       GoogleMapsPlaces(apiKey: 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA');
   final String _apiKey = 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA';
   GoogleMapController? _mapController;
-  Set<Marker> _markers = {};
-  List<LatLng> _selectedLocations = [];
+  final Set<Marker> _markers = {};
+  final List<LatLng> _selectedLocations = [];
   polyline.PolylinePoints polylinePoints = polyline.PolylinePoints();
   Map<PolylineId, Polyline> polylines = {};
 
@@ -62,62 +66,60 @@ class _BookingHomePageState extends State<BookingHomePage> {
       String placeId, String placeName, String type,
       [int? stopIndex]) async {
     final details = await _places.getDetailsByPlaceId(placeId);
-    if (details.result != null) {
-      final location = details.result!.geometry!.location;
-      final latLng = LatLng(location.lat, location.lng);
-      setState(() {
-        if (type == 'pickup') {
-          pickupLocation = placeName;
-          if (_selectedLocations.isEmpty) {
-            _selectedLocations.add(latLng);
-          } else {
-            _selectedLocations[0] = latLng;
-          }
-          _markers.removeWhere((marker) => marker.markerId.value == 'pickup');
-          _markers.add(Marker(
-            markerId: MarkerId('pickup'),
-            position: latLng,
-            infoWindow: InfoWindow(title: 'Pickup: $placeName'),
-          ));
-        } else if (type == 'stop') {
-          if (stopIndex != null && stopIndex < stopLocations.length) {
-            stopLocations[stopIndex].name = placeName;
-            int mapIndex = 1 + stopIndex;
-            if (_selectedLocations.length > mapIndex) {
-              _selectedLocations[mapIndex] = latLng;
-            } else {
-              _selectedLocations.add(latLng);
-            }
-            _markers.removeWhere(
-                (marker) => marker.markerId.value == 'stop_$stopIndex');
-            _markers.add(Marker(
-              markerId: MarkerId('stop_$stopIndex'),
-              position: latLng,
-              infoWindow: InfoWindow(title: 'Stop: $placeName'),
-            ));
-          }
-        } else if (type == 'dropoff') {
-          dropoffLocation = placeName;
-          if (_selectedLocations.length > stopLocations.length + 1) {
-            _selectedLocations[stopLocations.length + 1] = latLng;
+    final location = details.result!.geometry!.location;
+    final latLng = LatLng(location.lat, location.lng);
+    setState(() {
+      if (type == 'pickup') {
+        pickupLocation = placeName;
+        if (_selectedLocations.isEmpty) {
+          _selectedLocations.add(latLng);
+        } else {
+          _selectedLocations[0] = latLng;
+        }
+        _markers.removeWhere((marker) => marker.markerId.value == 'pickup');
+        _markers.add(Marker(
+          markerId: MarkerId('pickup'),
+          position: latLng,
+          infoWindow: InfoWindow(title: 'Pickup: $placeName'),
+        ));
+      } else if (type == 'stop') {
+        if (stopIndex != null && stopIndex < stopLocations.length) {
+          stopLocations[stopIndex].name = placeName;
+          int mapIndex = 1 + stopIndex;
+          if (_selectedLocations.length > mapIndex) {
+            _selectedLocations[mapIndex] = latLng;
           } else {
             _selectedLocations.add(latLng);
           }
-          _markers.removeWhere((marker) => marker.markerId.value == 'dropoff');
+          _markers.removeWhere(
+              (marker) => marker.markerId.value == 'stop_$stopIndex');
           _markers.add(Marker(
-            markerId: MarkerId('dropoff'),
+            markerId: MarkerId('stop_$stopIndex'),
             position: latLng,
-            infoWindow: InfoWindow(title: 'Dropoff: $placeName'),
+            infoWindow: InfoWindow(title: 'Stop: $placeName'),
           ));
         }
-      });
-      _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
-
-      if (pickupLocation != null && dropoffLocation != null) {
-        _generateRoute();
+      } else if (type == 'dropoff') {
+        dropoffLocation = placeName;
+        if (_selectedLocations.length > stopLocations.length + 1) {
+          _selectedLocations[stopLocations.length + 1] = latLng;
+        } else {
+          _selectedLocations.add(latLng);
+        }
+        _markers.removeWhere((marker) => marker.markerId.value == 'dropoff');
+        _markers.add(Marker(
+          markerId: MarkerId('dropoff'),
+          position: latLng,
+          infoWindow: InfoWindow(title: 'Dropoff: $placeName'),
+        ));
       }
+    });
+    _mapController?.animateCamera(CameraUpdate.newLatLng(latLng));
+
+    if (pickupLocation != null && dropoffLocation != null) {
+      _generateRoute();
     }
-  }
+    }
 
   void _generateRoute() async {
     if (_selectedLocations.length < 2) return;
@@ -500,7 +502,7 @@ class LocationInputField extends StatefulWidget {
   final Function(String placeId, String name) onPlaceSelected;
   final String? initialValue;
 
-  LocationInputField({
+  const LocationInputField({super.key, 
     required this.hint,
     required this.places,
     required this.onPlaceSelected,
@@ -512,7 +514,7 @@ class LocationInputField extends StatefulWidget {
 }
 
 class _LocationInputFieldState extends State<LocationInputField> {
-  TextEditingController _controller = TextEditingController();
+  final TextEditingController _controller = TextEditingController();
   List<PlacesSearchResult> _searchResults = [];
   bool _showSuggestions = false;
   bool _isSearching = false;
@@ -686,6 +688,6 @@ Future<void> saveTransportDetails({
     });
   } catch (e) {
     print('Error saving transport details: $e');
-    throw e;
+    rethrow;
   }
 }

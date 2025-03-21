@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class DestinationCarousel extends StatefulWidget {
-  const DestinationCarousel({Key? key}) : super(key: key);
+  const DestinationCarousel({super.key});
 
   @override
   State<DestinationCarousel> createState() => _DestinationCarouselState();
@@ -122,9 +122,9 @@ class SingleDestinationCard extends StatefulWidget {
   final DestinationInfo info;
 
   const SingleDestinationCard({
-    Key? key,
+    super.key,
     required this.info,
-  }) : super(key: key);
+  });
 
   @override
   State<SingleDestinationCard> createState() => _SingleDestinationCardState();
@@ -324,10 +324,10 @@ class DestinationScreen extends StatelessWidget {
   final String title;
 
   const DestinationScreen({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.title,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
