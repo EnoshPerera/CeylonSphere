@@ -465,16 +465,26 @@ class _TransportCostPageState extends State<TransportCostPage> {
         // Calculate half of the total cost
         double halfTotalCostUSD = _totalCostUSD / 2;
 
-        // Navigate to the payment screen
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => PaymentDialog(
-              amount: halfTotalCostUSD,
-              currency: 'USD',
-              bookingReference: _bookingReference,
-            ),
-          ),
+        // Show the payment popup
+        bool? paymentSuccess = await showPaymentPopup(
+          context,
+          amount: halfTotalCostUSD,
+          currency: 'USD',
+          bookingReference: _bookingReference,
         );
+
+        // Handle the payment result
+        if (paymentSuccess == true) {
+          // Payment was successful
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Payment successful! Booking confirmed.')),
+          );
+        } else {
+          // Payment failed or was cancelled
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Payment failed or was cancelled.')),
+          );
+        }
       },
       child: Text(
         'Complete Booking',

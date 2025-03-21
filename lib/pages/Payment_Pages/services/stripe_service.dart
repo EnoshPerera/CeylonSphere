@@ -28,7 +28,6 @@ class StripeService {
         paymentSheetParameters: stripe.SetupPaymentSheetParameters(
           paymentIntentClientSecret: paymentIntentClientSecret,
           merchantDisplayName: 'Ceylon Sphere',
-          // Customize appearance or enable Google/Apple Pay here
         ),
       );
 

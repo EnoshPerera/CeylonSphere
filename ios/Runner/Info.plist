@@ -7,7 +7,6 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
-<<<<<<< HEAD
 	<string>Ceylonsphere</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
@@ -17,7 +16,6 @@
 	<string>6.0</string>
 	<key>CFBundleName</key>
 	<string>ceylonsphere</string>
-=======
 	<string>Flutter Test 22</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>

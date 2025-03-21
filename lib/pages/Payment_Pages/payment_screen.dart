@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'dart:ui';
 import 'dart:async';
@@ -125,6 +126,14 @@ class _PaymentDialogState extends State<PaymentDialog> with SingleTickerProvider
     super.dispose();
   }
 
+  void _closeWithAnimation(bool result) {
+    _animationController.reverse().then((_) {
+      if (mounted) {
+        Navigator.of(context).pop(result);
+      }
+    });
+  }
+
   Future<void> _handlePayment() async {
     // Guard against multiple taps
     if (_paymentState == PaymentState.processing) return;
@@ -134,45 +143,82 @@ class _PaymentDialogState extends State<PaymentDialog> with SingleTickerProvider
     });
 
     try {
-      // Simulate network delay
-      await Future.delayed(Duration(seconds: 2));
+      print("Starting payment process...");
 
-      // Process payment with Stripe service
+      // Step 1: Process payment with Stripe service
+      print("Calling StripeService.makePayment...");
       await StripeService.instance.makePayment(
         amount: widget.amount,
         currency: widget.currency,
       );
 
-      // Check if widget is still mounted before updating state
-      if (!mounted) return;
+      print("Payment completed successfully with Stripe");
 
+      // Step 2: Save payment details to backend (Firestore or your backend)
+      print("Saving payment details to backend...");
+      await _savePaymentToBackend(widget.bookingReference, widget.amount, widget.currency);
+
+      print("Payment details saved to backend");
+
+      // Step 3: Update UI to success state
+      if (!mounted) {
+        print("Widget is not mounted. Cannot update state.");
+        return;
+      }
+
+      print("Updating UI to success state...");
       setState(() {
         _paymentState = PaymentState.success;
       });
 
-      // Auto-close after success
+      print("UI updated to success state");
+
+      // Step 4: Auto-close after success
       _autoCloseTimer = Timer(Duration(milliseconds: 1800), () {
         if (mounted) {
           _closeWithAnimation(true);
         }
       });
-    } catch (e) {
-      // Check if widget is still mounted before updating state
-      if (!mounted) return;
 
+      print("Auto-close timer started");
+    } catch (e) {
+      print("Payment failed with error: $e");
+
+      if (!mounted) {
+        print("Widget is not mounted. Cannot update state.");
+        return;
+      }
+
+      print("Updating UI to failure state...");
       setState(() {
         _paymentState = PaymentState.failure;
         _errorMessage = e.toString();
       });
+
+      print("UI updated to failure state");
     }
   }
 
-  void _closeWithAnimation(bool result) {
-    _animationController.reverse().then((_) {
-      if (mounted) {
-        Navigator.of(context).pop(result);
-      }
-    });
+// Save payment details to backend (Firestore or your backend)
+  Future<void> _savePaymentToBackend(String bookingReference, double amount, String currency) async {
+    try {
+      final firestore = FirebaseFirestore.instance;
+
+      final paymentDetails = {
+        'bookingReference': bookingReference,
+        'amount': amount,
+        'currency': currency,
+        'status': 'completed',
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      await firestore.collection('payments').doc(bookingReference).set(paymentDetails);
+
+      print("Payment details saved to backend");
+    } catch (e) {
+      print("Failed to save payment details to backend: $e");
+      throw Exception("Failed to save payment details to backend");
+    }
   }
 
   @override
