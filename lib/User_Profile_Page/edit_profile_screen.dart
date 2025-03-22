@@ -20,7 +20,7 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
   String? _selectedGender = 'Male';
   File? _profileImage;
   bool _isLoading = false;
-  
+
   // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -36,17 +36,19 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final user = _auth.currentUser;
       if (user != null) {
         // Fetch user data from Firestore
-        final userData = await _firestore.collection('users').doc(user.uid).get();
-        
+        final userData =
+            await _firestore.collection('users').doc(user.uid).get();
+
         if (userData.exists) {
           setState(() {
             _usernameController.text = userData.data()?['username'] ?? '';
-            _emailController.text = userData.data()?['email'] ?? user.email ?? '';
+            _emailController.text =
+                userData.data()?['email'] ?? user.email ?? '';
             _phoneController.text = userData.data()?['phone'] ?? '';
             _selectedGender = userData.data()?['gender'] ?? 'Male';
           });
@@ -79,16 +81,16 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<String?> _uploadProfileImage() async {
     if (_profileImage == null) return null;
-    
+
     try {
       final user = _auth.currentUser;
       if (user == null) return null;
-      
+
       // Upload image to Firebase Storage
       final storageRef = _storage.ref().child('profile_images/${user.uid}');
       final uploadTask = storageRef.putFile(_profileImage!);
       final snapshot = await uploadTask.whenComplete(() {});
-      
+
       // Get download URL
       return await snapshot.ref.getDownloadURL();
     } catch (e) {
@@ -99,23 +101,23 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
 
   Future<void> _saveProfile() async {
     if (!_formKey.currentState!.validate()) return;
-    
+
     setState(() {
       _isLoading = true;
     });
-    
+
     try {
       final user = _auth.currentUser;
       if (user == null) {
         throw Exception('User not authenticated');
       }
-      
+
       // Upload profile image if selected
       String? profileImageUrl;
       if (_profileImage != null) {
         profileImageUrl = await _uploadProfileImage();
       }
-      
+
       // Prepare user data
       Map<String, dynamic> userData = {
         'username': _usernameController.text,
@@ -124,23 +126,24 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
         'gender': _selectedGender,
         'updatedAt': FieldValue.serverTimestamp(),
       };
-      
+
       // Add profile image URL if available
       if (profileImageUrl != null) {
         userData['profileImageUrl'] = profileImageUrl;
       }
-      
+
       // Save to Firestore
       await _firestore.collection('users').doc(user.uid).set(
-        userData,
-        SetOptions(merge: true), // Use merge to update only specified fields
-      );
-      
+            userData,
+            SetOptions(
+                merge: true), // Use merge to update only specified fields
+          );
+
       // Show success message
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Profile Updated Successfully')),
       );
-      
+
       // Navigate back
       Navigator.pop(context);
     } catch (e) {
@@ -179,8 +182,12 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                           backgroundColor: Colors.grey[300],
                           backgroundImage: _profileImage != null
                               ? FileImage(_profileImage!)
-                              : const AssetImage('assets/profile_picture.png') as ImageProvider,
-                          child: _profileImage == null ? const Icon(Icons.camera_alt, color: Colors.white) : null,
+                              : const AssetImage('assets/profile_picture.png')
+                                  as ImageProvider,
+                          child: _profileImage == null
+                              ? const Icon(Icons.camera_alt,
+                                  color: Colors.white)
+                              : null,
                         ),
                       ),
                     ),
@@ -210,7 +217,8 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
                         if (value == null || value.isEmpty) {
                           return 'Please enter your email';
                         }
-                        if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$").hasMatch(value)) {
+                        if (!RegExp(r"^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")
+                            .hasMatch(value)) {
                           return 'Please enter a valid email';
                         }
                         return null;
