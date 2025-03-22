@@ -15,7 +15,11 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "33CC10EC2044A3C60003C045"
-               BuildableName = "newshop.app"
+<<<<<<< HEAD
+               BuildableName = "ceylonsphere.app"
+=======
+               BuildableName = "flutter_test_22.app"
+>>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
                BlueprintName = "Runner"
                ReferencedContainer = "container:Runner.xcodeproj">
             </BuildableReference>
@@ -31,7 +35,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
-            BuildableName = "newshop.app"
+<<<<<<< HEAD
+            BuildableName = "ceylonsphere.app"
+=======
+            BuildableName = "flutter_test_22.app"
+>>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -59,14 +67,21 @@
       ignoresPersistentStateOnLaunch = "NO"
       debugDocumentVersioning = "YES"
       debugServiceExtension = "internal"
+<<<<<<< HEAD
       enableGPUValidationMode = "1"
+=======
+>>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
       allowLocationSimulation = "YES">
       <BuildableProductRunnable
          runnableDebuggingMode = "0">
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
-            BuildableName = "newshop.app"
+<<<<<<< HEAD
+            BuildableName = "ceylonsphere.app"
+=======
+            BuildableName = "flutter_test_22.app"
+>>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>
@@ -83,7 +98,11 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "33CC10EC2044A3C60003C045"
-            BuildableName = "newshop.app"
+<<<<<<< HEAD
+            BuildableName = "ceylonsphere.app"
+=======
+            BuildableName = "flutter_test_22.app"
+>>>>>>> 74fdccb2d31d8ae95af661e280535caa945a066c
             BlueprintName = "Runner"
             ReferencedContainer = "container:Runner.xcodeproj">
          </BuildableReference>

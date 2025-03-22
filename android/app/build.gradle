@@ -1,0 +1,49 @@
+plugins {
+    id "com.android.application"
+    id "kotlin-android"
+    // The Flutter Gradle Plugin must be applied after the Android and Kotlin Gradle plugins.
+    id "dev.flutter.flutter-gradle-plugin"
+}
+
+android {
+    compileSdk = flutter.compileSdkVersion // Set by Flutter (e.g., 33)
+    ndkVersion = flutter.ndkVersion // Set by Flutter (e.g., "25.1.8937393")
+    namespace "com.example.CeylonSphere" // Replace with your app's package name
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
+
+    defaultConfig {
+        applicationId "com.example.CeylonSphere" // Replace with your app's package name
+        minSdk = 23
+        targetSdk = flutter.targetSdkVersion // Set by Flutter (e.g., 33)
+        versionCode = flutter.versionCode // Set in pubspec.yaml or local.properties
+        versionName = flutter.versionName // Set in pubspec.yaml or local.properties
+    }
+
+    buildTypes {
+        release {
+            // TODO: Add your own signing config for the release build.
+            // Signing with the debug keys for now, so `flutter run --release` works.
+            signingConfig = signingConfigs.debug
+        }
+    }
+}
+
+flutter {
+    source = "../.."
+}
+
+dependencies {
+    implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version" // Add Kotlin standard library
+    implementation platform('com.google.firebase:firebase-bom:32.3.1') // Add Firebase BoM
+    implementation 'com.google.firebase:firebase-analytics' // Add Firebase Analytics (optional)
+    implementation 'com.google.firebase:firebase-auth'
+    implementation 'com.google.android.gms:play-services-auth:20.7.0'
+}
