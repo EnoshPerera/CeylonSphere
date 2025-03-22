@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'firstscreen.dart';
-import 'package:flutter/cupertino.dart'; // For iOS-style loading indicator
+import 'package:flutter/cupertino.dart';
 
 void main() {
   runApp(const MyApp());

@@ -3,6 +3,7 @@ import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import '../Profile_Pages/profile_screen.dart';
+import '../../chatbot/chatbot.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
 import 'destination_profile.dart';
@@ -157,25 +158,37 @@ class HomeScreen extends StatelessWidget {
                                           mainAxisSpacing: 20,
                                           crossAxisSpacing: 20,
                                           children: [
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon: CupertinoIcons.map,
                                               label: 'Places',
-                                              // onTap: () {
-                                              //   Navigator.pop(
-                                              //       context); // Close the modal first
-                                              //   Navigator.push(
-                                              //     context,
-                                              //     CupertinoPageRoute(
-                                              //       builder: (context) =>
-                                              //           GoogleMapScreen(),
-                                              //     ),
-                                              //   );
-                                              // },
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close the modal first
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        GoogleMapScreen(),
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon:
                                                   CupertinoIcons.chat_bubble_2,
                                               label: 'Chatbot',
+                                                onTap: () {
+                                                  Navigator.pop(
+                                                      context); // Close the modal first
+                                                  Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          Chatbot(),
+                                                    ),
+                                                  );
+                                                }
+
                                             ),
                                             const _CategoryGridItem(
                                               icon: CupertinoIcons.news,
@@ -270,10 +283,18 @@ class HomeScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          const _CategoryItem(
+                          _CategoryItem(
                             icon: CupertinoIcons.chat_bubble_2, // Chatbot icon
                             label: 'Chatbot',
-                            color: Color(0xFF2196F3), // Keeping the same color
+                            color: const Color(0xFF2196F3), // Keeping the same color
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => Chatbot(),
+                                ),
+                              );
+                            },
                           ),
                           const _CategoryItem(
                             icon: CupertinoIcons.news,

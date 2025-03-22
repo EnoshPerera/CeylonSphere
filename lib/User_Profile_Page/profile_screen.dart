@@ -1,6 +1,7 @@
 import 'package:ceylonsphere/splash_screen/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../main.dart';
 import 'edit_profile_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_and_conditions_screen.dart';
@@ -82,7 +83,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       if (user != null) {
         // Fetch user profile from Firestore
         final userData =
-            await _firestore.collection('users').doc(user.uid).get();
+        await _firestore.collection('users').doc(user.uid).get();
 
         if (userData.exists) {
           setState(() {
@@ -103,13 +104,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _signOut() async {
     try {
       await _auth.signOut();
-      // Navigate to the OnboardingScreen and set the page to the last one
-      Navigator.pushReplacement(
-        context,
+      // Use the global navigator key to navigate outside the tab system
+      navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) =>
-              OnboardingScreen(initialPage: 2), // Navigate to the last page
+          builder: (context) => OnboardingScreen(initialPage: 2), // Navigate to the last page
         ),
+            (Route<dynamic> route) => false, // Remove all routes
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -128,90 +128,90 @@ class _ProfileScreenState extends State<ProfileScreen> {
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
           : Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EditProfileScreen()),
-                    ).then((_) =>
-                        _fetchUserProfile()); // Refresh profile after editing
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    margin: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF059669),
-                      borderRadius: BorderRadius.circular(12.0),
-                    ),
-                    child: Row(
-                      children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: _profileImageUrl != null
-                              ? NetworkImage(_profileImageUrl!)
-                              : const AssetImage('assets/profile_picture.png')
-                                  as ImageProvider,
-                        ),
-                        const SizedBox(width: 12.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _username,
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              _location,
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.black54),
-                            ),
-                          ],
-                        ),
-                        const Spacer(),
-                        const Icon(Icons.arrow_forward_ios),
-                      ],
-                    ),
+        children: [
+          GestureDetector(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const EditProfileScreen()),
+              ).then((_) =>
+                  _fetchUserProfile()); // Refresh profile after editing
+            },
+            child: Container(
+              padding: const EdgeInsets.all(16.0),
+              margin: const EdgeInsets.all(16.0),
+              decoration: BoxDecoration(
+                color: const Color(0xFF059669),
+                borderRadius: BorderRadius.circular(12.0),
+              ),
+              child: Row(
+                children: [
+                  CircleAvatar(
+                    radius: 30,
+                    backgroundImage: _profileImageUrl != null
+                        ? NetworkImage(_profileImageUrl!)
+                        : const AssetImage('assets/profile_picture.png')
+                    as ImageProvider,
                   ),
-                ),
-                buildNotificationOption(),
-                buildProfileOption("Language", Icons.language,
-                    subtitle: _selectedLanguage, onTap: () {
-                  showLanguageSelection(context);
-                }),
-                buildProfileOption("Payment Methods", Icons.payment),
-                buildProfileOption("Currency", Icons.attach_money),
-                buildProfileOption("Privacy Policy", Icons.privacy_tip,
-                    onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PrivacyPolicyScreen()),
-                  );
-                }),
-                buildProfileOption("Terms and Conditions", Icons.description,
-                    onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const TermsAndConditionsScreen()),
-                  );
-                }),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF059669),
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    onPressed: _signOut,
-                    child: const Text("Sign Out"),
+                  const SizedBox(width: 12.0),
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        _username,
+                        style: const TextStyle(
+                            fontSize: 18, fontWeight: FontWeight.bold),
+                      ),
+                      Text(
+                        _location,
+                        style: const TextStyle(
+                            fontSize: 14, color: Colors.black54),
+                      ),
+                    ],
                   ),
-                ),
-              ],
+                  const Spacer(),
+                  const Icon(Icons.arrow_forward_ios),
+                ],
+              ),
             ),
+          ),
+          buildNotificationOption(),
+          buildProfileOption("Language", Icons.language,
+              subtitle: _selectedLanguage, onTap: () {
+                showLanguageSelection(context);
+              }),
+          buildProfileOption("Payment Methods", Icons.payment),
+          buildProfileOption("Currency", Icons.attach_money),
+          buildProfileOption("Privacy Policy", Icons.privacy_tip,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const PrivacyPolicyScreen()),
+                );
+              }),
+          buildProfileOption("Terms and Conditions", Icons.description,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const TermsAndConditionsScreen()),
+                );
+              }),
+          Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF059669),
+                minimumSize: const Size(double.infinity, 50),
+              ),
+              onPressed: _signOut,
+              child: const Text("Sign Out"),
+            ),
+          ),
+        ],
+      ),
     );
   }
 
