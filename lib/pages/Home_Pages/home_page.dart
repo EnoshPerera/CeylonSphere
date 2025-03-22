@@ -4,7 +4,6 @@ import 'package:ceylonsphere/pages/Transport_Pages/transport.dart';
 import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Profile_Pages/profile_screen.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
 import 'destination_profile.dart';

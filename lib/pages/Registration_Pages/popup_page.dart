@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'registration_page.dart'; // Import the RegistrationPage
 import 'login_page.dart'; // Import the LoginPage
+import '';
 
 class WelcomePopup {
   static void show(BuildContext context) {
@@ -33,7 +34,9 @@ class WelcomePopup {
                     Navigator.pop(context); // Close the dialog
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => LoginPage()), // Navigate to LoginPage
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              LoginPage()), // Navigate to LoginPage
                     );
                   },
                   style: ElevatedButton.styleFrom(
@@ -51,11 +54,14 @@ class WelcomePopup {
                     Navigator.pop(context); // Close the dialog
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => RegistrationPage()), // Navigate to RegistrationPage
+                      MaterialPageRoute(
+                          builder: (context) =>
+                              RegistrationPage()), // Navigate to RegistrationPage
                     );
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF003734), // Same as Log in button
+                    backgroundColor:
+                        const Color(0xFF003734), // Same as Log in button
                     minimumSize: const Size(double.infinity, 50),
                   ),
                   child: const Text(
