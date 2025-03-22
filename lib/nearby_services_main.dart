@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'screens/nearby_services_screen.dart';
-import 'constants/api_constants.dart';
+import 'Nearby_Services_Pages/screens/nearby_services_screen.dart';
+import 'Nearby_Services_Pages/constants/api_constants.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
