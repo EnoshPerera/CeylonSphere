@@ -1,6 +1,9 @@
+import 'package:ceylonsphere/User_Profile_Page/profile_screen.dart';
+import 'package:ceylonsphere/chatbot/chatbot.dart';
+import 'package:ceylonsphere/pages/Transport_Pages/transport.dart';
+import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Profile_Pages/profile_screen.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
 import 'destination_profile.dart';
@@ -9,7 +12,6 @@ import '../../destinationCarousel_widget/destination_carousel.dart';
 import 'ar_temple_screen.dart';
 import '../Transport_Pages/transport.dart';
 import '../../chatbot/travel_chatbot_screen.dart';
-import 'adventure_deals.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -63,7 +65,7 @@ class _MainPageState extends State<MainPage> {
           case 2:
             return TransportScreen();
           case 3:
-            return const ProfileScreen();
+            return UserProfile();
           default:
             return const HomeScreen();
         }
@@ -155,25 +157,36 @@ class HomeScreen extends StatelessWidget {
                                           mainAxisSpacing: 20,
                                           crossAxisSpacing: 20,
                                           children: [
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon: CupertinoIcons.map,
                                               label: 'Places',
-                                              // onTap: () {
-                                              //   Navigator.pop(
-                                              //       context); // Close the modal first
-                                              //   Navigator.push(
-                                              //     context,
-                                              //     CupertinoPageRoute(
-                                              //       builder: (context) =>
-                                              //           GoogleMapScreen(),
-                                              //     ),
-                                              //   );
-                                              // },
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close the modal first
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        GoogleMapScreen(),
+                                                  ),
+                                                );
+                                              },
                                             ),
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon:
                                                   CupertinoIcons.chat_bubble_2,
                                               label: 'Chatbot',
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close the modal first
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        MyApp(),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                             const _CategoryGridItem(
                                               icon: CupertinoIcons.news,
@@ -203,21 +216,21 @@ class HomeScreen extends StatelessWidget {
                                               icon: CupertinoIcons.cart,
                                               label: 'Markets',
                                             ),
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon:
                                                   CupertinoIcons.chat_bubble_2,
                                               label: 'Travel Assistant',
-                                              // onTap: () {
-                                              //   Navigator.pop(
-                                              //       context); // Close modal before navigating
-                                              //   // Navigator.push(
-                                              //   //   context,
-                                              //   //   CupertinoPageRoute(
-                                              //   //     builder: (context) =>
-                                              //   //         const TravelChatbotScreen(),
-                                              //   //   ),
-                                              //   // );
-                                              // },
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close modal before navigating
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        const MyApp(),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                           ],
                                         ),
@@ -268,10 +281,18 @@ class HomeScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          const _CategoryItem(
+                          _CategoryItem(
                             icon: CupertinoIcons.chat_bubble_2, // Chatbot icon
                             label: 'Chatbot',
-                            color: Color(0xFF2196F3), // Keeping the same color
+                            color: Color(0xFF2196F3),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => MyApp(),
+                                ),
+                              );
+                            }, // Keeping the same color
                           ),
                           const _CategoryItem(
                             icon: CupertinoIcons.news,
@@ -315,31 +336,24 @@ class HomeScreen extends StatelessWidget {
                 title: 'Adventure Deal',
                 subtitle: '30% OFF',
                 color: Colors.orangeAccent,
-                onTap: () {
-                  // Navigate to AdventureDealsPage
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const AdventureDealsPage()),
-                  );
-                },
+                onTap: () {},
               ),
 
               //Promo Banner
-              PromoBanner(
-                title: 'AR Experience',
-                subtitle: 'Explore temples in Augmented Reality',
-                color: const Color.fromARGB(
-                    255, 0, 102, 255), // Deep purple for tech feel
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   CupertinoPageRoute(
-                  //     builder: (context) => ARTempleScreen(),
-                  //   ),
-                  // );
-                },
-              ),
+              // PromoBanner(
+              //   title: 'AR Experience',
+              //   subtitle: 'Explore temples in Augmented Reality',
+              //   color: const Color.fromARGB(
+              //       255, 0, 102, 255), // Deep purple for tech feel
+              //   // onTap: () {
+              //   //   Navigator.push(
+              //   //     context,
+              //   //     CupertinoPageRoute(
+              //   //       builder: (context) => ARTempleScreen(),
+              //   //     ),
+              //   //   );
+              //   // },
+              // ),
               const SizedBox(height: 10),
             ],
           ),
@@ -601,12 +615,12 @@ class DestinationCard extends StatefulWidget {
   final int initialLikes;
 
   const DestinationCard({
-    Key? key,
+    super.key,
     required this.imagePath,
     required this.title,
     required this.location,
     required this.initialLikes,
-  }) : super(key: key);
+  });
 
   @override
   State<DestinationCard> createState() => _DestinationCardState();

@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flutter_stripe/flutter_stripe.dart' as stripe;
 import '../consts.dart';
+import '';
 
 class StripeService {
   // Singleton pattern
@@ -10,6 +11,7 @@ class StripeService {
   Future<void> makePayment({
     required double amount,
     required String currency,
+    required String bookingReference,
   }) async {
     try {
       print('Creating payment intent...');

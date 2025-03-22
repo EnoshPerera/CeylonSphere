@@ -1,15 +1,18 @@
+import 'package:ceylonsphere/pages/Registration_Pages/popup_page.dart';
 import 'package:flutter/material.dart';
-import '../pages/Registration_Pages/popup_page.dart'; // Import the WelcomePopup
+//import '../pages/Registration_Pages/popup_page.dart'; // Import the WelcomePopup
+import '';
 
 class OnboardingScreen extends StatefulWidget {
-  const OnboardingScreen({super.key});
+  final int initialPage; // Add initialPage parameter
+  const OnboardingScreen({super.key, this.initialPage = 0});
 
   @override
   State<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
 class _OnboardingScreenState extends State<OnboardingScreen> {
-  final PageController _pageController = PageController();
+  late PageController _pageController;
   int _currentPage = 0;
   final int _numPages = 3;
 
@@ -17,23 +20,35 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
     {
       'image': 'assets/beach.png',
       'title': 'Welcome to\nCeylonSphere',
-      'description': 'Unveiling the beauty of Sri Lanka. Dive into its vibrant culture, breathtaking landscapes, and rich heritage.',
-    },
-    {
-      'image': 'assets/ella.png',
-      'title': 'Discover Paradise',
-      'description': 'Journey through mist-covered mountains, historic railways, and verdant tea plantations.',
+      'description':
+          'Unveiling the beauty of Sri Lanka. Dive into its vibrant culture, breathtaking landscapes, and rich heritage.',
     },
     {
       'image': 'assets/fisherman.png',
+      'title': 'Discover Paradise',
+      'description':
+          'Journey through mist-covered mountains, historic railways, and verdant tea plantations.',
+    },
+    {
+      'image': 'assets/ella.png',
       'title': 'Experience Culture',
-      'description': 'Immerse yourself in ancient traditions and connect with the warm hospitality of the island.',
+      'description':
+          'Immerse yourself in ancient traditions and connect with the warm hospitality of the island.',
     },
   ];
 
   @override
+  void initState() {
+    super.initState();
+    _pageController =
+        PageController(initialPage: widget.initialPage); // Set initial page
+    _currentPage = widget.initialPage;
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
+      appBar: null, // Hide the app bar
       body: PageView.builder(
         controller: _pageController,
         onPageChanged: (int page) {
@@ -98,7 +113,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     const SizedBox(height: 30),
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(_numPages, (index) => buildDot(index)),
+                      children:
+                          List.generate(_numPages, (index) => buildDot(index)),
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
@@ -109,21 +125,23 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             curve: Curves.ease,
                           );
                         } else {
-                          // Show the welcome popup instead of navigating to HomeScreen
+                          // Show the welcome popup when "Get Started" is pressed
                           WelcomePopup.show(context);
                         }
                       },
                       style: ElevatedButton.styleFrom(
                         backgroundColor: Colors.green.shade300.withOpacity(0.7),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 12),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 40, vertical: 12),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(30),
                         ),
                       ),
                       child: Text(
                         _currentPage < _numPages - 1 ? 'Next' : 'Get Started',
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+                        style: const TextStyle(
+                            fontSize: 16, fontWeight: FontWeight.w500),
                       ),
                     ),
                     const SizedBox(height: 50),
@@ -144,7 +162,9 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
       height: 10,
       width: _currentPage == index ? 20 : 10,
       decoration: BoxDecoration(
-        color: _currentPage == index ? Colors.white : Colors.white.withOpacity(0.5),
+        color: _currentPage == index
+            ? Colors.white
+            : Colors.white.withOpacity(0.5),
         borderRadius: BorderRadius.circular(5),
       ),
     );

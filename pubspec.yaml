@@ -34,6 +34,10 @@ dependencies:
   dio: ^5.8.0+1
   flutter_native_splash: ^2.4.4
   google_fonts: ^4.0.4
+  shared_preferences: ^2.2.2
+  cached_network_image: ^3.3.0 
+  cloud_functions: ^5.3.4 
+  firebase_storage: ^12.4.4
 
 
 dev_dependencies:

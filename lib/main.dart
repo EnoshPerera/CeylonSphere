@@ -1,13 +1,12 @@
 import 'package:ceylonsphere/splash_screen/onboarding_screen.dart';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_stripe/flutter_stripe.dart';
 import 'dart:async';
 import 'pages/Payment_Pages/consts.dart';
-import 'pages/Registration_Pages/firstscreen.dart';
-import 'package:flutter/cupertino.dart'; // For iOS-style4d loading indicator
+import 'package:flutter/cupertino.dart';
 import 'package:firebase_core/firebase_core.dart';
-import 'pages/firebase_options.dart'; // This will be auto-generated
+import 'pages/firebase_options.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 void main() async {
   // Ensure Flutter is initialized
@@ -19,14 +18,17 @@ void main() async {
       options: DefaultFirebaseOptions.currentPlatform,
     );
     print('Firebase initialized successfully');
+
+    // Set up Firebase Auth state persistence
+    await FirebaseAuth.instance.setPersistence(Persistence.LOCAL);
   } catch (e) {
     print('Failed to initialize Firebase: $e');
   }
 
   try {
     // Set Stripe publishable key
-    Stripe.publishableKey = stripePublishableKey; // Replace with your key
-    await Stripe.instance.applySettings(); // Initialize Stripe
+    Stripe.publishableKey = stripePublishableKey;
+    await Stripe.instance.applySettings();
     print('Stripe initialized successfully');
   } catch (e) {
     print('Failed to initialize Stripe: $e');
@@ -48,13 +50,29 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF004D40),
         brightness: Brightness.light,
       ),
-      home: const SplashScreen(),
+      home: StreamBuilder<User?>(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          // If the snapshot has user data, then the user is logged in
+          if (snapshot.hasData) {
+            return const SplashScreen(isUserLoggedIn: true);
+          }
+
+          // Otherwise, the user is not logged in
+          return const SplashScreen(isUserLoggedIn: false);
+        },
+      ),
     );
   }
 }
 
 class SplashScreen extends StatefulWidget {
-  const SplashScreen({super.key});
+  final bool isUserLoggedIn;
+
+  const SplashScreen({
+    super.key,
+    this.isUserLoggedIn = false,
+  });
 
   @override
   State<SplashScreen> createState() => _SplashScreenState();
@@ -85,7 +103,7 @@ class _SplashScreenState extends State<SplashScreen>
     _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
       ),
     );
 
@@ -93,7 +111,7 @@ class _SplashScreenState extends State<SplashScreen>
     _slideAnimation = Tween<double>(begin: 30.0, end: 0.0).animate(
       CurvedAnimation(
         parent: _animationController,
-        curve: Interval(0.0, 0.6, curve: Curves.easeOut),
+        curve: const Interval(0.0, 0.6, curve: Curves.easeOut),
       ),
     );
 
@@ -105,7 +123,7 @@ class _SplashScreenState extends State<SplashScreen>
       _startTypingAnimation();
     });
 
-    // Navigate to first screen after delay
+    // Navigate to appropriate screen after delay
     Timer(const Duration(seconds: 4), () {
       Navigator.of(context).pushReplacement(
         MaterialPageRoute(builder: (context) => OnboardingScreen()),
@@ -168,8 +186,8 @@ class _SplashScreenState extends State<SplashScreen>
                     },
                     child: Image.asset(
                       'assets/Logo-12.png',
-                      width: 200, // Increased size
-                      height: 200, // Increased size
+                      width: 200,
+                      height: 200,
                       fit: BoxFit.contain,
                     ),
                   ),
@@ -196,7 +214,7 @@ class _SplashScreenState extends State<SplashScreen>
                     ),
                   ),
                   const SizedBox(height: 50),
-                  // iOS-style loading indicator (Cupertino Activity Indicator)
+                  // iOS-style loading indicator
                   AnimatedBuilder(
                     animation: _animationController,
                     builder: (context, child) {
@@ -205,8 +223,7 @@ class _SplashScreenState extends State<SplashScreen>
                         child: child,
                       );
                     },
-                    child:
-                        const CupertinoActivityIndicator(), // iOS-style loading indicator
+                    child: const CupertinoActivityIndicator(),
                   ),
                 ],
               ),
