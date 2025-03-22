@@ -181,8 +181,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     subtitle: _selectedLanguage, onTap: () {
                   showLanguageSelection(context);
                 }),
-                buildProfileOption("Payment Methods", Icons.payment),
-                buildProfileOption("Currency", Icons.attach_money),
+                buildProfileOption("Your Trips", Icons.travel_explore),
                 buildProfileOption("Privacy Policy", Icons.privacy_tip,
                     onTap: () {
                   Navigator.push(
@@ -207,7 +206,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       minimumSize: const Size(double.infinity, 50),
                     ),
                     onPressed: _signOut,
-                    child: const Text("Sign Out"),
+                    child: const Text(
+                      "Sign Out",
+                      style: TextStyle(color: Colors.white), // Changed text color to white
+                    ),
                   ),
                 ),
               ],

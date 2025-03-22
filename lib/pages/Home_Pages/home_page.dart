@@ -1,3 +1,4 @@
+import 'package:ceylonsphere/Nearby_Services_Pages/nearby_services_main.dart';
 import 'package:ceylonsphere/User_Profile_Page/profile_screen.dart';
 import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
@@ -6,7 +7,6 @@ import 'package:flutter/material.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
 import 'destination_profile.dart';
-import 'google_map_screen.dart';
 import '../../destinationCarousel_widget/destination_carousel.dart';
 import 'ar_temple_screen.dart';
 import '../Transport_Pages/transport.dart';
@@ -157,20 +157,20 @@ class HomeScreen extends StatelessWidget {
                                           mainAxisSpacing: 20,
                                           crossAxisSpacing: 20,
                                           children: [
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon: CupertinoIcons.map,
                                               label: 'Places',
-                                              // onTap: () {
-                                              //   Navigator.pop(
-                                              //       context); // Close the modal first
-                                              //   Navigator.push(
-                                              //     context,
-                                              //     CupertinoPageRoute(
-                                              //       builder: (context) =>
-                                              //           GoogleMapScreen(),
-                                              //     ),
-                                              //   );
-                                              // },
+                                              onTap: () {
+                                                Navigator.pop(
+                                                    context); // Close the modal first
+                                                Navigator.push(
+                                                  context,
+                                                  CupertinoPageRoute(
+                                                    builder: (context) =>
+                                                        NearbyServices(),
+                                                  ),
+                                                );
+                                              },
                                             ),
                                             const _CategoryGridItem(
                                               icon:
@@ -265,7 +265,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => GoogleMapScreen(),
+                                  builder: (context) => NearbyServices(),
                                 ),
                               );
                             },
