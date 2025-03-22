@@ -3,14 +3,14 @@
 // import 'package:flutter/material.dart';
 // import 'package:vector_math/vector_math_64.dart' as vector;
 // import 'elephant_3d_viewer.dart';
-//
+
 // class ARTempleScreen extends StatefulWidget {
 //   const ARTempleScreen({super.key});
-//
+
 //   @override
 //   _ARTempleScreenState createState() => _ARTempleScreenState();
 // }
-//
+
 // class _ARTempleScreenState extends State<ARTempleScreen> {
 //   late ARKitController arkitController;
 //   ARKitReferenceNode? node;
@@ -18,7 +18,7 @@
 //   double currentRotation = 0.0;
 //   String? selectedModel;
 //   bool isPlaneDetected = false;
-//
+
 //   static const List<ARExperience> arExperiences = [
 //     ARExperience(
 //       title: 'Temple of the Tooth',
@@ -61,22 +61,22 @@
 //       isARMode: false,
 //     ),
 //   ];
-//
+
 //   @override
 //   void dispose() {
 //     arkitController.dispose();
 //     super.dispose();
 //   }
-//
+
 //   void onARKitViewCreated(ARKitController controller) {
 //     arkitController = controller;
 //     arkitController.onAddNodeForAnchor = _handleAddAnchor;
 //     arkitController.onUpdateNodeForAnchor = _handleUpdateAnchor;
-//
+
 //     // Enable plane detection
 //     arkitController.addCoachingOverlay(CoachingOverlayGoal.horizontalPlane);
 //   }
-//
+
 //   void _handleAddAnchor(ARKitAnchor anchor) {
 //     if (anchor is ARKitPlaneAnchor) {
 //       setState(() {
@@ -87,7 +87,7 @@
 //       }
 //     }
 //   }
-//
+
 //   void _handleUpdateAnchor(ARKitAnchor anchor) {
 //     if (anchor is ARKitPlaneAnchor && node != null) {
 //       final position = anchor.transform.getColumn(3);
@@ -95,12 +95,12 @@
 //       arkitController.update(node!.name);
 //     }
 //   }
-//
+
 //   void addUpdatedNode(ARKitAnchor anchor) {
 //     if (node != null) {
 //       arkitController.remove(node!.name);
 //     }
-//
+
 //     final position = anchor.transform.getColumn(3);
 //     node = ARKitReferenceNode(
 //       url: selectedModel!,
@@ -110,7 +110,7 @@
 //     );
 //     arkitController.add(node!);
 //   }
-//
+
 //   void _show3DViewer(ARExperience experience) {
 //     showCupertinoModalPopup(
 //       context: context,
@@ -165,7 +165,7 @@
 //                         eulerAngles: vector.Vector3(0, 0, 0),
 //                       );
 //                       controller.add(node);
-//
+
 //                       // Add ambient light
 //                       final light = ARKitNode(
 //                         geometry: ARKitSphere(radius: 0.1),
@@ -230,7 +230,7 @@
 //       ),
 //     );
 //   }
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return CupertinoPageScaffold(
@@ -415,7 +415,7 @@
 //     );
 //   }
 // }
-//
+
 // class ARExperience {
 //   final String title;
 //   final String description;
@@ -423,7 +423,7 @@
 //   final String thumbnail;
 //   final bool isComingSoon;
 //   final bool isARMode;
-//
+
 //   const ARExperience({
 //     required this.title,
 //     required this.description,
@@ -433,18 +433,18 @@
 //     this.isARMode = true,
 //   });
 // }
-//
+
 // class _ARExperienceCard extends StatelessWidget {
 //   final ARExperience experience;
 //   final bool isSelected;
 //   final VoidCallback onTap;
-//
+
 //   const _ARExperienceCard({
 //     required this.experience,
 //     required this.isSelected,
 //     required this.onTap,
 //   });
-//
+
 //   @override
 //   Widget build(BuildContext context) {
 //     return GestureDetector(
