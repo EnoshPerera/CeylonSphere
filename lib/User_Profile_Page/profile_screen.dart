@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -197,12 +198,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
     if (confirmSignOut == true) {
       try {
         await _auth.signOut();
+        await GoogleSignIn().signOut(); // Sign out from Google as well
+
         // Use the global navigator key to navigate outside the tab system
         navigatorKey.currentState?.pushAndRemoveUntil(
           MaterialPageRoute(
             builder: (context) => OnboardingScreen(initialPage: 2), // Navigate to the last page
           ),
-          (Route<dynamic> route) => false, // Remove all routes
+              (Route<dynamic> route) => false, // Remove all routes
         );
       } catch (e) {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -233,11 +236,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: _isLoading
           ? Center(
-              child: CircularProgressIndicator(
-                color: primaryColor,
-              ),
-            )
-          : SingleChildScrollView(
+        child: CircularProgressIndicator(
+          color: primaryColor,
+        ),
+      )
+          : Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
               controller: _scrollController,
               physics: const AlwaysScrollableScrollPhysics(),
               child: Padding(
@@ -302,21 +308,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ]),
                     const SizedBox(height: 32),
-                    // Add padding for the sign-out button
                     Padding(
                       padding: const EdgeInsets.only(
                         left: 16.0,
                         right: 16.0,
-                        top: 20,
-                        bottom: 80, // Added extra bottom padding to account for navigation bar
+                        top:20,
+                        bottom: 80,
                       ),
-                      child: _buildSignOutButton(),
-                    ),
+                    child: _buildSignOutButton(),
+                    ),// Keep the top sign-out button
                     const SizedBox(height: 16),
                   ],
                 ),
               ),
             ),
+          ),
+        ],
+      ),
     );
   }
 
@@ -503,12 +511,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       subtitle: subtitle != null
           ? Text(
-              subtitle,
-              style: TextStyle(
-                color: subtitleColor,
-                fontSize: 14,
-              ),
-            )
+        subtitle,
+        style: TextStyle(
+          color: subtitleColor,
+          fontSize: 14,
+        ),
+      )
           : null,
       trailing: Icon(
         Icons.chevron_right,

@@ -7,6 +7,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'pages/firebase_options.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'routes.dart';
 
 void main() async {
   // Ensure Flutter is initialized
@@ -53,6 +54,8 @@ class MyApp extends StatelessWidget {
         primaryColor: const Color(0xFF004D40),
         brightness: Brightness.light,
       ),
+      initialRoute: '/',
+      routes: AppRoutes.routes,
       home: StreamBuilder<User?>(
         stream: FirebaseAuth.instance.authStateChanges(),
         builder: (context, snapshot) {
