@@ -2,6 +2,8 @@ import 'package:ceylonsphere/pages/Home_Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_button/sign_button.dart'; // Import the sign_button package
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -16,38 +18,32 @@ class _RegistrationPageState extends State<RegistrationPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final TextEditingController _confirmPasswordController = TextEditingController();
-  final bool _showValidationErrors = false;
+
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
-  bool _isLoading = false; // To show loading state during registration
+  bool _isLoading = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
-      setState(() {
-        _isLoading = true;
-      });
+      setState(() => _isLoading = true);
 
       try {
-        // Create user with email and password
-        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
+        await _auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
 
-        // If registration is successful, show a success message
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Registration Successful")),
         );
 
-        // Navigate to the home page after registration
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => TravelApp()),
+          MaterialPageRoute(builder: (context) => const TravelApp()),
         );
       } on FirebaseAuthException catch (e) {
-        // Handle registration errors
         String errorMessage = "Registration failed. Please try again.";
         if (e.code == 'weak-password') {
           errorMessage = "The password provided is too weak.";
@@ -58,16 +54,44 @@ class _RegistrationPageState extends State<RegistrationPage> {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(content: Text(errorMessage)),
         );
-      } catch (e) {
-        // Handle other errors
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text("An error occurred. Please try again.")),
-        );
       } finally {
-        setState(() {
-          _isLoading = false;
-        });
+        setState(() => _isLoading = false);
       }
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() => _isLoading = true);
+
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        setState(() => _isLoading = false);
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      await FirebaseAuth.instance.signInWithCredential(credential);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Google Sign-In Successful")),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TravelApp()),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Google sign-in failed: ${e.toString()}")),
+      );
+    } finally {
+      setState(() => _isLoading = false);
     }
   }
 
@@ -83,10 +107,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                Image.asset(
-                  'assets/logo-14.png',
-                  height: 120,
-                ),
+                Image.asset('assets/logo-14.png', height: 120),
                 const SizedBox(height: 40),
                 const Text(
                   "Register",
@@ -99,9 +120,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                 const SizedBox(height: 30),
                 Form(
                   key: _formKey,
-                  autovalidateMode: _showValidationErrors
-                      ? AutovalidateMode.onUserInteraction
-                      : AutovalidateMode.disabled,
+                  autovalidateMode: AutovalidateMode.onUserInteraction,
                   child: Column(
                     children: [
                       _buildTextField(
@@ -128,9 +147,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             color: Colors.grey,
                           ),
                           onPressed: () {
-                            setState(() {
-                              _obscurePassword = !_obscurePassword;
-                            });
+                            setState(() => _obscurePassword = !_obscurePassword);
                           },
                         ),
                       ),
@@ -146,9 +163,7 @@ class _RegistrationPageState extends State<RegistrationPage> {
                             color: Colors.grey,
                           ),
                           onPressed: () {
-                            setState(() {
-                              _obscureConfirmPassword = !_obscureConfirmPassword;
-                            });
+                            setState(() => _obscureConfirmPassword = !_obscureConfirmPassword);
                           },
                         ),
                       ),
@@ -175,13 +190,17 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                       const SizedBox(height: 16),
-                      _buildSocialButtons(),
+                      // Replace the existing Google button with SignInButton
+                      SignInButton(
+                        buttonType: ButtonType.google,
+                        onPressed: _signInWithGoogle,
+                      ),
                       const SizedBox(height: 24),
                       TextButton(
                         onPressed: () {
                           Navigator.push(
                             context,
-                            MaterialPageRoute(builder: (context) => LoginPage()),
+                            MaterialPageRoute(builder: (context) => const LoginPage()),
                           );
                         },
                         child: const Text(
@@ -225,47 +244,11 @@ class _RegistrationPageState extends State<RegistrationPage> {
       obscureText: obscureText,
       keyboardType: keyboardType,
       validator: (value) {
-        if (value == null || value.isEmpty) {
-          return "Please enter your $label";
-        }
-        if (label == "Email" && !value.contains('@')) {
-          return "Please enter a valid email";
-        }
-        if (label == "Confirm Password" && value != _passwordController.text) {
-          return "Passwords do not match";
-        }
+        if (value == null || value.isEmpty) return "Please enter your $label";
+        if (label == "Email" && !value.contains('@')) return "Please enter a valid email";
+        if (label == "Confirm Password" && value != _passwordController.text) return "Passwords do not match";
         return null;
       },
-    );
-  }
-
-  Widget _buildSocialButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildSocialButton('assets/google-logo.png'),
-        const SizedBox(width: 30),
-        _buildSocialButton('assets/facebook-logo.png'),
-      ],
-    );
-  }
-
-  Widget _buildSocialButton(String assetPath) {
-    return Container(
-      padding: const EdgeInsets.all(12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 1,
-            blurRadius: 4,
-            offset: const Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Image.asset(assetPath, height: 30),
     );
   }
 }

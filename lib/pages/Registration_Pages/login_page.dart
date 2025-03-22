@@ -2,6 +2,8 @@ import 'package:ceylonsphere/pages/Home_Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'registration_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
+import 'package:sign_button/sign_button.dart'; // Import the sign_button package
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -31,23 +33,17 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text,
       );
 
-      // If we get here, login was successful
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Login Successful")),
       );
 
-      // Navigate to the home page after successful login
       if (userCredential.user != null) {
-        // Use pushReplacement to replace the login page in the navigation stack
-        // This prevents the user from going back to the login page with the back button
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => TravelApp()),
         );
       }
-
     } on FirebaseAuthException catch (e) {
-      // Handle specific Firebase Auth errors
       setState(() {
         if (e.code == 'user-not-found') {
           _errorMessage = 'No user found with this email';
@@ -66,6 +62,49 @@ class _LoginPageState extends State<LoginPage> {
     } catch (e) {
       setState(() {
         _errorMessage = 'An error occurred. Please try again.';
+      });
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
+  }
+
+  Future<void> _signInWithGoogle() async {
+    setState(() {
+      _isLoading = true;
+      _errorMessage = '';
+    });
+
+    try {
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+      if (googleUser == null) {
+        setState(() {
+          _isLoading = false;
+          _errorMessage = 'Google sign-in was canceled.';
+        });
+        return;
+      }
+
+      final GoogleSignInAuthentication googleAuth = await googleUser.authentication;
+      final OAuthCredential credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth.accessToken,
+        idToken: googleAuth.idToken,
+      );
+
+      UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text("Google Sign-In Successful")),
+      );
+
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => TravelApp()),
+      );
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Google sign-in failed: ${e.toString()}';
       });
     } finally {
       setState(() {
@@ -185,7 +224,11 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                       const SizedBox(height: 16),
-                      _buildSocialButtons(),
+                      // Replace the existing Google button with SignInButton
+                      SignInButton(
+                        buttonType: ButtonType.google,
+                        onPressed: _signInWithGoogle,
+                      ),
                       const SizedBox(height: 20),
                       TextButton(
                         onPressed: () {
@@ -247,54 +290,5 @@ class _LoginPageState extends State<LoginPage> {
         return null;
       },
     );
-  }
-
-  Widget _buildSocialButtons() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        _buildSocialButton('assets/google-logo.png', _signInWithGoogle),
-        const SizedBox(width: 30),
-        _buildSocialButton('assets/facebook-logo.png', _signInWithFacebook),
-      ],
-    );
-  }
-
-  Widget _buildSocialButton(String assetPath, VoidCallback onTap) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.grey.withOpacity(0.2),
-              spreadRadius: 1,
-              blurRadius: 4,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Image.asset(assetPath, height: 30),
-      ),
-    );
-  }
-
-  Future<void> _signInWithGoogle() async {
-    // Implement Google Sign-In here
-    // This requires additional firebase_auth_oauth package
-    setState(() {
-      _errorMessage = 'Google sign-in not implemented yet.';
-    });
-  }
-
-  Future<void> _signInWithFacebook() async {
-    // Implement Facebook Sign-In here
-    // This requires additional firebase_auth_oauth package
-    setState(() {
-      _errorMessage = 'Facebook sign-in not implemented yet.';
-    });
   }
 }
