@@ -308,39 +308,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                     ]),
                     const SizedBox(height: 32),
-                    _buildSignOutButton(),
-                    const SizedBox(height: 32),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        top:20,
+                        bottom: 80,
+                      ),
+                    child: _buildSignOutButton(),
+                    ),// Keep the top sign-out button
+                    const SizedBox(height: 16),
                   ],
                 ),
-              ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red.shade50,
-                foregroundColor: Colors.red,
-                minimumSize: const Size(double.infinity, 56),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-                elevation: 0,
-              ),
-              onPressed: _signOut,
-              child: const Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Icon(Icons.logout, size: 20),
-                  SizedBox(width: 8),
-                  Text(
-                    "Sign Out",
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
               ),
             ),
           ),
@@ -532,12 +511,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       subtitle: subtitle != null
           ? Text(
-              subtitle,
-              style: TextStyle(
-                color: subtitleColor,
-                fontSize: 14,
-              ),
-            )
+        subtitle,
+        style: TextStyle(
+          color: subtitleColor,
+          fontSize: 14,
+        ),
+      )
           : null,
       trailing: Icon(
         Icons.chevron_right,
