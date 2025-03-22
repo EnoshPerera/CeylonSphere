@@ -4,7 +4,7 @@ import '../model/shop.dart';
 class ShopDetailPage extends StatelessWidget {
   final Shop shop;
 
-  const ShopDetailPage({Key? key, required this.shop}) : super(key: key);
+  const ShopDetailPage({super.key, required this.shop});
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ShopDetailPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Shop header with image
-          Container(
+          SizedBox(
             height: 200,
             width: double.infinity,
             child: Image.asset(
