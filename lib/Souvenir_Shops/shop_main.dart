@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'shop/pages/shop_page.dart';
 
-void main() {
+void main() { 
   runApp(const MyApp());
 }
 
