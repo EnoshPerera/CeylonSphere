@@ -1,8 +1,9 @@
+import 'package:ceylonsphere/User_Profile_Page/profile_screen.dart';
 import 'package:ceylonsphere/chatbot/chatbot.dart';
 import 'package:ceylonsphere/pages/Transport_Pages/transport.dart';
+import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Profile_Pages/profile_screen.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
 import 'destination_profile.dart';
@@ -64,7 +65,7 @@ class _MainPageState extends State<MainPage> {
           case 2:
             return TransportScreen();
           case 3:
-            return const ProfileScreen();
+            return UserProfile();
           default:
             return const HomeScreen();
         }
