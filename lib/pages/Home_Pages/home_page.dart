@@ -4,10 +4,6 @@ import 'package:ceylonsphere/pages/Transport_Pages/transport.dart';
 import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../../screens/destinations_list_page.dart';
-import '../../screens/souvenir_list_page.dart';
-import '../../screens/souvenir_list_page2.dart';
-import '../../screens/souvenir_list_page3.dart';
 import '../Profile_Pages/profile_screen.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
@@ -66,7 +62,7 @@ class _MainPageState extends State<MainPage> {
           case 0:
             return const HomeScreen();
           case 1:
-            return const DestinationsListPage();
+            return const DestinationsScreen();
           case 2:
             return TransportScreen();
           case 3:
