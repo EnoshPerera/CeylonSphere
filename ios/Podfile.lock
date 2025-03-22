@@ -1155,6 +1155,10 @@ PODS:
     - Firebase/Firestore (= 11.8.0)
     - firebase_core
     - Flutter
+  - cloud_functions (5.3.4):
+    - Firebase/Functions (= 11.8.0)
+    - firebase_core
+    - Flutter
   - Firebase/Auth (11.8.0):
     - Firebase/CoreOnly
     - FirebaseAuth (~> 11.8.0)
@@ -1163,6 +1167,9 @@ PODS:
   - Firebase/Firestore (11.8.0):
     - Firebase/CoreOnly
     - FirebaseFirestore (~> 11.8.0)
+  - Firebase/Functions (11.8.0):
+    - Firebase/CoreOnly
+    - FirebaseFunctions (~> 11.8.0)
   - firebase_auth (5.5.1):
     - Firebase/Auth (= 11.8.0)
     - firebase_core
@@ -1209,6 +1216,15 @@ PODS:
     - gRPC-Core (~> 1.65.0)
     - leveldb-library (~> 1.22)
     - nanopb (~> 3.30910.0)
+  - FirebaseFunctions (11.8.0):
+    - FirebaseAppCheckInterop (~> 11.0)
+    - FirebaseAuthInterop (~> 11.0)
+    - FirebaseCore (~> 11.8.0)
+    - FirebaseCoreExtension (~> 11.8.0)
+    - FirebaseMessagingInterop (~> 11.0)
+    - FirebaseSharedSwift (~> 11.0)
+    - GTMSessionFetcher/Core (< 5.0, >= 3.4)
+  - FirebaseMessagingInterop (11.10.0)
   - FirebaseSharedSwift (11.9.0)
   - Flutter (1.0.0)
   - flutter_native_splash (2.4.3):
@@ -1352,6 +1368,9 @@ PODS:
   - permission_handler_apple (9.1.1):
     - Flutter
   - RecaptchaInterop (100.0.0)
+  - shared_preferences_foundation (0.0.1):
+    - Flutter
+    - FlutterMacOS
   - speech_to_text (0.0.1):
     - Flutter
     - FlutterMacOS
@@ -1426,6 +1445,7 @@ PODS:
 
 DEPENDENCIES:
   - cloud_firestore (from `.symlinks/plugins/cloud_firestore/ios`)
+  - cloud_functions (from `.symlinks/plugins/cloud_functions/ios`)
   - firebase_auth (from `.symlinks/plugins/firebase_auth/ios`)
   - firebase_core (from `.symlinks/plugins/firebase_core/ios`)
   - Flutter (from `Flutter`)
@@ -1436,6 +1456,7 @@ DEPENDENCIES:
   - image_picker_ios (from `.symlinks/plugins/image_picker_ios/ios`)
   - path_provider_foundation (from `.symlinks/plugins/path_provider_foundation/darwin`)
   - permission_handler_apple (from `.symlinks/plugins/permission_handler_apple/ios`)
+  - shared_preferences_foundation (from `.symlinks/plugins/shared_preferences_foundation/darwin`)
   - speech_to_text (from `.symlinks/plugins/speech_to_text/darwin`)
   - sqflite_darwin (from `.symlinks/plugins/sqflite_darwin/darwin`)
   - stripe_ios (from `.symlinks/plugins/stripe_ios/ios`)
@@ -1456,6 +1477,8 @@ SPEC REPOS:
     - FirebaseCoreInternal
     - FirebaseFirestore
     - FirebaseFirestoreInternal
+    - FirebaseFunctions
+    - FirebaseMessagingInterop
     - FirebaseSharedSwift
     - Google-Maps-iOS-Utils
     - GoogleMaps
@@ -1479,6 +1502,8 @@ SPEC REPOS:
 EXTERNAL SOURCES:
   cloud_firestore:
     :path: ".symlinks/plugins/cloud_firestore/ios"
+  cloud_functions:
+    :path: ".symlinks/plugins/cloud_functions/ios"
   firebase_auth:
     :path: ".symlinks/plugins/firebase_auth/ios"
   firebase_core:
@@ -1499,6 +1524,8 @@ EXTERNAL SOURCES:
     :path: ".symlinks/plugins/path_provider_foundation/darwin"
   permission_handler_apple:
     :path: ".symlinks/plugins/permission_handler_apple/ios"
+  shared_preferences_foundation:
+    :path: ".symlinks/plugins/shared_preferences_foundation/darwin"
   speech_to_text:
     :path: ".symlinks/plugins/speech_to_text/darwin"
   sqflite_darwin:
@@ -1516,6 +1543,7 @@ SPEC CHECKSUMS:
   abseil: d121da9ef7e2ff4cab7666e76c5a3e0915ae08c3
   BoringSSL-GRPC: ca6a8e5d04812fce8ffd6437810c2d46f925eaeb
   cloud_firestore: e61acbf808607d2c88ee32b00cd3aec027b38b3c
+  cloud_functions: b49e005ef7349170a7391533877d785c84024fae
   Firebase: d80354ed7f6df5f9aca55e9eb47cc4b634735eaf
   firebase_auth: 9ebbd83276bf977dea1c74dfc199acf9d2a2f42f
   firebase_core: 8d552814f6c01ccde5d88939fced4ec26f2f5510
@@ -1527,6 +1555,8 @@ SPEC CHECKSUMS:
   FirebaseCoreInternal: df24ce5af28864660ecbd13596fc8dd3a8c34629
   FirebaseFirestore: 563a4ab1a65e2858f05e150bb4c31b0f8f79248b
   FirebaseFirestoreInternal: 8c5921c360a70e447bfeefb245f450e8b50e750b
+  FirebaseFunctions: 63d23f720c9a2c537369add7e54cf7e56eb3520a
+  FirebaseMessagingInterop: 2fb9a3ca813c3b7b495232f1fbedd365eb60da45
   FirebaseSharedSwift: 574e6a5602afe4397a55c8d4f767382d620285de
   Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   flutter_native_splash: c32d145d68aeda5502d5f543ee38c192065986cf
@@ -1545,6 +1575,7 @@ SPEC CHECKSUMS:
   path_provider_foundation: 080d55be775b7414fd5a5ef3ac137b97b097e564
   permission_handler_apple: 3787117e48f80715ff04a3830ca039283d6a4f29
   RecaptchaInterop: 7d1a4a01a6b2cb1610a47ef3f85f0c411434cb21
+  shared_preferences_foundation: 9e1978ff2562383bd5676f64ec4e9aa8fa06a6f7
   speech_to_text: 9dc43a5df3cbc2813f8c7cc9bd0fbf94268ed7ac
   sqflite_darwin: 20b2a3a3b70e43edae938624ce550a3cbf66a3d0
   Stripe: 9757efc154de1d9615cbea4836d590bc4034d3a4

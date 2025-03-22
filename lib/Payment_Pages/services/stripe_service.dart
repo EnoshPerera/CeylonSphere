@@ -9,7 +9,7 @@ class StripeService {
 
   Future<void> makePayment({
     required double amount,
-    required String currency,
+    required String currency, required String bookingReference,
   }) async {
     try {
       print('Creating payment intent...');
