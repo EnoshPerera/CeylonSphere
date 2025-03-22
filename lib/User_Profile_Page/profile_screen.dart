@@ -185,8 +185,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                   showLanguageSelection(context);
                 }),
             buildProfileOption("Your Trips", Icons.travel_explore),
-            buildProfileOption("Payment Methods", Icons.payment),
-            buildProfileOption("Currency", Icons.attach_money),
             buildProfileOption("Privacy Policy", Icons.privacy_tip, onTap: () {
               Navigator.push(
                 context,
