@@ -20,14 +20,14 @@ class Shop {
   });
 }
 
-// Sample shops data
+// shops data
 final List<Shop> shops = [
   // Traditional Handicrafts Shops (Category 1)
   Shop(
     id: 1,
     categoryId: 1,
     name: 'Heritage Crafts Lanka',
-    imagePath: 'assets/shop1.jpg', // Placeholder for your image
+    imagePath: 'assets/shop1.jpg',
     description:
         'Traditional handcrafted items from sri lankan artisans with a focus on quality and authenticity.',
     rating: 4.8,
@@ -40,7 +40,7 @@ final List<Shop> shops = [
     id: 2,
     categoryId: 2,
     name: 'Ceylon Fabric House',
-    imagePath: 'assets/shop2.jpg', // Placeholder for your image
+    imagePath: 'assets/shop2.jpg',
     description:
         'Handwoven textiles using traditional techniques passed down through generations.',
     rating: 4.7,
@@ -53,7 +53,7 @@ final List<Shop> shops = [
     id: 3,
     categoryId: 3,
     name: 'Divine Gifts Lanka',
-    imagePath: 'assets/shop3.jpg', // Placeholder for your image
+    imagePath: 'assets/shop3.jpg',
     description:
         'Meaningful souvenirs representing sri lankan traditions and cultural heritage.',
     rating: 4.6,

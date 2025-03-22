@@ -4,7 +4,7 @@ import '../model/shop.dart';
 class ShopDetailPage extends StatelessWidget {
   final Shop shop;
 
-  const ShopDetailPage({super.key, required this.shop});
+  const ShopDetailPage({Key? key, required this.shop}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,7 +14,7 @@ class ShopDetailPage extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Shop header with image
-          SizedBox(
+          Container(
             height: 200,
             width: double.infinity,
             child: Image.asset(
@@ -25,11 +25,7 @@ class ShopDetailPage extends StatelessWidget {
                 return Container(
                   color: Colors.grey.shade200,
                   child: const Center(
-                    child: Icon(
-                      Icons.store_mall_directory,
-                      size: 80,
-                      color: Colors.grey,
-                    ),
+                    child: Icon(Icons.store, size: 80, color: Colors.grey),
                   ),
                 );
               },
@@ -70,7 +66,7 @@ class ShopDetailPage extends StatelessWidget {
                           Text(
                             shop.rating.toString(),
                             style: const TextStyle(
-                              color: Color.fromARGB(255, 255, 255, 255),
+                              color: Colors.white,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -138,14 +134,37 @@ class ShopDetailPage extends StatelessWidget {
                   width: double.infinity,
                   child: ElevatedButton(
                     onPressed: () {
-                      // This will be implemented by the other developer
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                            'View items feature will be added by another developer',
-                          ),
-                        ),
-                      );
+                      // This is connecting for souvenir item page
+
+                      // if (shop.id == 1) {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //     builder: (context) => const SouvenirListPage(),
+                      //     ),
+                      //   );
+                      // } else if (shop.id == 2) {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => const SouvenirListPage2(),
+                      //     ),
+                      //   );
+                      // } else if (shop.id == 3) {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => const SouvenirListPage3(),
+                      //     ),
+                      //   );
+                      // } else {
+                      //   // For other shops, show a message that items are coming soon
+                      //   ScaffoldMessenger.of(context).showSnackBar(
+                      //     const SnackBar(
+                      //       content: Text('Shop items coming soon!'),
+                      //     ),
+                      //   );
+                      // }
                     },
                     style: ElevatedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 16),
@@ -157,7 +176,7 @@ class ShopDetailPage extends StatelessWidget {
                       'View Shop Items',
                       style: TextStyle(
                         fontSize: 16,
-                        color: Color.fromARGB(255, 27, 149, 104),
+                        color: Color.fromARGB(255, 37, 160, 59),
                       ),
                     ),
                   ),
