@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_button/sign_button.dart'; // Import the sign_button package
+import 'package:sign_button/sign_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class RegistrationPage extends StatefulWidget {
   const RegistrationPage({super.key});
@@ -24,16 +25,24 @@ class _RegistrationPageState extends State<RegistrationPage> {
   bool _isLoading = false;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _registerUser() async {
     if (_formKey.currentState!.validate()) {
       setState(() => _isLoading = true);
 
       try {
-        await _auth.createUserWithEmailAndPassword(
+        UserCredential userCredential = await _auth.createUserWithEmailAndPassword(
           email: _emailController.text.trim(),
           password: _passwordController.text.trim(),
         );
+
+        // Store user data in Firestore
+        await _firestore.collection('users').doc(userCredential.user!.uid).set({
+          'username': _nameController.text.trim(),
+          'email': _emailController.text.trim(),
+          'createdAt': FieldValue.serverTimestamp(),
+        });
 
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text("Registration Successful")),
@@ -76,7 +85,15 @@ class _RegistrationPageState extends State<RegistrationPage> {
         idToken: googleAuth.idToken,
       );
 
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      UserCredential userCredential = await _auth.signInWithCredential(credential);
+
+      // Store user data in Firestore
+      await _firestore.collection('users').doc(userCredential.user!.uid).set({
+        'username': googleUser.displayName,
+        'email': googleUser.email,
+        'profileImageUrl': googleUser.photoUrl,
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true)); // Merge to avoid overwriting existing data
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Google Sign-In Successful")),
@@ -190,7 +207,6 @@ class _RegistrationPageState extends State<RegistrationPage> {
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                       const SizedBox(height: 16),
-                      // Replace the existing Google button with SignInButton
                       SignInButton(
                         buttonType: ButtonType.google,
                         onPressed: _signInWithGoogle,

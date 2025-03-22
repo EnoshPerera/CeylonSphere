@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import 'registration_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
-import 'package:sign_button/sign_button.dart'; // Import the sign_button package
+import 'package:sign_button/sign_button.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -33,16 +34,21 @@ class _LoginPageState extends State<LoginPage> {
         password: _passwordController.text,
       );
 
+      // Fetch user data from Firestore
+      DocumentSnapshot userDoc = await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).get();
+      if (userDoc.exists) {
+        // You can now use the user data as needed
+        print(userDoc.data());
+      }
+
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Login Successful")),
       );
 
-      if (userCredential.user != null) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(builder: (context) => TravelApp()),
-        );
-      }
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => TravelApp()),
+      );
     } on FirebaseAuthException catch (e) {
       setState(() {
         if (e.code == 'user-not-found') {
@@ -93,6 +99,14 @@ class _LoginPageState extends State<LoginPage> {
       );
 
       UserCredential userCredential = await FirebaseAuth.instance.signInWithCredential(credential);
+
+      // Store user data in Firestore
+      await FirebaseFirestore.instance.collection('users').doc(userCredential.user!.uid).set({
+        'username': googleUser.displayName,
+        'email': googleUser.email,
+        'profileImageUrl': googleUser.photoUrl,
+        'createdAt': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true)); // Merge to avoid overwriting existing data
 
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text("Google Sign-In Successful")),
@@ -224,7 +238,6 @@ class _LoginPageState extends State<LoginPage> {
                         style: TextStyle(color: Colors.grey, fontSize: 16),
                       ),
                       const SizedBox(height: 16),
-                      // Replace the existing Google button with SignInButton
                       SignInButton(
                         buttonType: ButtonType.google,
                         onPressed: _signInWithGoogle,

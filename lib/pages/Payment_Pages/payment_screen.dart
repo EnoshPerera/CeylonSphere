@@ -192,10 +192,9 @@ class _PaymentDialogState extends State<PaymentDialog> {
   Future<void> _handlePayment() async {
     try {
 
-      // Close the popup dialog after 5 seconds
       Navigator.of(context).pop();
 
-      // Step 1: Process payment with Stripe service
+
       final paymentResult = await StripeService.instance.makePayment(
         amount: widget.amount,
         currency: widget.currency,

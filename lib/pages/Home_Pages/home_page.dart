@@ -1,3 +1,4 @@
+import 'package:ceylonsphere/Nearby_Services_Pages/nearby_services_main.dart';
 import 'package:ceylonsphere/User_Profile_Page/profile_screen.dart';
 import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
@@ -7,7 +8,6 @@ import '../../chatbot/chatbot.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
 import 'destination_profile.dart';
-import 'google_map_screen.dart';
 import '../../destinationCarousel_widget/destination_carousel.dart';
 import 'ar_temple_screen.dart';
 import '../Transport_Pages/transport.dart';
@@ -168,7 +168,7 @@ class HomeScreen extends StatelessWidget {
                                                   context,
                                                   CupertinoPageRoute(
                                                     builder: (context) =>
-                                                        GoogleMapScreen(),
+                                                        NearbyServices(),
                                                   ),
                                                 );
                                               },
@@ -278,7 +278,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => GoogleMapScreen(),
+                                  builder: (context) => NearbyServices(),
                                 ),
                               );
                             },
