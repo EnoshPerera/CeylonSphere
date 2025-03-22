@@ -28,7 +28,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   // Firebase instances
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-  
+
   // Theme colors
   final Color primaryColor = const Color(0xFF059669);
   final Color backgroundColor = const Color(0xFFF8F9FA);
@@ -66,7 +66,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     setState(() {
       _selectedLanguage = language;
     });
-    
+
     // Also save language preference to Firebase
     try {
       final user = _auth.currentUser;
@@ -215,17 +215,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     }
   }
 
-  // Method to scroll to the sign out button
-  void _scrollToSignOutButton() {
-    if (_scrollController.hasClients) {
-      _scrollController.animateTo(
-        _scrollController.position.maxScrollExtent,
-        duration: const Duration(milliseconds: 300),
-        curve: Curves.easeOut,
-      );
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -248,113 +237,85 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 color: primaryColor,
               ),
             )
-          : Column(
-              children: [
-                Expanded(
-                  child: SingleChildScrollView(
-                    controller: _scrollController,
-                    physics: const AlwaysScrollableScrollPhysics(),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          const SizedBox(height: 16),
-                          _buildProfileHeader(),
-                          const SizedBox(height: 24),
-                          _buildSectionTitle("Account Settings"),
-                          _buildSettingsCard([
-                            buildNotificationOption(),
-                            const Divider(height: 1),
-                            buildProfileOption(
-                              "Language",
-                              Icons.language,
-                              subtitle: _selectedLanguage,
-                              onTap: () {
-                                showLanguageSelection(context);
-                              },
-                            ),
-                          ]),
-                          const SizedBox(height: 24),
-                          _buildSectionTitle("Travel"),
-                          _buildSettingsCard([
-                            buildProfileOption(
-                              "Your Trips",
-                              Icons.travel_explore,
-                              onTap: () {
-                                // Navigate to trips
-                              },
-                            ),
-                          ]),
-                          const SizedBox(height: 24),
-                          _buildSectionTitle("Legal"),
-                          _buildSettingsCard([
-                            buildProfileOption(
-                              "Privacy Policy",
-                              Icons.privacy_tip,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const PrivacyPolicyScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                            const Divider(height: 1),
-                            buildProfileOption(
-                              "Terms and Conditions",
-                              Icons.description,
-                              onTap: () {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => const TermsAndConditionsScreen(),
-                                  ),
-                                );
-                              },
-                            ),
-                          ]),
-                          const SizedBox(height: 32),
-                          _buildSignOutButton(),
-                          // Add extra padding at the bottom to ensure the button is visible
-                          const SizedBox(height: 32),
-                        ],
+          : SingleChildScrollView(
+              controller: _scrollController,
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    const SizedBox(height: 16),
+                    _buildProfileHeader(),
+                    const SizedBox(height: 24),
+                    _buildSectionTitle("Account Settings"),
+                    _buildSettingsCard([
+                      buildNotificationOption(),
+                      const Divider(height: 1),
+                      buildProfileOption(
+                        "Language",
+                        Icons.language,
+                        subtitle: _selectedLanguage,
+                        onTap: () {
+                          showLanguageSelection(context);
+                        },
                       ),
-                    ),
-                  ),
-                ),
-                // Add a floating action button to scroll to the sign out button
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.red.shade50,
-                      foregroundColor: Colors.red,
-                      minimumSize: const Size(double.infinity, 56),
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12),
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildSectionTitle("Travel"),
+                    _buildSettingsCard([
+                      buildProfileOption(
+                        "Your Trips",
+                        Icons.travel_explore,
+                        onTap: () {
+                          // Navigate to trips
+                        },
                       ),
-                      elevation: 0,
+                    ]),
+                    const SizedBox(height: 24),
+                    _buildSectionTitle("Legal"),
+                    _buildSettingsCard([
+                      buildProfileOption(
+                        "Privacy Policy",
+                        Icons.privacy_tip,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const PrivacyPolicyScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                      const Divider(height: 1),
+                      buildProfileOption(
+                        "Terms and Conditions",
+                        Icons.description,
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => const TermsAndConditionsScreen(),
+                            ),
+                          );
+                        },
+                      ),
+                    ]),
+                    const SizedBox(height: 32),
+                    // Add padding for the sign-out button
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        left: 16.0,
+                        right: 16.0,
+                        top: 20,
+                        bottom: 80, // Added extra bottom padding to account for navigation bar
+                      ),
+                      child: _buildSignOutButton(),
                     ),
-                    onPressed: _signOut,
-                    child: const Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Icon(Icons.logout, size: 20),
-                        SizedBox(width: 8),
-                        Text(
-                          "Sign Out",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+                    const SizedBox(height: 16),
+                  ],
                 ),
-              ],
+              ),
             ),
     );
   }
@@ -635,7 +596,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildLanguageOption(String language) {
     bool isSelected = _selectedLanguage == language;
-    
+
     return InkWell(
       onTap: () {
         _saveSelectedLanguage(language);
