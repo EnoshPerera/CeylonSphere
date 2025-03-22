@@ -1,11 +1,12 @@
-import 'package:ceylonsphere/splash_screen/onboarding_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:ceylonsphere/splash_screen/onboarding_screen.dart';
+import '../main.dart';
 import 'edit_profile_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_and_conditions_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -20,7 +21,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool _isLoading = true;
 
   // User profile data
-  String _username = "";
+  String _username = "User";
   String _location = "";
   String? _profileImageUrl;
 
@@ -81,8 +82,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       final user = _auth.currentUser;
       if (user != null) {
         // Fetch user profile from Firestore
-        final userData =
-            await _firestore.collection('users').doc(user.uid).get();
+        final userData = await _firestore.collection('users').doc(user.uid).get();
 
         if (userData.exists) {
           setState(() {
@@ -103,13 +103,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   Future<void> _signOut() async {
     try {
       await _auth.signOut();
-      // Navigate to the OnboardingScreen and set the page to the last one
-      Navigator.pushReplacement(
-        context,
+      // Use the global navigator key to navigate outside the tab system
+      navigatorKey.currentState?.pushAndRemoveUntil(
         MaterialPageRoute(
-          builder: (context) =>
-              OnboardingScreen(initialPage: 2), // Navigate to the last page
+          builder: (context) => OnboardingScreen(initialPage: 2), // Navigate to the last page
         ),
+            (Route<dynamic> route) => false, // Remove all routes
       );
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -127,93 +126,98 @@ class _ProfileScreenState extends State<ProfileScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : Column(
-              children: [
-                GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const EditProfileScreen()),
-                    ).then((_) =>
-                        _fetchUserProfile()); // Refresh profile after editing
-                  },
-                  child: Container(
-                    padding: const EdgeInsets.all(16.0),
-                    margin: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF059669),
-                      borderRadius: BorderRadius.circular(12.0),
+          : SingleChildScrollView(
+        child: Column(
+          children: [
+            GestureDetector(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => const EditProfileScreen()),
+                ).then((_) => _fetchUserProfile()); // Refresh profile after editing
+              },
+              child: Container(
+                padding: const EdgeInsets.all(16.0),
+                margin: const EdgeInsets.all(16.0),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF059669),
+                  borderRadius: BorderRadius.circular(12.0),
+                ),
+                child: Row(
+                  children: [
+                    CircleAvatar(
+                      radius: 30,
+                      backgroundImage: _profileImageUrl != null
+                          ? NetworkImage(_profileImageUrl!)
+                          : const AssetImage('assets/profile_picture.png') as ImageProvider,
                     ),
-                    child: Row(
+                    const SizedBox(width: 16),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          radius: 30,
-                          backgroundImage: _profileImageUrl != null
-                              ? NetworkImage(_profileImageUrl!)
-                              : const AssetImage('assets/profile_picture.png')
-                                  as ImageProvider,
+                        Text(
+                          _username,
+                          style: const TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
-                        const SizedBox(width: 12.0),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              _username,
-                              style: const TextStyle(
-                                  fontSize: 18, fontWeight: FontWeight.bold),
-                            ),
-                            Text(
-                              _location,
-                              style: const TextStyle(
-                                  fontSize: 14, color: Colors.black54),
-                            ),
-                          ],
+                        Text(
+                          _location,
+                          style: const TextStyle(
+                            color: Colors.white70,
+                            fontSize: 14,
+                          ),
                         ),
-                        const Spacer(),
-                        const Icon(Icons.arrow_forward_ios),
                       ],
                     ),
-                  ),
+                    const Spacer(),
+                    const Icon(Icons.arrow_forward_ios, color: Colors.white),
+                  ],
                 ),
-                buildNotificationOption(),
-                buildProfileOption("Language", Icons.language,
-                    subtitle: _selectedLanguage, onTap: () {
+              ),
+            ),
+            buildNotificationOption(),
+            buildProfileOption("Language", Icons.language,
+                subtitle: _selectedLanguage, onTap: () {
                   showLanguageSelection(context);
                 }),
-                buildProfileOption("Your Trips", Icons.travel_explore),
-                buildProfileOption("Privacy Policy", Icons.privacy_tip,
-                    onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const PrivacyPolicyScreen()),
-                  );
-                }),
-                buildProfileOption("Terms and Conditions", Icons.description,
-                    onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const TermsAndConditionsScreen()),
-                  );
-                }),
-                Padding(
-                  padding: const EdgeInsets.all(16.0),
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF059669),
-                      minimumSize: const Size(double.infinity, 50),
-                    ),
-                    onPressed: _signOut,
-                    child: const Text(
-                      "Sign Out",
-                      style: TextStyle(color: Colors.white), // Changed text color to white
-                    ),
-                  ),
+            buildProfileOption("Your Trips", Icons.travel_explore),
+            buildProfileOption("Payment Methods", Icons.payment),
+            buildProfileOption("Currency", Icons.attach_money),
+            buildProfileOption("Privacy Policy", Icons.privacy_tip, onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const PrivacyPolicyScreen()),
+              );
+            }),
+            buildProfileOption("Terms and Conditions", Icons.description, onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (context) => const TermsAndConditionsScreen()),
+              );
+            }),
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF059669),
+                  minimumSize: const Size(double.infinity, 50),
                 ),
-              ],
+                onPressed: _signOut,
+                child: const Text(
+                  "Sign Out",
+                  style: TextStyle(color: Colors.white),
+                ),
+              ),
             ),
+          ],
+        ),
+      ),
     );
   }
 
@@ -279,8 +283,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             }, SetOptions(merge: true));
                           }
                         } catch (e) {
-                          print(
-                              'Error saving language preference to Firebase: $e');
+                          print('Error saving language preference to Firebase: $e');
                         }
 
                         Navigator.pop(context);

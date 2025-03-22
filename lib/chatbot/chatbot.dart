@@ -6,16 +6,17 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'dart:convert';
 import 'dart:io';
-// Add these imports for speech recognition and text-to-speech
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../pages/Home_Pages/home_page.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const Chatbot());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Chatbot extends StatelessWidget {
+  const Chatbot({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -222,8 +223,13 @@ class _HomePageState extends State<HomePage> {
               color: Color(0xFF1E5631),
             ),
             onPressed: () {
-              // Navigate back to the previous page
-              Navigator.pop(context);
+            // Navigate directly to the HomePage
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute( // Use MaterialPageRoute if your HomePage is Material-based
+            builder: (context) => TravelApp(), // Replace HomePage() with your actual HomePage widget
+                ),
+              );
             },
           ),
           middle: const Text(
