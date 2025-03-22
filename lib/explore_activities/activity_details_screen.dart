@@ -3,191 +3,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 
-// Favorites Manager to handle favorites globally
-class FavoritesManager extends ChangeNotifier {
-  static final FavoritesManager _instance = FavoritesManager._internal();
-  factory FavoritesManager() => _instance;
-  FavoritesManager._internal();
-
-  final Set<Map<String, dynamic>> _favorites = {};
-
-  Set<Map<String, dynamic>> get favorites => _favorites;
-
-  void toggleFavorite(Map<String, dynamic> place) {
-    if (_favorites.any((element) => element['name'] == place['name'])) {
-      _favorites.removeWhere((element) => element['name'] == place['name']);
-    } else {
-      _favorites.add(place);
-    }
-    notifyListeners();
-  }
-
-  bool isFavorite(String placeName) {
-    return _favorites.any((element) => element['name'] == placeName);
-  }
-}
-
-// Favorites Screen
-class FavoritesScreen extends StatelessWidget {
-  const FavoritesScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return CupertinoPageScaffold(
-      navigationBar: const CupertinoNavigationBar(
-        middle: Text(
-          'Favorite Destinations',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      child: SafeArea(
-        child: ListenableBuilder(
-          listenable: FavoritesManager(),
-          builder: (context, child) {
-            final favorites = FavoritesManager().favorites;
-
-            if (favorites.isEmpty) {
-              return Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(
-                      CupertinoIcons.heart,
-                      size: 64,
-                      color: CupertinoColors.systemGrey.withOpacity(0.5),
-                    ),
-                    const SizedBox(height: 16),
-                    const Text(
-                      'No favorites yet',
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: CupertinoColors.systemGrey,
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    const Text(
-                      'Start adding destinations to your favorites!',
-                      style: TextStyle(
-                        color: CupertinoColors.systemGrey,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-
-            return ListView.builder(
-              padding: const EdgeInsets.all(16),
-              itemCount: favorites.length,
-              itemBuilder: (context, index) {
-                final place = favorites.elementAt(index);
-                return Padding(
-                  padding: const EdgeInsets.only(bottom: 16),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: CupertinoColors.systemBackground,
-                      borderRadius: BorderRadius.circular(20),
-                      boxShadow: [
-                        BoxShadow(
-                          color: CupertinoColors.systemGrey.withOpacity(0.2),
-                          blurRadius: 10,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        // Location Image
-                        ClipRRect(
-                          borderRadius: const BorderRadius.vertical(
-                            top: Radius.circular(20),
-                          ),
-                          child: Stack(
-                            children: [
-                              Image.asset(
-                                place['image'] ??
-                                    'assets/images/placeholder.jpg',
-                                width: double.infinity,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
-                              // Remove from Favorites Button
-                              Positioned(
-                                top: 16,
-                                right: 16,
-                                child: GestureDetector(
-                                  onTap: () =>
-                                      FavoritesManager().toggleFavorite(place),
-                                  child: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: CupertinoColors.white
-                                          .withOpacity(0.9),
-                                      borderRadius: BorderRadius.circular(30),
-                                    ),
-                                    child: const Icon(
-                                      CupertinoIcons.heart_fill,
-                                      color: CupertinoColors.systemRed,
-                                      size: 24,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding: const EdgeInsets.all(16),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                place['name'] ?? '',
-                                style: const TextStyle(
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(height: 8),
-                              Text(
-                                place['activityType'] ?? '',
-                                style: TextStyle(
-                                  color: CupertinoColors.systemGrey
-                                      .withOpacity(0.8),
-                                  fontSize: 16,
-                                ),
-                              ),
-                              const SizedBox(height: 16),
-                              CupertinoButton.filled(
-                                padding:
-                                    const EdgeInsets.symmetric(horizontal: 24),
-                                onPressed: () {
-                                  // Navigate to detailed view or open in maps
-                                  if (place['location'] != null) {
-                                    launchUrl(Uri.parse(
-                                        "https://www.google.com/maps/search/?api=1&query=${Uri.encodeComponent(place['location'])}"));
-                                  }
-                                },
-                                child: const Text('View Details'),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
-            );
-          },
-        ),
-      ),
-    );
-  }
-}
-
 // 🔹 Place the function here (before ActivityDetailsScreen class)
 IconData getActivityIcon(String activity) {
   switch (activity.toLowerCase()) {
@@ -443,8 +258,8 @@ class ActivityDetailsScreen extends StatelessWidget {
                                 begin: Alignment.topLeft,
                                 end: Alignment.bottomRight,
                                 colors: [
-                                  Color(0xFFE8F4F8),
-                                  Color(0xFFF0F8FF),
+                                  Color.fromARGB(255, 247, 247, 247),
+                                  Color.fromARGB(255, 247, 247, 247),
                                 ],
                               ),
                               borderRadius: BorderRadius.circular(24),
@@ -474,7 +289,7 @@ class ActivityDetailsScreen extends StatelessWidget {
                                   child: Icon(
                                     icon,
                                     size: 32,
-                                    color: CupertinoColors.systemGreen,
+                                    color: Colors.teal,
                                   ),
                                 ),
                                 const SizedBox(width: 20),
@@ -491,7 +306,7 @@ class ActivityDetailsScreen extends StatelessWidget {
                                         style: const TextStyle(
                                           fontSize: 18,
                                           fontWeight: FontWeight.bold,
-                                          color: CupertinoColors.systemGreen,
+                                          color: Color(0xFF003734),
                                         ),
                                       ),
                                       const SizedBox(height: 8),
@@ -518,7 +333,7 @@ class ActivityDetailsScreen extends StatelessWidget {
                                   ),
                                   child: const Icon(
                                     CupertinoIcons.arrow_right,
-                                    color: CupertinoColors.systemGreen,
+                                    color: Color(0xFF003734),
                                     size: 20,
                                   ),
                                 ),
@@ -535,9 +350,12 @@ class ActivityDetailsScreen extends StatelessWidget {
 
                 // Back Button
                 Center(
-                  child: CupertinoButton.filled(
-                    onPressed: () => Navigator.pop(context),
-                    child: const Text("Back"),
+                  child: SizedBox(
+                    width: double.infinity, // full width
+                    child: CupertinoButton.filled(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text("Back"),
+                    ),
                   ),
                 ),
               ],
@@ -609,7 +427,7 @@ class _ActivityPlacesScreenState extends State<ActivityPlacesScreen> {
                 style: TextStyle(
                   fontSize: 24,
                   fontWeight: FontWeight.bold,
-                  color: CupertinoColors.systemGreen,
+                  color: Color(0xFF003734),
                 ),
               ),
             ),
@@ -828,7 +646,7 @@ class _ActivityPlacesScreenState extends State<ActivityPlacesScreen> {
       child: Text(
         label,
         style: const TextStyle(
-          color: CupertinoColors.systemGreen,
+          color: Color(0xFF003734),
           fontSize: 14,
           fontWeight: FontWeight.w500,
         ),
@@ -854,27 +672,27 @@ String getDestinationImage(String place) {
   // Mapping of destinations to their specific images
   final Map<String, String> destinationImages = {
     'Unawatuna Beach': 'assets/sunbathing.jpg',
-    'Mirissa Beach': 'assets/images/mirissa_beach.jpg',
-    'Arugam Bay': 'assets/images/arugam_bay.jpg',
-    'Hikkaduwa Beach': 'assets/images/hikkaduwa_beach.jpg',
-    'Bentota Beach': 'assets/images/bentota_beach.jpg',
-    'Yala National Park': 'assets/images/yala_national_park.jpg',
-    'Udawalawe National Park': 'assets/images/udawalawe_national_park.jpg',
-    'Minneriya National Park': 'assets/images/minneriya_national_park.jpg',
-    'Wilpattu National Park': 'assets/images/wilpattu_national_park.jpg',
-    'Sinharaja Forest': 'assets/images/sinharaja_forest.jpg',
-    'Temple of the Tooth': 'assets/images/temple_of_tooth.jpg',
-    'Sigiriya Rock Fortress': 'assets/images/sigiriya_rock.jpg',
-    'Dambulla Cave Temple': 'assets/images/dambulla_cave.jpg',
-    'Galle Fort': 'assets/images/galle_fort.jpg',
-    'Polonnaruwa Ancient City': 'assets/images/polonnaruwa.jpg',
-    'Adams Peak': 'assets/images/adams_peak.jpg',
-    'Horton Plains': 'assets/images/horton_plains.jpg',
-    'Ella Rock': 'assets/images/ella_rock.jpg',
-    'Knuckles Mountain Range': 'assets/images/knuckles_mountain.jpg',
-    'Nuwara Eliya Tea Plantations': 'assets/images/nuwara_eliya_tea.jpg'
+    'Mirissa Beach': 'assets/Sigiriya.jpg',
+    'Arugam Bay': 'assets/sunbathing.jpg',
+    'Hikkaduwa Beach': 'assets/sunbathing.jpg',
+    'Bentota Beach': 'assets/sunbathing.jpg',
+    'Yala National Park': 'assets/Yala.jpg',
+    'Udawalawe National Park': 'assets/elephant.jpg',
+    'Minneriya National Park': 'assets/Yala.jpg',
+    'Wilpattu National Park': 'assets/wildLife.jpg',
+    'Sinharaja Forest': 'assets/wildLife.jpg',
+    'Temple of the Tooth': 'assets/Kandy.jpg',
+    'Sigiriya Rock Fortress': 'assets/Sigiriya.jpg',
+    'Dambulla Cave Temple': 'assets/sunbathing.jpg',
+    'Galle Fort': 'assets/sunbathing.jpg',
+    'Polonnaruwa Ancient City': 'assets/sunbathing.jpg',
+    'Adams Peak': 'assets/sunbathing.jpg',
+    'Horton Plains': 'assets/sunbathing.jpg',
+    'Ella Rock': 'assets/sunbathing.jpg',
+    'Knuckles Mountain Range': 'assets/sunbathing.jpg',
+    'Nuwara Eliya Tea Plantations': 'assets/sunbathing.jpg',
   };
 
   // Return the specific image for the destination, or a default image if not found
-  return destinationImages[place] ?? 'assets/images/default_destination.jpg';
+  return destinationImages[place] ?? 'assets/sunbathing.jpg';
 }

@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'registration_page.dart'; // Import the RegistrationPage
 import 'login_page.dart'; // Import the LoginPage
-import '';
 
 class WelcomePopup {
   static void show(BuildContext context) {
