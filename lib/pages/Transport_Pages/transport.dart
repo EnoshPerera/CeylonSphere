@@ -4,7 +4,7 @@ import 'package:flutter_stripe/flutter_stripe.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:google_maps_webservice/places.dart';
 import 'package:flutter_polyline_points/flutter_polyline_points.dart'
-    as polyline;
+as polyline;
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../Payment_Pages/consts.dart';
@@ -44,7 +44,7 @@ class BookingHomePage extends StatefulWidget {
 
 class _BookingHomePageState extends State<BookingHomePage> {
   final _places =
-      GoogleMapsPlaces(apiKey: 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA');
+  GoogleMapsPlaces(apiKey: 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA');
   final String _apiKey = 'AIzaSyCVfTD2d0MpsavYWK85sQgjF5GSw8QZSRA';
   GoogleMapController? _mapController;
   final Set<Marker> _markers = {};
@@ -92,7 +92,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
             _selectedLocations.add(latLng);
           }
           _markers.removeWhere(
-              (marker) => marker.markerId.value == 'stop_$stopIndex');
+                  (marker) => marker.markerId.value == 'stop_$stopIndex');
           _markers.add(Marker(
             markerId: MarkerId('stop_$stopIndex'),
             position: latLng,
@@ -119,7 +119,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
     if (pickupLocation != null && dropoffLocation != null) {
       _generateRoute();
     }
-    }
+  }
 
   void _generateRoute() async {
     if (_selectedLocations.length < 2) return;
@@ -152,9 +152,9 @@ class _BookingHomePageState extends State<BookingHomePage> {
       try {
         final response = await http.get(Uri.parse(
             'https://maps.googleapis.com/maps/api/directions/json?'
-            'origin=${_selectedLocations[i].latitude},${_selectedLocations[i].longitude}'
-            '&destination=${_selectedLocations[i + 1].latitude},${_selectedLocations[i + 1].longitude}'
-            '&key=$_apiKey'));
+                'origin=${_selectedLocations[i].latitude},${_selectedLocations[i].longitude}'
+                '&destination=${_selectedLocations[i + 1].latitude},${_selectedLocations[i + 1].longitude}'
+                '&key=$_apiKey'));
 
         if (response.statusCode == 200) {
           final data = json.decode(response.body);
@@ -246,7 +246,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
         children: [
           GoogleMap(
             initialCameraPosition:
-                CameraPosition(target: LatLng(7.8731, 80.7718), zoom: 7),
+            CameraPosition(target: LatLng(7.8731, 80.7718), zoom: 7),
             onMapCreated: (controller) => _mapController = controller,
             markers: _markers,
             polylines: Set<Polyline>.of(polylines.values),
@@ -366,7 +366,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
                           if (isCalculatingRoute)
                             Padding(
                               padding:
-                                  const EdgeInsets.symmetric(vertical: 10.0),
+                              const EdgeInsets.symmetric(vertical: 10.0),
                               child: Center(
                                 child: Column(
                                   children: [
@@ -390,7 +390,7 @@ class _BookingHomePageState extends State<BookingHomePage> {
                               ),
                               child: Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceAround,
+                                MainAxisAlignment.spaceAround,
                                 children: [
                                   Column(
                                     children: [
@@ -502,7 +502,7 @@ class LocationInputField extends StatefulWidget {
   final Function(String placeId, String name) onPlaceSelected;
   final String? initialValue;
 
-  const LocationInputField({super.key, 
+  const LocationInputField({super.key,
     required this.hint,
     required this.places,
     required this.onPlaceSelected,
@@ -586,17 +586,17 @@ class _LocationInputFieldState extends State<LocationInputField> {
               ),
               suffixIcon: _isSearching
                   ? Container(
-                      width: 20,
-                      height: 20,
-                      padding: EdgeInsets.all(8),
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        color: Colors.teal,
-                      ),
-                    )
+                width: 20,
+                height: 20,
+                padding: EdgeInsets.all(8),
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: Colors.teal,
+                ),
+              )
                   : Icon(Icons.location_on, color: Colors.teal),
               contentPadding:
-                  EdgeInsets.symmetric(vertical: 16, horizontal: 16),
+              EdgeInsets.symmetric(vertical: 16, horizontal: 16),
               floatingLabelBehavior: FloatingLabelBehavior.never,
               hintStyle: TextStyle(color: Colors.grey[400]),
             ),
