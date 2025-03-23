@@ -74,7 +74,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
               icon: Container(
                 padding: const EdgeInsets.all(8),
                 decoration: BoxDecoration(
-                  color: Colors.white.withOpacity(0.9),
+                  color: Colors.white.withOpacity(0.3),
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
@@ -93,7 +93,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                     icon: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.9),
+                        color: Colors.white.withOpacity(0.3),
                         shape: BoxShape.circle,
                       ),
                       child: Icon(

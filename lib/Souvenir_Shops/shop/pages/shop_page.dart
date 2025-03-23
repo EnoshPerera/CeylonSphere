@@ -62,8 +62,28 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
             expandedHeight: 120,
             floating: true,
             pinned: true,
+            leading: IconButton(
+              icon: Container(
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.white.withOpacity(0.3),
+                  shape: BoxShape.circle,
+                ),
+                child: const Icon(
+                  Icons.arrow_back,
+                  color: Colors.black87,
+                ),
+              ),
+              onPressed: () => Navigator.pop(context),
+            ),
             flexibleSpace: FlexibleSpaceBar(
-              title: const Text('Explore Stores'),
+              title: const Text(
+                'Explore Stores',
+                style: TextStyle(
+                  color: Colors.black87,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
               background: Container(
                 decoration: BoxDecoration(
                   gradient: LinearGradient(
