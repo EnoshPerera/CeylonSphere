@@ -14,6 +14,7 @@ import 'ar_temple_screen.dart';
 import '../Transport_Pages/transport.dart';
 import '../../chatbot/travel_chatbot_screen.dart';
 import 'adventure_deals.dart';
+import 'events_screen.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -30,6 +31,7 @@ class TravelApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: CupertinoColors.activeGreen,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MainPage(),
     );
   }
@@ -90,20 +92,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child: Center(
-              //     child: ClipRRect(
-              //       borderRadius: BorderRadius.circular(15),
-              //       child: Image.asset(
-              //         'assets/vr_tourism.png',
-              //         height: 130,
-              //         width: 650,
-              //         fit: BoxFit.cover,
-              //       ),
-              //     ),
-              //   ),
-              // ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 decoration: BoxDecoration(
@@ -124,152 +112,6 @@ class HomeScreen extends StatelessWidget {
                               fontSize: 20,
                               fontWeight: FontWeight.bold,
                               color: Color(0xFF003734),
-                            ),
-                          ),
-                          GestureDetector(
-                            onTap: () {
-                              // Show all categories
-                              showCupertinoModalPopup(
-                                context: context,
-                                builder: (context) => Container(
-                                  height: 500,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: const BoxDecoration(
-                                    color: CupertinoColors.systemBackground,
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'All Categories',
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF003734),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      Expanded(
-                                        child: GridView.count(
-                                          crossAxisCount: 3,
-                                          mainAxisSpacing: 20,
-                                          crossAxisSpacing: 20,
-                                          children: [
-                                            _CategoryGridItem(
-                                              icon: CupertinoIcons.map,
-                                              label: 'Places',
-                                              onTap: () {
-                                                Navigator.pop(
-                                                    context); // Close the modal first
-                                                Navigator.push(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        NearbyServices(),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                            _CategoryGridItem(
-                                              icon:
-                                                  CupertinoIcons.chat_bubble_2,
-                                              label: 'Chatbot',
-                                                onTap: () {
-                                                  Navigator.pop(
-                                                      context); // Close the modal first
-                                                  Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          Chatbot(),
-                                                    ),
-                                                  );
-                                                }
-
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.news,
-                                              label: 'Restaurants',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.bag,
-                                              label: 'Shopping',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.tickets,
-                                              label: 'Events',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.car_detailed,
-                                              label: 'Transport',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.camera,
-                                              label: 'Photography',
-                                            ),
-                                            _CategoryGridItem(
-                                              icon: CupertinoIcons.gift,
-                                              label: 'Shops',
-                                              onTap: () {
-                                                  Navigator.pop(
-                                                      context); // Close the modal first
-                                                  Navigator.push(
-                                                    context,
-                                                    CupertinoPageRoute(
-                                                      builder: (context) =>
-                                                          ShopMain(),
-                                                    ),
-                                                  );
-                                                }
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.cart,
-                                              label: 'Markets',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon:
-                                                  CupertinoIcons.chat_bubble_2,
-                                              label: 'Travel Assistant',
-                                              // onTap: () {
-                                              //   Navigator.pop(
-                                              //       context); // Close modal before navigating
-                                              //   // Navigator.push(
-                                              //   //   context,
-                                              //   //   CupertinoPageRoute(
-                                              //   //     builder: (context) =>
-                                              //   //         const TravelChatbotScreen(),
-                                              //   //   ),
-                                              //   // );
-                                              // },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              children: const [
-                                Text(
-                                  'View All',
-                                  style: TextStyle(
-                                    color: CupertinoColors.activeGreen,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(width: 4),
-                                Icon(
-                                  CupertinoIcons.chevron_right,
-                                  color: CupertinoColors.activeGreen,
-                                  size: 16,
-                                ),
-                              ],
                             ),
                           ),
                         ],
@@ -298,7 +140,8 @@ class HomeScreen extends StatelessWidget {
                           _CategoryItem(
                             icon: CupertinoIcons.chat_bubble_2, // Chatbot icon
                             label: 'Chatbot',
-                            color: const Color(0xFF2196F3), // Keeping the same color
+                            color: const Color(
+                                0xFF2196F3), // Keeping the same color
                             onTap: () {
                               Navigator.push(
                                 context,
@@ -308,31 +151,44 @@ class HomeScreen extends StatelessWidget {
                               );
                             },
                           ),
-                          const _CategoryItem(
-                            icon: CupertinoIcons.news,
-                            label: 'Restaurants',
-                            color: Color(0xFFF44336),
-                          ),
                           _CategoryItem(
-                            icon: CupertinoIcons.bag,
-                            label: 'Shopping',
-                            color: const Color(0xFF9C27B0),
+                            icon: CupertinoIcons.news, // Chatbot icon
+                            label: 'Restaurants',
+                            color: Color(0xFFF44336), // Keeping the same color
                             onTap: () {
-                              Navigator.pop(
-                                  context); // Close the modal first
                               Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) =>
-                                      ShopMain(),
+                                  builder: (context) => NearbyServices(),
                                 ),
                               );
-                            }
+                            },
                           ),
-                          const _CategoryItem(
+                          _CategoryItem(
+                              icon: CupertinoIcons.bag,
+                              label: 'Shopping',
+                              color: const Color(0xFF9C27B0),
+                              onTap: () {
+                                Navigator.pop(context); // Close the modal first
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => ShopMain(),
+                                  ),
+                                );
+                              }),
+                          _CategoryItem(
                             icon: CupertinoIcons.tickets,
                             label: 'Events',
                             color: Color(0xFFFF9800),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => EventsScreen(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
