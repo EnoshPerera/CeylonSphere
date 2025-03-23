@@ -11,141 +11,193 @@ class ShopPage extends StatefulWidget {
   State<ShopPage> createState() => _ShopPageState();
 }
 
-class _ShopPageState extends State<ShopPage> {
-  int _selectedCategoryId =
-      1; // Default to first category (Traditional Handicrafts)
+class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin {
+  int _selectedCategoryId = 1;
+  late AnimationController _animationController;
+  late Animation<double> _fadeAnimation;
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      duration: const Duration(milliseconds: 300),
+      vsync: this,
+    );
+    _fadeAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(
+      CurvedAnimation(parent: _animationController, curve: Curves.easeIn),
+    );
+    _animationController.forward();
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  List<Shop> getFilteredShops() {
+    final categoryShops = shops.where((shop) => shop.categoryId == _selectedCategoryId).toList();
+    if (_searchQuery.isEmpty) return categoryShops;
+    
+    return categoryShops.where((shop) =>
+      shop.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+      shop.description.toLowerCase().contains(_searchQuery.toLowerCase())
+    ).toList();
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Get shops for the selected category
-    final categoryShops =
-        shops.where((shop) => shop.categoryId == _selectedCategoryId).toList();
-
-    // Get the selected category
     final selectedCategory = categories.firstWhere(
       (category) => category.id == _selectedCategoryId,
     );
+    final filteredShops = getFilteredShops();
 
     return Scaffold(
-      appBar: AppBar(
-        title: Row(
-          children: [
-            const Text('Explore Stores'),
-            const SizedBox(width: 8),
-            const Icon(Icons.store, size: 24),
-          ],
-        ),
-        elevation: 0,
-      ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // Categories section
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
-            child: const Text(
-              'Categories',
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-          ),
-          SizedBox(
-            height: 110,
-            child: ListView.builder(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              scrollDirection: Axis.horizontal,
-              itemCount: categories.length,
-              itemBuilder: (context, index) {
-                final category = categories[index];
-                return CategoryCard(
-                  category: category,
-                  isSelected: category.id == _selectedCategoryId,
-                  onTap: () {
-                    setState(() {
-                      _selectedCategoryId = category.id;
-                    });
-                  },
-                );
-              },
-            ),
-          ),
-
-          // Divider
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Divider(),
-          ),
-
-          // Selected category title
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 8),
-            child: Text(
-              selectedCategory.name,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-                color: Color.fromARGB(255, 25, 114, 82),
+      body: CustomScrollView(
+        slivers: [
+          SliverAppBar(
+            expandedHeight: 120,
+            floating: true,
+            pinned: true,
+            flexibleSpace: FlexibleSpaceBar(
+              title: const Text('Explore Stores'),
+              background: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    begin: Alignment.topCenter,
+                    end: Alignment.bottomCenter,
+                    colors: [
+                      Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      Colors.white,
+                    ],
+                  ),
+                ),
               ),
             ),
           ),
-
-          // Category description
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
-            child: Container(
+          SliverToBoxAdapter(
+            child: Padding(
               padding: const EdgeInsets.all(16),
-              decoration: BoxDecoration(
-                color: Colors.green.shade50,
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(
-                  color: const Color.fromARGB(255, 2, 222, 148),
-                ),
-              ),
-              child: Text(
-                selectedCategory.description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: const Color.fromARGB(255, 0, 55, 52),
+              child: TextField(
+                controller: _searchController,
+                onChanged: (value) => setState(() => _searchQuery = value),
+                decoration: InputDecoration(
+                  hintText: 'Search shops...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                    borderSide: BorderSide.none,
+                  ),
+                  filled: true,
+                  fillColor: Colors.grey.shade100,
+                  contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
                 ),
               ),
             ),
           ),
-
-          // Shops section
-          Padding(
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
+              child: const Text(
+                'Categories',
+                style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: SizedBox(
+              height: 120,
+              child: ListView.builder(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                scrollDirection: Axis.horizontal,
+                itemCount: categories.length,
+                itemBuilder: (context, index) {
+                  final category = categories[index];
+                  return CategoryCard(
+                    category: category,
+                    isSelected: category.id == _selectedCategoryId,
+                    onTap: () {
+                      setState(() {
+                        _selectedCategoryId = category.id;
+                        _animationController.reset();
+                        _animationController.forward();
+                      });
+                    },
+                  );
+                },
+              ),
+            ),
+          ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    selectedCategory.name,
+                    style: const TextStyle(
+                      fontSize: 24,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  const SizedBox(height: 8),
+                  Container(
+                    padding: const EdgeInsets.all(16),
+                    decoration: BoxDecoration(
+                      color: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(
+                        color: Theme.of(context).colorScheme.primary.withOpacity(0.2),
+                      ),
+                    ),
+                    child: Text(
+                      selectedCategory.description,
+                      style: TextStyle(
+                        fontSize: 14,
+                        color: Theme.of(context).colorScheme.tertiary,
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          SliverPadding(
             padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: Row(
-              children: [
-                const Text(
-                  'Shops',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-                ),
-                const SizedBox(width: 8),
-                Text(
-                  '(${categoryShops.length})',
-                  style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
-                ),
-              ],
+            sliver: SliverToBoxAdapter(
+              child: Row(
+                children: [
+                  const Text(
+                    'Shops',
+                    style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(width: 8),
+                  Text(
+                    '(${filteredShops.length})',
+                    style: TextStyle(fontSize: 16, color: Colors.grey.shade600),
+                  ),
+                ],
+              ),
             ),
           ),
-
-          // Shops list
-          Expanded(
-            child: ListView.builder(
-              padding: const EdgeInsets.fromLTRB(
-                16,
-                0,
-                16,
-                10,
-              ), // 10px padding at bottom for nav bar
-              itemCount: categoryShops.length,
-              itemBuilder: (context, index) {
-                return ShopCard(shop: categoryShops[index]);
-              },
+          SliverPadding(
+            padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            sliver: SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  return FadeTransition(
+                    opacity: _fadeAnimation,
+                    child: ShopCard(shop: filteredShops[index]),
+                  );
+                },
+                childCount: filteredShops.length,
+              ),
             ),
           ),
-
-          // Space for bottom navigation bar (10px)
-          const SizedBox(height: 10),
         ],
       ),
     );
