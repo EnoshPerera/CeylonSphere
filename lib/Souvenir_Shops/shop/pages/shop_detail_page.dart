@@ -1,4 +1,9 @@
+import 'package:flutter/cupertino.dart';
+
+import '../../../screens/souvenir_list_page2.dart';
+import '../../../screens/souvenir_list_page3.dart';
 import 'package:flutter/material.dart';
+import '../../../screens/souvenir_list_page.dart';
 import '../model/shop.dart';
 import 'package:url_launcher/url_launcher.dart';
 
@@ -61,6 +66,36 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
     }
   }
 
+  // Navigate to the appropriate souvenir list page based on shop ID
+  void _navigateToSouvenirList() {
+    switch (widget.shop.id) {
+      case 1:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SouvenirListPage()),
+        );
+        break;
+      case 2:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SouvenirListPage2()),
+        );
+        break;
+      case 3:
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SouvenirListPage3()),
+        );
+        break;
+      default:
+      // Default to the base souvenir list page
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const SouvenirListPage()),
+        );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -78,8 +113,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                   shape: BoxShape.circle,
                 ),
                 child: const Icon(
-                  Icons.arrow_back,
-                  color: Colors.black87,
+                  CupertinoIcons.back, color: Colors.white,
                 ),
               ),
               onPressed: () => Navigator.pop(context),
@@ -98,7 +132,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                       ),
                       child: Icon(
                         isLiked ? Icons.favorite : Icons.favorite_border,
-                        color: isLiked ? Colors.pink : Colors.black87,
+                        color: isLiked ? Colors.pink : Colors.white,
                       ),
                     ),
                     onPressed: _toggleLike,
@@ -243,6 +277,30 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                       label: Text(
                         'Contact: ${widget.shop.contactInfo}',
                         style: const TextStyle(fontSize: 16),
+                      ),
+                    ),
+                  ),
+
+                  // Add spacing between buttons
+                  const SizedBox(height: 16),
+
+                  // Browse Souvenirs Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton.icon(
+                      onPressed: _navigateToSouvenirList,
+                      style: ElevatedButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        backgroundColor: Colors.amber.shade600,
+                        foregroundColor: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
+                      icon: const Icon(Icons.shopping_bag),
+                      label: const Text(
+                        'Browse Souvenirs',
+                        style: TextStyle(fontSize: 16),
                       ),
                     ),
                   ),
