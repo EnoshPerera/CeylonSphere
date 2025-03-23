@@ -472,24 +472,9 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
                             scrollDirection: Axis.horizontal,
                             children: [
                               _buildServiceCard(
-                                icon: Icons.hotel,
-                                title: 'Hotels',
+                                icon: CupertinoIcons.map,
+                                title: 'Map',
                                 count: '12',
-                              ),
-                              _buildServiceCard(
-                                icon: Icons.restaurant,
-                                title: 'Restaurants',
-                                count: '24',
-                              ),
-                              _buildServiceCard(
-                                icon: Icons.local_taxi,
-                                title: 'Transport',
-                                count: '8',
-                              ),
-                              _buildServiceCard(
-                                icon: Icons.shopping_bag,
-                                title: 'Shops',
-                                count: '15',
                               ),
                             ],
                           ),
