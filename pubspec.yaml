@@ -38,6 +38,8 @@ dependencies:
   cached_network_image: ^3.3.0 
   cloud_functions: ^5.3.4 
   firebase_storage: ^12.4.4
+  audioplayers: ^5.2.1
+  just_audio: ^0.9.34
 
 
 dev_dependencies:
@@ -79,12 +81,13 @@ flutter:
     - assets/nine_arch_gallery3.jpg
     - assets/nine_arch_gallery4.jpg
     - assets/nine_arch_gallery5.jpg
+    - assets/nine_arch_gallery6.webp
     - assets/ruwanwelisaya.jpg
     - assets/ruwanwelisaya_gallery1.jpg
     - assets/ruwanwelisaya_gallery2.JPG
     - assets/ruwanwelisaya_gallery3.jpg
     - assets/ruwanwelisaya_gallery4.jpg
-    - assets/sigiriya_.jpg
+    - assets/ruwanwelisaya_gallery5.jpg
     - assets/sigiriya_gallery1.jpg
     - assets/sigiriya_gallery2.jpg
     - assets/sigiriya_gallery3.jpeg
@@ -98,6 +101,12 @@ flutter:
     - assets/temple_gallery2.jpeg
     - assets/temple_gallery3.jpg
     - assets/temple_gallery4.jpg
+    - assets/audio/AmbuluwawaAudioClip.mp3
+    - assets/audio/GalleFortAudioClip.mp3
+    - assets/audio/NineArchBridgeAudioClip.mp3
+    - assets/audio/RuwanwelisayaAudioClip.mp3
+    - assets/audio/SigiriyaAudioClip.mp3
+    - assets/audio/TempleOfTheToothAudioClip.mp3
 #    - assets/facebook-logo.png
 #    - assets/firstscreen.jpg
 #    - assets/google-logo.png
