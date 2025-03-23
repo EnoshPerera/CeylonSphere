@@ -195,7 +195,7 @@ class SouvenirItemPage extends StatelessWidget {
                           ],
                         ),
 
-                        const SizedBox(height: 24),
+                        const SizedBox(height: 10),
                       ],
                     ),
                   ),
@@ -318,6 +318,7 @@ class SouvenirItemPage extends StatelessWidget {
                       ],
                     ),
                   ),
+                  const SizedBox(height: 100)
                 ],
               ),
             ),

@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/destination2.dart';
 import 'gallery_page.dart';
@@ -144,7 +145,7 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
                     color: Colors.white.withOpacity(0.3),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(Icons.arrow_back, color: Colors.white),
+                  child: const Icon(CupertinoIcons.back, color: Colors.white),
                 ),
               ),
               actions: [
@@ -202,28 +203,6 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
                                 ],
                               ),
                             ),
-                            Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 8),
-                              decoration: BoxDecoration(
-                                color: Colors.green.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(20),
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: const [
-                                  Icon(Icons.people, color: Colors.green, size: 16),
-                                  SizedBox(width: 4),
-                                  Text(
-                                    'Not Crowded',
-                                    style: TextStyle(
-                                      color: Colors.green,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
                           ],
                         ),
                         const SizedBox(height: 16),
@@ -232,12 +211,12 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
                           mainAxisAlignment: MainAxisAlignment.spaceAround,
                           children: [
                             _buildQuickAction(
-                              icon: Icons.map_outlined,
+                              icon: CupertinoIcons.map,
                               label: 'Map',
                               onTap: () {},
                             ),
                             _buildQuickAction(
-                              icon: Icons.camera_alt_outlined,
+                              icon: CupertinoIcons.camera,
                               label: 'Gallery',
                               onTap: () {
                                 // Find the current destination in the list to get its gallery images
@@ -259,12 +238,8 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
                               },
                             ),
                             _buildQuickAction(
-                              icon: Icons.play_circle_outline,
-                              label: 'AR View',
-                              onTap: () {},
-                            ),
-                            _buildQuickAction(
-                              icon: isPlaying ? Icons.stop : Icons.volume_up_outlined,
+
+                              icon: isPlaying ? CupertinoIcons.stop : CupertinoIcons.volume_up,
                               label: isPlaying ? 'Stop' : 'Audio',
                               onTap: playAudio,
                             ),
@@ -290,7 +265,7 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
-                                Icons.info_outline,
+                                CupertinoIcons.info,
                                 color: Colors.green,
                               ),
                             ),
@@ -376,7 +351,7 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
                                 borderRadius: BorderRadius.circular(12),
                               ),
                               child: const Icon(
-                                Icons.lightbulb_outline,
+                                CupertinoIcons.lightbulb,
                                 color: Colors.amber,
                               ),
                             ),
@@ -628,7 +603,7 @@ class DestinationsData {
         galleryImages: [
           'assets/sigiriya_gallery1.jpg',
           'assets/sigiriya_gallery2.jpg',
-          'assets/sigiriya_gallery3.jpeg',
+          'assets/sigiriya_gallery3.jpg',
           'assets/sigiriya_gallery4.jpg',
           'assets/sigiriya_gallery5.jpg',
         ],
