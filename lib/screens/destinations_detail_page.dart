@@ -630,7 +630,7 @@ class DestinationsData {
         description:
         "Perched along Sri Lanka's southern coast, Galle Fort is a stunning UNESCO World Heritage Site that blends Dutch, Portuguese, and British colonial influences with Sri Lankan charm. Originally built by the Portuguese in the 16th century and later expanded by the Dutch in 1649, this historic fort is now a vibrant hub of culture, history, and breathtaking ocean views.\n Wander through its cobblestone streets, admire well-preserved colonial buildings, and explore iconic landmarks like the Galle Lighthouse, the Clock Tower, and the ancient Dutch Reformed Church. The fort's massive stone walls still stand strong, protecting the charming town inside from the crashing waves of the Indian Ocean.\n\nWhy Visit Galle Fort?\n\n✅ Rich Colonial History – Step into a UNESCO World Heritage Site where Dutch, Portuguese, and British influences blend with Sri Lankan culture.\n✅ Scenic Sunset Views – Watch the golden sun dip into the Indian Ocean from the iconic fort walls.\n✅ Charming Streets & Cafés – Wander through cobblestone streets lined with boutique shops, art galleries, and cozy cafés.\n✅ Galle Lighthouse – Visit Sri Lanka's oldest lighthouse, offering breathtaking coastal views and photo-perfect moments.",
         galleryImages: [
-          'assets/galle_fort_gallery1.jpeg',
+          'assets/galle_fort_gallery1.jpg',
           'assets/galle_fort_gallery2.jpeg',
           'assets/galle_fort_gallery3.jpg',
           'assets/galle_fort_gallery4.webp',
@@ -646,8 +646,8 @@ class DestinationsData {
         description:
         "Located in the heart of Kandy, Sri Lanka, the Temple of the Sacred Tooth Relic (Sri Dalada Maligawa) is one of the most revered Buddhist sites in the world. It houses the sacred tooth relic of Lord Buddha, making it a place of deep spiritual significance and a UNESCO World Heritage Site. \n The temple, built within the royal palace complex, is a stunning example of traditional Kandyan architecture, adorned with intricate carvings, golden roofs, and beautiful paintings. The sacred relic is kept in a golden casket inside the temple's inner shrine, and devotees from around the world gather to offer prayers and seek blessings.\n\nWhy Visit the Temple of the Tooth Relic?\n\n✅ Spiritual Significance – Home to the Sacred Tooth Relic of Lord Buddha, making it one of the holiest Buddhist pilgrimage sites in the world.\n✅ Rich History – A UNESCO-listed temple that was once part of the royal palace complex of the Kandyan Kingdom.\n✅ Cultural Ceremonies – Experience daily rituals and witness the grand Esala Perahera festival, a vibrant procession of elephants, dancers, and drummers.\n✅ Breathtaking Architecture – Marvel at intricate wood carvings, golden embellishments, and serene temple courtyards.",
         galleryImages: [
-          'assets/temple_gallery1.jpeg',
-          'assets/temple_gallery2.jpeg',
+          'assets/temple_gallery1.jpg',
+          'assets/temple_gallery2.jpg',
           'assets/temple_gallery3.jpg',
           'assets/temple_gallery4.jpg',
         ],
@@ -660,7 +660,7 @@ class DestinationsData {
         description:
         "Nestled in the heart of Sri Lanka, Ambuluwawa Tower is a breathtaking multi-religious site and biodiversity complex located in Gampola, Kandy District. Rising 1,965 feet above sea level, this unique spiraling tower offers 360-degree panoramic views of misty mountains, lush green landscapes, and distant cities. \n Ambuluwawa is more than just a scenic spot—it's a symbol of religious harmony, featuring a Buddhist stupa, Hindu kovil, mosque, and a church, all coexisting within the complex. The climb up the narrow, winding staircase of the tower is thrilling, rewarding visitors with unparalleled views and a sense of adventure.\n\nWhy Visit Ambuluwawa?\n\n✅ Breathtaking Views – Enjoy panoramic 360° views of Sri Lanka's central highlands, misty mountains, and lush landscapes from the summit.\n✅ Unique Tower Design – Climb the spiraling Ambuluwawa Tower, an adrenaline-pumping ascent that rewards you with an unmatched aerial perspective.\n✅ Cultural Harmony – A rare site where Buddhist, Hindu, Islamic, and Christian structures coexist, symbolizing religious unity.\n✅ Biodiversity Complex – Discover rare plants, medicinal herbs, and diverse wildlife within this eco-friendly sanctuary.",
         galleryImages: [
-          'assets/ambuluwawa_gallery1.jpeg',
+          'assets/ambuluwawa_gallery1.jpg',
           'assets/ambuluwawa_gallery2.jpg',
           'assets/ambuluwawa_gallery3.jpg',
           'assets/ambuluwawa_gallery4.webp',
@@ -674,8 +674,8 @@ class DestinationsData {
         description:
         "Hidden amidst the lush greenery of Ella, Sri Lanka, the Nine Arches Bridge is one of the most breathtaking architectural marvels in the country. Built entirely of brick, stone, and cement—without a single piece of steel—this historic railway bridge stands as a testament to early 20th-century engineering.\n Also known as the 'Bridge in the Sky,' this 91-meter-long structure gracefully curves through the rolling tea plantations, offering a magical sight, especially when a train crosses its towering 24-meter-high arches. The bridge was constructed during the British colonial era in 1921 and has since become a favorite spot for photographers and travelers alike.\n\nWhy Visit the Nine Arch Bridge?\n\n✅ Breathtaking Views – A stunning fusion of lush greenery, misty hills, and colonial-era architecture, making it a picture-perfect spot.\n✅ Historical Significance – Built during the British colonial period, this remarkable bridge was constructed using only brick, stone, and cement—no steel!\n✅ Scenic Train Crossings – Witness the iconic blue train gracefully curve through the nine majestic arches, creating an unforgettable sight.\n✅ Hiking & Photography – Enjoy a short scenic trek to reach the best viewpoints and capture breathtaking sunrise or sunset shots.",
         galleryImages: [
-          'assets/nine_arch_gallery1.jpeg',
-          'assets/nine_arch_gallery2.jpeg',
+          'assets/nine_arch_gallery1.jpg',
+          'assets/nine_arch_gallery2.jpg',
           'assets/nine_arch_gallery3.jpg',
           'assets/nine_arch_gallery4.jpg',
           'assets/nine_arch_gallery5.jpg',

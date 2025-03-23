@@ -37,7 +37,7 @@ class SouvenirItemPage extends StatelessWidget {
         categories: ['Mythical', 'Cultural', 'Handcrafted'],
       ),
       Souvenir(
-        name: 'Sitting Turban Man Playing Musical Instruments',
+        name: 'Turban Man',
         imagePath: 'assets/sitting_man.webp',
         modelPath: 'assets/sitting_man1.glb',
         description:
@@ -106,7 +106,7 @@ class SouvenirItemPage extends StatelessWidget {
                     color: Colors.white.withOpacity(0.3),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(CupertinoIcons.back, color: Colors.white),
+                  child: const Icon(CupertinoIcons.back, color: Colors.green),
                 ),
               ),
             ),

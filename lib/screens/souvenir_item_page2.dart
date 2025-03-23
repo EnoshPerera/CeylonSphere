@@ -89,7 +89,7 @@ class SouvenirItemPage extends StatelessWidget {
                     color: Colors.white.withOpacity(0.3),
                     shape: BoxShape.circle,
                   ),
-                  child: const Icon(CupertinoIcons.back, color: Colors.white),
+                  child: const Icon(CupertinoIcons.back, color: Colors.green),
                 ),
               ),
             ),

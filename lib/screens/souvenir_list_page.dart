@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/cupertino.dart';
 import 'souvenir_item_page.dart';
 
 class SouvenirListPage extends StatefulWidget {
@@ -28,9 +29,29 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
               pinned: true,
               elevation: 0,
               backgroundColor: Theme.of(context).scaffoldBackgroundColor,
+              // Back button
+              leading: Container(
+                margin: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: Colors.green.withOpacity(0.1),
+                  shape: BoxShape.circle,
+                ),
+                child: IconButton(
+                  icon: const Icon(CupertinoIcons.back, color: Colors.green),
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ),
+              title: const Text(
+                'Souvenirs',
+                style: TextStyle(
+                  color: Colors.green,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+              centerTitle: true,
               flexibleSpace: FlexibleSpaceBar(
                 background: Container(
-                  padding: const EdgeInsets.fromLTRB(16, 60, 16, 0),
+                  padding: const EdgeInsets.fromLTRB(16, 90, 16, 0),
                   child: TextField(
                     controller: _searchController,
                     onChanged: (value) => setState(() => _searchQuery = value),
@@ -49,20 +70,13 @@ class _SouvenirListPageState extends State<SouvenirListPage> {
               ),
             ),
             SliverPadding(
-              padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
+              padding: const EdgeInsets.fromLTRB(16, 25, 16, 80), // Added bottom padding of 80
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
                       (context, index) {
                     if (index == 0) {
                       return const Padding(
                         padding: EdgeInsets.only(bottom: 16),
-                        child: Text(
-                          'Popular Souvenirs',
-                          style: TextStyle(
-                            fontSize: 24,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
                       );
                     }
                     final souvenir = souvenirs[index - 1];
