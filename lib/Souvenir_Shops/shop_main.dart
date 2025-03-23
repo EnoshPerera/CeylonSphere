@@ -1,0 +1,23 @@
+import 'package:flutter/material.dart';
+import 'shop/pages/shop_page.dart';
+
+void main() { 
+  runApp(const ShopMain());
+}
+
+class ShopMain extends StatelessWidget {
+  const ShopMain({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Handcraft & Souvenir Shop',
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: const ShopPage(),
+    );
+  }
+}
