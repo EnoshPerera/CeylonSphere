@@ -6,16 +6,17 @@ import 'package:http/http.dart' as http;
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'dart:convert';
 import 'dart:io';
-// Add these imports for speech recognition and text-to-speech
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:flutter_tts/flutter_tts.dart';
 
+import '../pages/Home_Pages/home_page.dart';
+
 void main() {
-  runApp(const MyApp());
+  runApp(const Chatbot());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class Chatbot extends StatelessWidget {
+  const Chatbot({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -222,8 +223,13 @@ class _HomePageState extends State<HomePage> {
               color: Color(0xFF1E5631),
             ),
             onPressed: () {
-              // Navigate back to the previous page
-              Navigator.pop(context);
+            // Navigate directly to the HomePage
+            Navigator.pushReplacement(
+            context,
+            MaterialPageRoute( // Use MaterialPageRoute if your HomePage is Material-based
+            builder: (context) => TravelApp(), // Replace HomePage() with your actual HomePage widget
+                ),
+              );
             },
           ),
           middle: const Text(
@@ -268,7 +274,7 @@ class _HomePageState extends State<HomePage> {
       messages: messages,
       messageOptions: MessageOptions(
         currentUserContainerColor:
-        const Color(0xFF1E5631), // Dark green for user messages
+            const Color(0xFF1E5631), // Dark green for user messages
         containerColor: Colors.white,
         textColor: Colors.black87,
         showTime: true,
@@ -455,19 +461,19 @@ class _HomePageState extends State<HomePage> {
               onPressed: _isTyping
                   ? null
                   : () {
-                if (_isListening) {
-                  _stopListening();
-                } else {
-                  _startListening();
-                }
-              },
+                      if (_isListening) {
+                        _stopListening();
+                      } else {
+                        _startListening();
+                      }
+                    },
               child: Icon(
                 _isListening ? CupertinoIcons.mic_fill : CupertinoIcons.mic,
                 color: _isListening
                     ? CupertinoColors.systemRed
                     : (_isTyping
-                    ? CupertinoColors.systemGrey4
-                    : const Color(0xFF1E5631)),
+                        ? CupertinoColors.systemGrey4
+                        : const Color(0xFF1E5631)),
                 size: 28,
               ),
             ),
@@ -487,15 +493,15 @@ class _HomePageState extends State<HomePage> {
                     hintText: _isListening
                         ? 'Listening...'
                         : (_isTyping
-                        ? 'Voxa is responding...'
-                        : 'Message Voxa...'),
+                            ? 'Voxa is responding...'
+                            : 'Message Voxa...'),
                     border: InputBorder.none,
                     hintStyle: TextStyle(
                       color: _isListening
                           ? CupertinoColors.systemRed
                           : (_isTyping
-                          ? Colors.grey.shade400
-                          : Colors.grey.shade600),
+                              ? Colors.grey.shade400
+                              : Colors.grey.shade600),
                     ),
                   ),
                   maxLines: null,
@@ -515,7 +521,7 @@ class _HomePageState extends State<HomePage> {
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
                 color:
-                _isTyping ? CupertinoColors.black : const Color(0xFF1E5631),
+                    _isTyping ? CupertinoColors.black : const Color(0xFF1E5631),
               ),
               child: CupertinoButton(
                 padding: const EdgeInsets.all(8),
@@ -614,7 +620,7 @@ class _HomePageState extends State<HomePage> {
         // Note: This implementation doesn't actually send the image to Gemini
         // You'll need to implement multimodal API calls for image processing
         final response =
-        await sendGeminiRequest("Describing an image: $prompt");
+            await sendGeminiRequest("Describing an image: $prompt");
         simulateTypingEffect(response, speakResponse: fromVoice);
       } else {
         // Handle text-only query
@@ -632,15 +638,15 @@ class _HomePageState extends State<HomePage> {
       // Handle specific API key errors
       if (error.toString().contains("404")) {
         errorMessage =
-        "# Error\n\nThe model or API version is not found. Please check the model name and API version.";
+            "# Error\n\nThe model or API version is not found. Please check the model name and API version.";
       } else if (error.toString().contains("401") ||
           error.toString().contains("Unauthorized")) {
         errorMessage =
-        "# Error\n\nInvalid API key. Please check your API key and try again.";
+            "# Error\n\nInvalid API key. Please check your API key and try again.";
       } else if (error.toString().contains("SocketException") ||
           error.toString().contains("Network is unreachable")) {
         errorMessage =
-        "# Error\n\nNo internet connection. Please check your network and try again.";
+            "# Error\n\nNo internet connection. Please check your network and try again.";
       }
 
       addVoxaMessage(errorMessage, speakResponse: fromVoice);

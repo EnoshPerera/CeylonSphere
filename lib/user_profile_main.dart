@@ -11,6 +11,7 @@ class UserProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       title: 'UserProfile',
       theme: ThemeData.light(),
       initialRoute: '/profile', // Set the initial route to the profile screen
