@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'shop/pages/shop_page.dart';
 
 void main() { 
-  runApp(const MyApp());
+  runApp(const ShopMain());
 }
 
-class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+class ShopMain extends StatelessWidget {
+  const ShopMain({super.key});
 
   @override
   Widget build(BuildContext context) {

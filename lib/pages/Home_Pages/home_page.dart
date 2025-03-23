@@ -1,4 +1,5 @@
 import 'package:ceylonsphere/Nearby_Services_Pages/nearby_services_main.dart';
+import 'package:ceylonsphere/Souvenir_Shops/shop_main.dart';
 import 'package:ceylonsphere/User_Profile_Page/profile_screen.dart';
 import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
@@ -210,9 +211,20 @@ class HomeScreen extends StatelessWidget {
                                               icon: CupertinoIcons.camera,
                                               label: 'Photography',
                                             ),
-                                            const _CategoryGridItem(
+                                            _CategoryGridItem(
                                               icon: CupertinoIcons.gift,
-                                              label: 'Souvenirs',
+                                              label: 'Shops',
+                                              onTap: () {
+                                                  Navigator.pop(
+                                                      context); // Close the modal first
+                                                  Navigator.push(
+                                                    context,
+                                                    CupertinoPageRoute(
+                                                      builder: (context) =>
+                                                          ShopMain(),
+                                                    ),
+                                                  );
+                                                }
                                             ),
                                             const _CategoryGridItem(
                                               icon: CupertinoIcons.cart,
@@ -301,10 +313,21 @@ class HomeScreen extends StatelessWidget {
                             label: 'Restaurants',
                             color: Color(0xFFF44336),
                           ),
-                          const _CategoryItem(
+                          _CategoryItem(
                             icon: CupertinoIcons.bag,
                             label: 'Shopping',
-                            color: Color(0xFF9C27B0),
+                            color: const Color(0xFF9C27B0),
+                            onTap: () {
+                              Navigator.pop(
+                                  context); // Close the modal first
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) =>
+                                      ShopMain(),
+                                ),
+                              );
+                            }
                           ),
                           const _CategoryItem(
                             icon: CupertinoIcons.tickets,
