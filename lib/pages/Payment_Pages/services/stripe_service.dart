@@ -48,10 +48,16 @@ class StripeService {
       };
     } on stripe.StripeException catch (e) {
       print('Stripe Error: ${e.error.localizedMessage}');
-      rethrow;
+      return {
+        'success': false,
+        'error': e.error.localizedMessage,
+      };
     } catch (e) {
       print('Unexpected Error: $e');
-      rethrow;
+      return {
+        'success': false,
+        'error': e.toString(),
+      };
     }
   }
 

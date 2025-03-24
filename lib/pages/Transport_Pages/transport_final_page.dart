@@ -68,16 +68,70 @@ class _AvailableVehiclesPageState extends State<AvailableVehiclesPage> {
           imageUrl: "assets/nissan-urvan.jpg",
           details: "8 seats, air-conditioned, comfortable"),
     ],
+    "Mini Bus": [
+      VehicleDetails(
+          brand: "Toyota",
+          model: "Coaster",
+          imageUrl: "assets/toyota-coaster.jpg",
+          details: "15 seats, air-conditioned, ideal for small groups"),
+      VehicleDetails(
+          brand: "Mitsubishi",
+          model: "Rosa",
+          imageUrl: "assets/mitsubishi-rosa.webp",
+          details: "18 seats, air-conditioned, comfortable ride"),
+      VehicleDetails(
+          brand: "TATA",
+          model: "Marcopolo",
+          imageUrl: "assets/tata-marcopolo.jpg",
+          details: "20 seats, air-conditioned, spacious seating"),
+    ],
+    "Bus": [
+      VehicleDetails(
+          brand: "TATA",
+          model: "Luxura",
+          imageUrl: "assets/tata-luxura.jpg",
+          details: "35 seats, air-conditioned, long distance comfort"),
+      VehicleDetails(
+          brand: "Yutong",
+          model: "ZK6107H",
+          imageUrl: "assets/yutong-zk6107h.jpeg",
+          details: "45 seats, air-conditioned, luxury interior"),
+      ]
   };
 
   String getRecommendedDuration() {
-    int hours = int.parse(widget.duration.split(' ')[0]);
-    if (hours <= 8) {
-      return "1 day";
+    // Parse the duration string to extract hours
+    final durationParts = widget.duration.split(' ');
+    int hours = 0;
+
+    // Handle both "X hours Y mins" and "X hours" formats
+    if (durationParts.length >= 2) {
+      hours = int.tryParse(durationParts[0]) ?? 0;
+
+      // If there are minutes mentioned, add them as a fraction of an hour
+      if (durationParts.length >= 4 && durationParts[2] == "mins") {
+        int minutes = int.tryParse(durationParts[3]) ?? 0;
+        hours += (minutes / 60).ceil();
+      }
+    }
+
+    // More practical recommendations based on travel duration
+    if (hours <= 4) {
+      return "1 day (day trip)";
+    } else if (hours <= 6) {
+      return "1 day (long day trip)";
+    } else if (hours <= 10) {
+      return "2 days (overnight stay)";
     } else if (hours <= 16) {
-      return "2 days";
+      return "2-3 days (comfortable pace)";
+    } else if (hours <= 24) {
+      return "3 days (recommended)";
+    } else if (hours <= 36) {
+      return "4 days (recommended)";
     } else {
-      return "${(hours / 8).ceil()} days";
+      // For very long trips, calculate based on 6 driving hours per day
+      int recommendedDays = (hours / 6).ceil();
+      return "$recommendedDays days (comfortable pace)";
     }
   }
 
