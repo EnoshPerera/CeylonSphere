@@ -1,3 +1,4 @@
+import 'package:ceylonsphere/pages/Home_Pages/home_page.dart';
 import 'package:flutter/material.dart';
 import '../model/category.dart';
 import '../model/shop.dart';
@@ -41,7 +42,7 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
   List<Shop> getFilteredShops() {
     final categoryShops = shops.where((shop) => shop.categoryId == _selectedCategoryId).toList();
     if (_searchQuery.isEmpty) return categoryShops;
-    
+
     return categoryShops.where((shop) =>
       shop.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
       shop.description.toLowerCase().contains(_searchQuery.toLowerCase())
@@ -74,7 +75,16 @@ class _ShopPageState extends State<ShopPage> with SingleTickerProviderStateMixin
                   color: Colors.black87,
                 ),
               ),
-              onPressed: () => Navigator.pop(context),
+              onPressed: () {
+                // Navigate to the MainPage (root of the app)
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const TravelApp(), // Navigate to MainPage
+                  ),
+                  (route) => false, // Remove all previous routes
+                );
+              },
             ),
             flexibleSpace: FlexibleSpaceBar(
               title: const Text(

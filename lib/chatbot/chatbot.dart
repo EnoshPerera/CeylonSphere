@@ -42,6 +42,7 @@ class Chatbot extends StatelessWidget {
           ),
         ),
       ),
+      debugShowCheckedModeBanner: false,
       home: const HomePage(),
     );
   }

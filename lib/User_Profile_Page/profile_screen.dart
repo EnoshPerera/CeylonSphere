@@ -273,9 +273,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       buildProfileOption(
                         "Your Trips",
                         Icons.travel_explore,
-                        onTap: () {
-                          // Navigate to trips
-                        },
                       ),
                     ]),
                     const SizedBox(height: 24),

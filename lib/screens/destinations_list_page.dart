@@ -17,11 +17,12 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
   Widget build(BuildContext context) {
     final destinations = DestinationsData.getDestinations()
         .where((d) =>
-    d.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
-        d.country.toLowerCase().contains(_searchQuery.toLowerCase()))
+            d.name.toLowerCase().contains(_searchQuery.toLowerCase()) ||
+            d.country.toLowerCase().contains(_searchQuery.toLowerCase()))
         .toList();
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false, // Remove debug banner
       home: Scaffold(
         body: CustomScrollView(
           slivers: [
@@ -55,7 +56,7 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
               padding: const EdgeInsets.fromLTRB(16, 16, 16, 80),
               sliver: SliverList(
                 delegate: SliverChildBuilderDelegate(
-                      (context, index) {
+                  (context, index) {
                     if (index == 0) {
                       return const Padding(
                         padding: EdgeInsets.only(bottom: 16),
@@ -137,7 +138,7 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
                                     Wrap(
                                       spacing: 8,
                                       children:
-                                      destination.categories.map((category) {
+                                          destination.categories.map((category) {
                                         return Container(
                                           padding: const EdgeInsets.symmetric(
                                             horizontal: 12,
@@ -146,7 +147,7 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
                                           decoration: BoxDecoration(
                                             color: Colors.white.withOpacity(0.2),
                                             borderRadius:
-                                            BorderRadius.circular(20),
+                                                BorderRadius.circular(20),
                                           ),
                                           child: Text(
                                             category,
@@ -162,7 +163,7 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
                                     // Name and Rating
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
+                                          MainAxisAlignment.spaceBetween,
                                       children: [
                                         Expanded(
                                           child: Text(
@@ -182,7 +183,7 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
                                           decoration: BoxDecoration(
                                             color: Colors.white.withOpacity(0.2),
                                             borderRadius:
-                                            BorderRadius.circular(12),
+                                                BorderRadius.circular(12),
                                           ),
                                           child: Row(
                                             children: [
@@ -241,4 +242,3 @@ class _DestinationsListPageState extends State<DestinationsListPage> {
     );
   }
 }
-
