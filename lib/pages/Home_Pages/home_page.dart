@@ -1,18 +1,18 @@
+import 'package:ceylonsphere/Nearby_Services_Pages/nearby_services_main.dart';
+import 'package:ceylonsphere/Souvenir_Shops/shop_main.dart';
 import 'package:ceylonsphere/User_Profile_Page/profile_screen.dart';
-import 'package:ceylonsphere/chatbot/chatbot.dart';
-import 'package:ceylonsphere/pages/Transport_Pages/transport.dart';
+import 'package:ceylonsphere/screens/destinations_list_page.dart';
 import 'package:ceylonsphere/user_profile_main.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import '../Profile_Pages/profile_screen.dart';
+import '../../chatbot/chatbot.dart';
 import 'destinations_screen.dart';
 import '../../explore_activities/explore_activities_screen.dart';
-import 'destination_profile.dart';
-import 'google_map_screen.dart';
 import '../../destinationCarousel_widget/destination_carousel.dart';
-import 'ar_temple_screen.dart';
 import '../Transport_Pages/transport.dart';
 import '../../chatbot/travel_chatbot_screen.dart';
+import 'adventure_deals.dart';
+import 'events_screen.dart';
 
 void main() {
   runApp(const TravelApp());
@@ -29,6 +29,7 @@ class TravelApp extends StatelessWidget {
         brightness: Brightness.light,
         primaryColor: CupertinoColors.activeGreen,
       ),
+      debugShowCheckedModeBanner: false,
       home: const MainPage(),
     );
   }
@@ -62,11 +63,11 @@ class _MainPageState extends State<MainPage> {
           case 0:
             return const HomeScreen();
           case 1:
-            return const DestinationsScreen();
+            return const DestinationsListPage();
           case 2:
             return TransportScreen();
           case 3:
-            return UserProfile();
+            return const UserProfile();
           default:
             return const HomeScreen();
         }
@@ -89,20 +90,6 @@ class HomeScreen extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // Padding(
-              //   padding: const EdgeInsets.all(16.0),
-              //   child: Center(
-              //     child: ClipRRect(
-              //       borderRadius: BorderRadius.circular(15),
-              //       child: Image.asset(
-              //         'assets/vr_tourism.png',
-              //         height: 130,
-              //         width: 650,
-              //         fit: BoxFit.cover,
-              //       ),
-              //     ),
-              //   ),
-              // ),
               Container(
                 padding: const EdgeInsets.symmetric(vertical: 16.0),
                 decoration: BoxDecoration(
@@ -125,140 +112,6 @@ class HomeScreen extends StatelessWidget {
                               color: Color(0xFF003734),
                             ),
                           ),
-                          GestureDetector(
-                            onTap: () {
-                              // Show all categories
-                              showCupertinoModalPopup(
-                                context: context,
-                                builder: (context) => Container(
-                                  height: 500,
-                                  padding: const EdgeInsets.all(20),
-                                  decoration: const BoxDecoration(
-                                    color: CupertinoColors.systemBackground,
-                                    borderRadius: BorderRadius.vertical(
-                                      top: Radius.circular(20),
-                                    ),
-                                  ),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'All Categories',
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          color: Color(0xFF003734),
-                                        ),
-                                      ),
-                                      const SizedBox(height: 20),
-                                      Expanded(
-                                        child: GridView.count(
-                                          crossAxisCount: 3,
-                                          mainAxisSpacing: 20,
-                                          crossAxisSpacing: 20,
-                                          children: [
-                                            _CategoryGridItem(
-                                              icon: CupertinoIcons.map,
-                                              label: 'Places',
-                                              onTap: () {
-                                                Navigator.pop(
-                                                    context); // Close the modal first
-                                                Navigator.push(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        GoogleMapScreen(),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                            _CategoryGridItem(
-                                              icon:
-                                                  CupertinoIcons.chat_bubble_2,
-                                              label: 'Chatbot',
-                                              onTap: () {
-                                                Navigator.pop(
-                                                    context); // Close the modal first
-                                                Navigator.push(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        MyApp(),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.news,
-                                              label: 'Restaurants',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.bag,
-                                              label: 'Shopping',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.tickets,
-                                              label: 'Events',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.car_detailed,
-                                              label: 'Transport',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.camera,
-                                              label: 'Photography',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.gift,
-                                              label: 'Souvenirs',
-                                            ),
-                                            const _CategoryGridItem(
-                                              icon: CupertinoIcons.cart,
-                                              label: 'Markets',
-                                            ),
-                                            _CategoryGridItem(
-                                              icon:
-                                                  CupertinoIcons.chat_bubble_2,
-                                              label: 'Travel Assistant',
-                                              onTap: () {
-                                                Navigator.pop(
-                                                    context); // Close modal before navigating
-                                                Navigator.push(
-                                                  context,
-                                                  CupertinoPageRoute(
-                                                    builder: (context) =>
-                                                        const MyApp(),
-                                                  ),
-                                                );
-                                              },
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: Row(
-                              children: const [
-                                Text(
-                                  'View All',
-                                  style: TextStyle(
-                                    color: CupertinoColors.activeGreen,
-                                    fontWeight: FontWeight.w600,
-                                  ),
-                                ),
-                                SizedBox(width: 4),
-                                Icon(
-                                  CupertinoIcons.chevron_right,
-                                  color: CupertinoColors.activeGreen,
-                                  size: 16,
-                                ),
-                              ],
-                            ),
-                          ),
                         ],
                       ),
                     ),
@@ -277,7 +130,7 @@ class HomeScreen extends StatelessWidget {
                               Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => GoogleMapScreen(),
+                                  builder: (context) => NearbyServices(),
                                 ),
                               );
                             },
@@ -285,30 +138,55 @@ class HomeScreen extends StatelessWidget {
                           _CategoryItem(
                             icon: CupertinoIcons.chat_bubble_2, // Chatbot icon
                             label: 'Chatbot',
-                            color: Color(0xFF2196F3),
+                            color: const Color(
+                                0xFF2196F3), // Keeping the same color
                             onTap: () {
                               Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => MyApp(),
+                                  builder: (context) => Chatbot(),
                                 ),
                               );
-                            }, // Keeping the same color
+                            },
                           ),
-                          const _CategoryItem(
-                            icon: CupertinoIcons.news,
+                          _CategoryItem(
+                            icon: CupertinoIcons.news, // Chatbot icon
                             label: 'Restaurants',
-                            color: Color(0xFFF44336),
+                            color: Color(0xFFF44336), // Keeping the same color
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => NearbyServices(),
+                                ),
+                              );
+                            },
                           ),
-                          const _CategoryItem(
-                            icon: CupertinoIcons.bag,
-                            label: 'Shopping',
-                            color: Color(0xFF9C27B0),
-                          ),
-                          const _CategoryItem(
+                          _CategoryItem(
+                              icon: CupertinoIcons.bag,
+                              label: 'Shopping',
+                              color: const Color(0xFF9C27B0),
+                              onTap: () {
+                                Navigator.pop(context); // Close the modal first
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => ShopMain(),
+                                  ),
+                                );
+                              }),
+                          _CategoryItem(
                             icon: CupertinoIcons.tickets,
                             label: 'Events',
                             color: Color(0xFFFF9800),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => EventsScreen(),
+                                ),
+                              );
+                            },
                           ),
                         ],
                       ),
@@ -337,24 +215,31 @@ class HomeScreen extends StatelessWidget {
                 title: 'Adventure Deal',
                 subtitle: '30% OFF',
                 color: Colors.orangeAccent,
-                onTap: () {},
+                onTap: () {
+                  // Navigate to AdventureDealsPage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => const AdventureDealsPage()),
+                  );
+                },
               ),
 
               //Promo Banner
-              // PromoBanner(
-              //   title: 'AR Experience',
-              //   subtitle: 'Explore temples in Augmented Reality',
-              //   color: const Color.fromARGB(
-              //       255, 0, 102, 255), // Deep purple for tech feel
-              //   // onTap: () {
-              //   //   Navigator.push(
-              //   //     context,
-              //   //     CupertinoPageRoute(
-              //   //       builder: (context) => ARTempleScreen(),
-              //   //     ),
-              //   //   );
-              //   // },
-              // ),
+              PromoBanner(
+                title: 'AR Experience',
+                subtitle: 'Explore temples in Augmented Reality',
+                color: const Color.fromARGB(
+                    255, 0, 102, 255), // Deep purple for tech feel
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   CupertinoPageRoute(
+                  //     builder: (context) => ARTempleScreen(),
+                  //   ),
+                  // );
+                },
+              ),
               const SizedBox(height: 10),
             ],
           ),
@@ -616,12 +501,12 @@ class DestinationCard extends StatefulWidget {
   final int initialLikes;
 
   const DestinationCard({
-    super.key,
+    Key? key,
     required this.imagePath,
     required this.title,
     required this.location,
     required this.initialLikes,
-  });
+  }) : super(key: key);
 
   @override
   State<DestinationCard> createState() => _DestinationCardState();
