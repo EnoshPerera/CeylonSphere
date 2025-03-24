@@ -41,6 +41,8 @@ dependencies:
   firebase_storage: ^12.4.4
   google_sign_in: ^6.3.0
   sign_button: ^2.0.6
+  audioplayers: ^5.2.1
+  just_audio: ^0.9.34
 
 
 
@@ -53,6 +55,63 @@ dev_dependencies:
 flutter:
   assets:
     - assets/
+    - assets/ambuluwawa.webp
+    - assets/ambuluwawa_gallery1.jpg
+    - assets/ambuluwawa_gallery2.jpg
+    - assets/ambuluwawa_gallery3.jpg
+    - assets/ambuluwawa_gallery4.webp
+    - assets/bamunu_mask.jpg
+    - assets/bamunu_mask_01.glb
+    - assets/bathik_sarong_for_women.webp
+    - assets/bathik_sarong_for_women1.glb
+    - assets/bathik_shirt_and_sarong.webp
+    - assets/bathik_shirt_and_sarong1.glb
+    - assets/buddha.jpg
+    - assets/buddha1.glb
+    - assets/elephant_sculpture.jpg
+    - assets/elephant_sculpture1.glb
+    - assets/galle_fort.jpg
+    - assets/galle_fort_gallery1.jpg
+    - assets/galle_fort_gallery2.jpeg
+    - assets/galle_fort_gallery3.jpg
+    - assets/galle_fort_gallery4.webp
+    - assets/galle_fort_gallery5.jpg
+    - assets/galle_fort_gallery6.jpg
+    - assets/kandy1.jpg
+    - assets/naga_rassa_mask.jpg
+    - assets/naga_rassa_mask_01.glb
+    - assets/nine_arch_bridge.webp
+    - assets/nine_arch_gallery1.jpg
+    - assets/nine_arch_gallery2.jpg
+    - assets/nine_arch_gallery3.jpg
+    - assets/nine_arch_gallery4.jpg
+    - assets/nine_arch_gallery5.jpg
+    - assets/nine_arch_gallery6.webp
+    - assets/ruwanwelisaya.jpg
+    - assets/ruwanwelisaya_gallery1.jpg
+    - assets/ruwanwelisaya_gallery2.JPG
+    - assets/ruwanwelisaya_gallery3.jpg
+    - assets/ruwanwelisaya_gallery4.jpg
+    - assets/ruwanwelisaya_gallery5.jpg
+    - assets/sigiriya_gallery1.jpg
+    - assets/sigiriya_gallery2.jpg
+    - assets/sigiriya_gallery3.jpg
+    - assets/sigiriya_gallery4.jpg
+    - assets/sigiriya_gallery5.jpg
+    - assets/sitting_man.webp
+    - assets/sitting_man1.glb
+    - assets/stupa.jpg
+    - assets/stupa1.glb
+    - assets/temple_gallery1.jpg
+    - assets/temple_gallery2.jpg
+    - assets/temple_gallery3.jpg
+    - assets/temple_gallery4.jpg
+    - assets/audio/AmbuluwawaAudioClip.mp3
+    - assets/audio/GalleFortAudioClip.mp3
+    - assets/audio/NineArchBridgeAudioClip.mp3
+    - assets/audio/RuwanwelisayaAudioClip.mp3
+    - assets/audio/SigiriyaAudioClip.mp3
+    - assets/audio/TempleOfTheToothAudioClip.mp3
 #    - assets/facebook-logo.png
 #    - assets/firstscreen.jpg
 #    - assets/google-logo.png

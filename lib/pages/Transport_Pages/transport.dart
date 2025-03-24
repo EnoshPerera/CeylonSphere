@@ -333,6 +333,11 @@ class _BookingHomePageState extends State<BookingHomePage> {
                                               placeId, name, 'stop', index),
                                     ),
                                   ),
+                                  IconButton(
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                    onPressed: () => _removeStopLocation(index),
+                                    tooltip: 'Remove stop',
+                                  ),
                                 ],
                               ),
                             );
