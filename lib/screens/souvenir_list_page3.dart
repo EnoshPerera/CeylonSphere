@@ -20,6 +20,7 @@ class _SouvenirListPageState extends State<SouvenirListPage3> {
         .toList();
 
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: CustomScrollView(
           slivers: [

@@ -44,5 +44,6 @@ class ShopMain extends StatelessWidget {
       ),
       home: const ShopPage(),
     );
+    
   }
 }

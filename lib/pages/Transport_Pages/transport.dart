@@ -12,15 +12,15 @@ import 'vehicle_selection_page.dart';
 import 'transport_final_page.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-void main() async {
-  WidgetsFlutterBinding
-      .ensureInitialized();
-  Stripe.publishableKey =
-      stripePublishableKey; // Initialize Stripe with the publishable key
+// void main() async {
+//   WidgetsFlutterBinding
+//       .ensureInitialized();
+//   Stripe.publishableKey =
+//       stripePublishableKey; // Initialize Stripe with the publishable key
 
 
-  runApp(TransportScreen());
-}
+//   runApp(TransportScreen());
+// }
 
 class TransportScreen extends StatelessWidget {
   const TransportScreen({super.key});

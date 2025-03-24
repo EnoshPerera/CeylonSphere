@@ -8,7 +8,6 @@ import '../main.dart';
 import 'edit_profile_screen.dart';
 import 'privacy_policy_screen.dart';
 import 'terms_and_conditions_screen.dart';
-import 'trips_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
@@ -274,14 +273,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       buildProfileOption(
                         "Your Trips",
                         Icons.travel_explore,
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => const TripsScreen(),
-                            ),
-                          );
-                        },
                       ),
                     ]),
                     const SizedBox(height: 24),

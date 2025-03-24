@@ -291,7 +291,7 @@ class _ShopDetailPageState extends State<ShopDetailPage> with SingleTickerProvid
                       onPressed: _navigateToSouvenirList,
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 16),
-                        backgroundColor: Colors.amber.shade600,
+                        backgroundColor: Color.fromARGB(255, 24, 118, 81),
                         foregroundColor: Colors.white,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),

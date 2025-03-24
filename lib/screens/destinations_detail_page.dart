@@ -1,6 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import '../models/destination2.dart';
+import '../chatbot/chatbot.dart';
 import 'gallery_page.dart';
 import 'package:audioplayers/audioplayers.dart';
 
@@ -96,6 +97,7 @@ class _DestinationDetailPageState extends State<DestinationDetailPage>with Singl
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      debugShowCheckedModeBanner: false,
       home: Scaffold(
         body: CustomScrollView(
           controller: _scrollController,
